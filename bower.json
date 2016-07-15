@@ -1,0 +1,22 @@
+{
+  "name": "public-libraries-news",
+  "homepage": "https://github.com/LibrariesHacked/public-libraries-news",
+  "authors": [
+    "Dave <david_rowe@bathnes.gov.uk>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "bootswatch": "^3.3.6",
+    "leaflet": "^0.7.7"
+  }
+}
