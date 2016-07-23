@@ -1,103 +1,103 @@
-﻿body {
+﻿html, body, #mapContainer {
+    height: 100%;
+    min-height: 100%;
+}
+
+body {
     padding-top: 50px;
 }
 
-.sub-header {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+#mapContainer {
+    padding: 0;
 }
 
-.navbar-fixed-top {
-    border: 0;
+#sidebar {
+    margin-top: 51px;
 }
-
-.sidebar {
-    display: none;
-}
-
-@media (min-width: 768px) {
-    .sidebar {
-        position: fixed;
-        top: 51px;
-        bottom: 0;
-        left: 0;
-        z-index: 1000;
-        display: block;
-        padding: 20px;
-        overflow-x: hidden;
-        overflow-y: auto;
-        background-color: #f5f5f5;
-        border-right: 1px solid #eee;
-    }
-}
-
-/* Sidebar navigation */
-.nav-sidebar {
-    margin-right: -21px; /* 20px padding + 1px border */
-    margin-bottom: 20px;
-    margin-left: -20px;
-}
-
-    .nav-sidebar > li > a {
-        padding-right: 20px;
-        padding-left: 20px;
-    }
-
-    .nav-sidebar > .active > a,
-    .nav-sidebar > .active > a:hover,
-    .nav-sidebar > .active > a:focus {
-        /*color: #fff;
-        background-color: #428bca;*/
-    }
-
-
-/*
- * Main content
- */
-
-.main {
-    padding: 20px;
-}
-
-@media (min-width: 768px) {
-    .main {
-        padding-right: 40px;
-        padding-left: 40px;
-    }
-}
-
-.main .page-header {
-    margin-top: 0;
-}
-
-
-/*
- * Placeholder dashboard ideas
- */
-
-.placeholders {
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-    .placeholders h4 {
-        margin-bottom: 0;
-    }
-
-.placeholder {
-    margin-bottom: 20px;
-}
-
-    .placeholder img {
-        display: inline-block;
-        border-radius: 50%;
-    }
 
 #map {
     width: 100%;
     height: 100%;
-    top: 51px;
-    left: 0;
-    bottom: 0;
-    position:fixed
 }
+
+#divMiniMap {
+    width: 100%;
+    height: 300px;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+}
+
+.custom-popup .leaflet-popup-content {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.marker-cluster-small {
+    background-color: rgba(181, 226, 140, 0.6);
+    border-radius: 10px;
+}
+
+    .marker-cluster-small div {
+        background-color: rgba(110, 204, 57, 0.6);
+        width: 14px;
+        height: 14px;
+        margin-left: 3px;
+        margin-top: 3px;
+        border-radius: 7px;
+        font-size: 9px;
+    }
+
+    .marker-cluster-small span {
+        line-height: 5px;
+    }
+
+.marker-cluster-medium {
+    background-color: rgba(241, 211, 87, 0.6);
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+    .marker-cluster-medium div {
+        background-color: rgba(240, 194, 12, 0.6);
+        width: 20px;
+        height: 20px;
+        margin-left: 5px;
+        margin-top: 5px;
+        border-radius: 10px;
+    }
+
+    .marker-cluster-medium span {
+        line-height: 20px;
+    }
+
+.marker-cluster-large {
+    background-color: rgba(253, 156, 115, 0.6);
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+    .marker-cluster-large div {
+        background-color: rgba(241, 128, 23, 0.6);
+        width: 30px;
+        height: 30px;
+        margin-left: 5px;
+        margin-top: 5px;
+        border-radius: 15px;
+    }
+
+    .marker-cluster-large span {
+        line-height: 30px;
+    }
+
+.marker-cluster {
+    background-clip: padding-box;
+}
+
+    .marker-cluster div {
+        text-align: center;
+        font-weight: 700;
+    }

@@ -3,24 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="{ libraries: hacked} ">
-    <link rel="icon" href="favicon.ico">
+    <meta name="author" content="">
     <title>{ libraries: news } | hacked projects</title>
     <link href="bower_components/bootswatch/united/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
@@ -37,25 +31,36 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid">
+    <div class="container">
+        <br/>
         <div class="row">
-            <div class="col-sm-3 col-md-2 sidebar">
-                <ul class="nav nav-sidebar">
-                    <li class="active"><a href="#">dashboard <span class="sr-only">(current)</span></a></li>
-                    <li><a href="map.html">map</a></li>
-                    <li><a href="tables.html">tables</a></li>
-                </ul>
-                <ul class="nav nav-sidebar">
-                    <li class="divider"></li>
-                    <li><a href="http://www.puliclibrariesnews.com" target="_blank">public libraries news</a></li>
-                </ul>
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Current change</h3>
+                    </div>
+                    <div id="divTopCountChanges" class="list-group"></div>
+                    <div class="panel-body">
+                        <p id="pCurrentChanges"></p>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1 class="page-header">{ libraries: news }</h1>
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Local news map</h3>
+                    </div>
+                    <div id="divMiniMap"></div>
+                </div>
+                
             </div>
         </div>
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="js/publiclibrariesnews.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
