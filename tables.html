@@ -3,17 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="{ libraries: hacked} ">
-    <link rel="icon" href="favicon.ico">
+    <meta name="author" content="">
     <title>{ libraries: news } | hacked projects</title>
-    <link href="bower_components/bootswatch/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/bootswatch/united/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
@@ -24,33 +25,27 @@
                 <a class="navbar-brand" href="/">{ libraries: news }</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="active"><a href="/map">dashboard</a></li>
+                    <li><a href="/map">map</a></li>
+                    <li><a href="/tables">data tables</a></li>
+                    <li><a href="/api">API</a></li>
+                    <li><a href="/map">widget</a></li>
+                </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">info</a></li>
+                    <li><a href="#">about</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3 col-md-2 sidebar">
-                <ul class="nav nav-sidebar">
-                    <li><a href="/">dashboard <span class="sr-only">(current)</span></a></li>
-                    <li><a href="map.html">map</a></li>
-                    <li class="active"><a href="tables.html">tables</a></li>
-                </ul>
-                <ul class="nav nav-sidebar">
-                    <li class="divider"></li>
-                    <li><a href="http://www.publiclibrariesnews.com" target="_blank">public libraries news</a></li>
-                </ul>
-            </div>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1 class="page-header">{ libraries: news }</h1>
-                <h2 class="sub-header">Local news by authority</h2>
-                <h2 class="sub-header">Changes</h2>
-            </div>
-        </div>
+    <div class="container">
+
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="js/publiclibrariesnews.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
