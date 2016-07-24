@@ -32,9 +32,10 @@
         $('.changes-list').click(function (event) {
             event.preventDefault();
             var authSt = changes[$(event.target).data('auth')].stories;
-            $('#pCurrentChanges').html(authSt.map(function (auth) {
-                return auth.text;
-            }).join('<br/>'));
+
+            $.each(authSt, function (i,o) {
+                $('#divChangesTabContent').append('<div class="tab-pane fade active in" id="divChangesTabContent' + i + '">' + this.text + '</div>');
+            });
         });
 
         //////////////////////////////////////////////
@@ -51,12 +52,12 @@
             // Attach a click event to the marker.
             var markerClick = function (e) {
                 // Set the modal content
-                $('#mdlList').empty();
-                $('#mdlTitle').text(e.target.title);
+                $('#divMiniMapText').empty();
+                $('#divMiniMapText').show(500);
                 $.each(e.target.stories, function () {
-                    $('#mdlList').append('<a class="list-group-item" href="' + this.url + '" target="_blank"><h4 class="list-group-item-heading">' + moment(this.date).fromNow() + '</h4><p class="list-group-item-text">' + this.text + '</p></a>');
+                    var summary = this.text.substring(0, 100) + '&#8230;';
+                    $('#divMiniMapText').append(summary);
                 });
-                $('#markerModal').modal();
             };
             marker.on('click', markerClick);
             marker.addTo(map);

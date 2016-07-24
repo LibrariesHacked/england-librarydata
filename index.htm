@@ -39,29 +39,76 @@
         </div>
     </nav>
     <div class="container">
-        <br/>
+        <br />
         <div class="row">
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-danger">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Current change</h3>
+                        <h3 class="panel-title">changes</h3>
                     </div>
                     <div id="divTopCountChanges" class="list-group"></div>
                     <div class="panel-body">
-                        <p id="pCurrentChanges"></p>
+                        <ul id="ulChangesTabs" class="nav nav-tabs">
+                            <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+                            <li><a href="#profile" data-toggle="tab">Profile</a></li>
+                            <li class="disabled"><a>Disabled</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                    Dropdown <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#dropdown1" data-toggle="tab">Action</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#dropdown2" data-toggle="tab">Another action</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="divChangesTabContent">
+                        </div>
+                        <ul class="pager">
+                            <li class="previous disabled"><a href="#">&larr; older</a></li>
+                            <li class="next"><a href="#">newer &rarr;</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Local news map</h3>
+                        <h3 class="panel-title">news map</h3>
                     </div>
                     <div id="divMiniMap"></div>
+                    <div id="divMiniMapText" class="panel-body"></div>
+                    <div class="panel-footer">
+                        <div class="btn-group">
+                            <a class="btn btn-primary btn-sm dropdown-toggle" aria-expanded="false" href="#" data-toggle="dropdown">news type <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">local news</a></li>
+                                <li><a href="#">changes</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">all stories</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                
             </div>
         </div>
+        <footer>
+            <hr/>
+            <p>a { libraries: hacked } project.</p>
+            <ul class="list-inline">
+                <li>
+                    <small>
+                        <a href="http://www.bathnes.gov.uk/accessibility" target="_blank">{ libraries: hacked }</a>
+                    </small>
+                </li>
+                <li>
+                    <small>
+                        <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>
+                    </small>
+                </li>
+            </ul>
+        </footer>
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
