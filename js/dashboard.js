@@ -13,6 +13,14 @@
         position: 'topright'
     }).addTo(map);
 
+    
+    $('#btnChangesNewer').click(function () {
+        $('#ulChangesTabs.nav-tabs > .active').prev('li').find('a').trigger('click');
+    });
+    $('#btnChangesOlder').click(function () {
+        $('#ulChangesTabs .nav-tabs > .active').next('li').find('a').trigger('click');
+    });
+
     // Load the initial set of data - for the dashboard start with 1 month
     PublicLibrariesNews.loadData(1, function () {
         var local = PublicLibrariesNews.getStoriesGroupedByLocation('local');
@@ -32,9 +40,11 @@
         $('.changes-list').click(function (event) {
             event.preventDefault();
             var authSt = changes[$(event.target).data('auth')].stories;
-
-            $.each(authSt, function (i,o) {
-                $('#divChangesTabContent').append('<div class="tab-pane fade active in" id="divChangesTabContent' + i + '">' + this.text + '</div>');
+            $('#ulChangesTabs').empty();
+            $('#divChangesTabContent').empty();
+            $.each(authSt, function (i, o) {
+                $('#ulChangesTabs').append('<li class="' + (i == 0 ? 'active' : '')  + '"><a href="#divChangesTabContent' + i + '" data-toggle="tab"></a></li>');
+                $('#divChangesTabContent').append('<div class="tab-pane fade ' + (i == 0 ? 'active' : '') + ' in" id="divChangesTabContent' + i + '">' + this.text + '</div>');
             });
         });
 
