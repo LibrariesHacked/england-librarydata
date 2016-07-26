@@ -10,6 +10,7 @@
     <link href="bower_components/bootswatch/united/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
+    <link href="bower_components/morris.js/morris.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -70,18 +71,14 @@
                             <li><a href="#">&raquo;</a></li>
                         </ul>
                     </div>
-                    <div class="panel-footer">
-                        <div class="btn-group">
-                            <a class="btn btn-default btn-sm dropdown-toggle" aria-expanded="false" href="#" data-toggle="dropdown">news type <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">local news</a></li>
-                                <li><a href="#">changes</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">all stories</a></li>
-                            </ul>
-                        </div>
-                        
+                </div>
+            </div>
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">stories over time</h3>
                     </div>
+                    <div id="divStoriesLineChart"></div>
                 </div>
             </div>
         </div>
@@ -106,6 +103,8 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/raphael/raphael.min.js"></script>
+    <script src="bower_components/morris.js/morris.min.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/dashboard.js"></script>
 </body>

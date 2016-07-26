@@ -25,6 +25,10 @@ body {
     height: 200px;
 }
 
+#divStoriesLineChart {
+    height: 200px;
+}
+
 #ulChangesTabs {
     display: none;
 }
