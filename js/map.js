@@ -1,4 +1,5 @@
 ﻿$(function () {
+    jQuery.fn.reverse = [].reverse;
     /////////////////////////////////////////////////
     // Map
     // Initialise the map, set center, zoom, etc.
@@ -28,13 +29,12 @@
             marker.title = i;
             // Attach a click event to the marker.
             var markerClick = function (e) {
-                // Set the modal content
                 $('#lstStories').empty();
                 $('#h1Location').text(e.target.title);
-                $.each(e.target.stories, function () {
+                $.each(e.target.stories.reverse(), function () {
                     $('#lstStories').append('<h4>' + moment(this.date).fromNow() + '</h4><p>' + this.text + '</p>');
                 });
-                $('#lnkStories')[0].click();
+                sidebar.open('stories');
             };
             marker.on('click', markerClick);
             marker.addTo(map);

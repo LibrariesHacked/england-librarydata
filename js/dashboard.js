@@ -13,7 +13,7 @@
         position: 'topright'
     }).addTo(map);
 
-    
+
     $('#btnChangesNewer').click(function () {
         $('#ulChangesTabs.nav-tabs > .active').prev('li').find('a').trigger('click');
     });
@@ -30,11 +30,11 @@
         // 1. Populate the changes top 5
         //////////////////////////////////////////////
         var locs = Object.keys(changes);
-        locs.sort(function(a,b){
-            return changes[b].stories.length - changes[a].stories.length; 
+        locs.sort(function (a, b) {
+            return changes[b].stories.length - changes[a].stories.length;
         });
         locs = locs.slice(0, 3);
-        $.each(locs, function(){
+        $.each(locs, function () {
             $('#divTopCountChanges').append('<a class="list-group-item changes-list" data-auth="' + this + '" href="#"><span class="badge">' + changes[this].stories.length + '</span>' + this + '</a>');
         });
         $('.changes-list').click(function (event) {
@@ -43,7 +43,7 @@
             $('#ulChangesTabs').empty();
             $('#divChangesTabContent').empty();
             $.each(authSt, function (i, o) {
-                $('#ulChangesTabs').append('<li class="' + (i == 0 ? 'active' : '')  + '"><a href="#divChangesTabContent' + i + '" data-toggle="tab"></a></li>');
+                $('#ulChangesTabs').append('<li class="' + (i == 0 ? 'active' : '') + '"><a href="#divChangesTabContent' + i + '" data-toggle="tab"></a></li>');
                 $('#divChangesTabContent').append('<div class="tab-pane fade ' + (i == 0 ? 'active' : '') + ' in" id="divChangesTabContent' + i + '">' + this.text + '</div>');
             });
         });
