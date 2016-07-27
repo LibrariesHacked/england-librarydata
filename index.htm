@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>{ libraries: news } | hacked projects</title>
-    <link href="bower_components/bootswatch/united/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="bower_components/morris.js/morris.css" rel="stylesheet" />
@@ -47,16 +47,12 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">changes</h3>
                     </div>
-                    <div id="divTopCountChanges" class="list-group"></div>
-                    <div class="panel-body">
-                        <ul id="ulChangesTabs" class="nav nav-tabs"></ul>
-                        <div class="tab-content" id="divChangesTabContent"></div>
-                        <ul class="pagination pagination-sm">
-                            <li class="disabled"><a href="#">&laquo;</a></li>
-                            <li><a href="#">&raquo;</a></li>
-                        </ul>
-                    </div>
+                    <div id="divChangesCounts" class="list-group"></div>
                 </div>
+                <ul id="ulChangesSwitch" class="pagination pagination-sm">
+                    <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
+                    <li><a data-direction="1" href="#">&raquo;</a></li>
+                </ul>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-info">
@@ -67,8 +63,8 @@
                     <div id="divMiniMapContent" class="panel-body">
                         <div id="divMiniMapText"></div>
                         <ul id="ulMiniMapPager" class="pagination pagination-sm">
-                            <li class="disabled"><a href="#">&laquo;</a></li>
-                            <li><a href="#">&raquo;</a></li>
+                            <li class="disabled"><a href="#" data-direction="-1">&laquo;</a></li>
+                            <li><a href="#" data-direction="1">&raquo;</a></li>
                         </ul>
                     </div>
                 </div>
@@ -83,20 +79,8 @@
             </div>
         </div>
         <footer>
-            <hr/>
-            <p>a { libraries: hacked } project.</p>
-            <ul class="list-inline">
-                <li>
-                    <small>
-                        <a href="http://www.bathnes.gov.uk/accessibility" target="_blank">{ libraries: hacked }</a>
-                    </small>
-                </li>
-                <li>
-                    <small>
-                        <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>
-                    </small>
-                </li>
-            </ul>
+            <hr />
+            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>.</p>
         </footer>
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>

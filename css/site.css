@@ -20,6 +20,11 @@ body {
     height: 100%;
 }
 
+#ulChangesSwitch {
+    padding: 0 !important;
+    margin: -10px 0 0 0 !important;
+}
+
 #divMiniMap {
     width: 100%;
     height: 200px;
@@ -29,9 +34,6 @@ body {
     height: 200px;
 }
 
-#ulChangesTabs {
-    display: none;
-}
 
 #divMiniMapContent {
     display: none;

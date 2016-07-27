@@ -13,44 +13,56 @@
         position: 'topright'
     }).addTo(map);
 
-
-    $('#btnChangesNewer').click(function () {
-        $('#ulChangesTabs.nav-tabs > .active').prev('li').find('a').trigger('click');
-    });
-    $('#btnChangesOlder').click(function () {
-        $('#ulChangesTabs .nav-tabs > .active').next('li').find('a').trigger('click');
-    });
-
     // Load the initial set of data - for the dashboard start with 1 month
-    PublicLibrariesNews.loadData(1, function () {
+    PublicLibrariesNews.loadData(2, function () {
         var local = PublicLibrariesNews.getStoriesGroupedByLocation('local');
         var changes = PublicLibrariesNews.getStoriesGroupedByLocation('changes');
 
         //////////////////////////////////////////////
-        // 1. Populate the changes top 5
+        // 1. Populate the changes
         //////////////////////////////////////////////
+        var currentlyShowing = [0, 2];
         var locs = Object.keys(changes);
         locs.sort(function (a, b) {
             return changes[b].stories.length - changes[a].stories.length;
         });
-        locs = locs.slice(0, 3);
-        $.each(locs, function () {
-            $('#divTopCountChanges').append('<a class="list-group-item changes-list" data-auth="' + this + '" href="#"><span class="badge">' + changes[this].stories.length + '</span>' + this + '</a>');
-        });
-        $('.changes-list').click(function (event) {
+        var addLocation = function (index, position) {
+            var it = changes[locs[index]];
+            var li = '<a href="#" class="list-group-item changes-list" data-current="0" data-auth="' + locs[index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[index] + '</h5><p class="list-group-item-text">' + it.stories[0].text + '</p></a>';
+            position == 'first' ? $('#divChangesCounts').prepend(li) : $('#divChangesCounts').append(li);
+        };
+        var removeLocation = function (position) {
+            $('#divChangesCounts a:' + position).remove();
+        };
+        for (x = 0 ; x < 3; x++) addLocation(x, 'last');
+        // Event: click on an individual item 
+        $('.changes-list').on('click', function (event) {
             event.preventDefault();
-            var authSt = changes[$(event.target).data('auth')].stories;
-            $('#ulChangesTabs').empty();
-            $('#divChangesTabContent').empty();
-            $.each(authSt, function (i, o) {
-                $('#ulChangesTabs').append('<li class="' + (i == 0 ? 'active' : '') + '"><a href="#divChangesTabContent' + i + '" data-toggle="tab"></a></li>');
-                $('#divChangesTabContent').append('<div class="tab-pane fade ' + (i == 0 ? 'active' : '') + ' in" id="divChangesTabContent' + i + '">' + this.text + '</div>');
-            });
+            var item = $(event.currentTarget);
+            var authSt = changes[$(item).data('auth')].stories;
+            var index = $(item).data('current') + 1;
+            if (index == authSt.length) index = 0;
+            $(item).data('current', index);
+            $(item).find('.list-group-item-text').text(authSt[index].text);
+        });
+        // Event: 
+        $('#ulChangesSwitch a').on('click', function (event) {
+            event.preventDefault();
+            var incr = $(event.target).data('direction');
+            if ((currentlyShowing[1] == locs.length - 1) || (currentlyShowing[0] == 0 && incr == -1)) return false;
+            currentlyShowing[0] = currentlyShowing[0] + incr;
+            currentlyShowing[1] = currentlyShowing[1] + incr;
+            $('#ulChangesSwitch li').attr('class', '');
+            if (currentlyShowing[0] == 0) $('#ulChangesSwitch li').first().attr('class', 'disabled');
+            if (currentlyShowing[1] == locs.length - 1) $('#ulChangesSwitch li').last().attr('class', 'disabled');
+            removeLocation((incr == 1 ? 'first' : 'last'));
+            addLocation(incr == 1 ? currentlyShowing[1] : currentlyShowing[0], (incr == 1 ? 'last' : 'first'));
         });
 
         //////////////////////////////////////////////
-        // 1. Populate the map
+        // 2. Populate the map
         //////////////////////////////////////////////
+        var miniMapCurrent = 0;
         $.each(local, function (i, o) {
             var size = ['small', 20];
             if (o.stories.length >= 5) size = ['medium', 30];
@@ -74,15 +86,7 @@
             newsMarkers.push(marker);
         });
 
-
-        //2.
-
-
-
-
-
-
-        // 3. 
+        // 3. The stories line chart
         new Morris.Line({
             element: 'divStoriesLineChart',
             data: [
