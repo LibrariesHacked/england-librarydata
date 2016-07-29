@@ -26,27 +26,30 @@
         locs.sort(function (a, b) {
             return changes[b].stories.length - changes[a].stories.length;
         });
-        var addLocation = function (index, position) {
-            var it = changes[locs[index]];
-            var li = '<a href="#" class="list-group-item changes-list" data-current="0" data-auth="' + locs[index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[index] + '</h5><p class="list-group-item-text">' + it.stories[0].text + '</p></a>';
-            position == 'first' ? $('#divChangesCounts').prepend(li) : $('#divChangesCounts').append(li);
-        };
-        var removeLocation = function (position) {
-            $('#divChangesCounts a:' + position).remove();
-        };
-        for (x = 0 ; x < 3; x++) addLocation(x, 'last');
-        // Event: click on an individual item 
-        $('.changes-list').on('click', function (event) {
+
+        var clickChangeItem = function (event) {
             event.preventDefault();
             var item = $(event.currentTarget);
             var authSt = changes[$(item).data('auth')].stories;
             var index = $(item).data('current') + 1;
             if (index == authSt.length) index = 0;
             $(item).data('current', index);
+            $(item).find('span').text((index + 1) + '/' + authSt.length);
             $(item).find('.list-group-item-text').text(authSt[index].text);
-        });
-        // Event: 
-        $('#ulChangesSwitch a').on('click', function (event) {
+        };
+
+        var addLocation = function (index, position) {
+            var it = changes[locs[index]];
+            var li = '<a href="#" id="aChangeLocation' + index + '" class="list-group-item changes-list" data-current="0" data-auth="' + locs[index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[index] + '</h5><p class="list-group-item-text">' + it.stories[0].text + '</p></a>';
+            position == 'first' ? $('#divChangesCounts').prepend(li) : $('#divChangesCounts').append(li);
+            $('#aChangeLocation' + index).on('click', clickChangeItem);
+        };
+
+        var removeLocation = function (position) {
+            $('#divChangesCounts a:' + position).remove();
+        };
+
+        var clickShiftChangeItems = function (event) {
             event.preventDefault();
             var incr = $(event.target).data('direction');
             if ((currentlyShowing[1] == locs.length - 1) || (currentlyShowing[0] == 0 && incr == -1)) return false;
@@ -57,10 +60,14 @@
             if (currentlyShowing[1] == locs.length - 1) $('#ulChangesSwitch li').last().attr('class', 'disabled');
             removeLocation((incr == 1 ? 'first' : 'last'));
             addLocation(incr == 1 ? currentlyShowing[1] : currentlyShowing[0], (incr == 1 ? 'last' : 'first'));
-        });
+        };
+        $('#ulChangesSwitch a').on('click', clickShiftChangeItems);
+
+        // Initial setup: 3 items.
+        for (x = 0 ; x < 3; x++) addLocation(x, 'last');
 
         //////////////////////////////////////////////
-        // 2. Populate the map
+        // 2. Populate the mini map
         //////////////////////////////////////////////
         var miniMapCurrent = 0;
         $.each(local, function (i, o) {
@@ -85,6 +92,8 @@
             marker.addTo(map);
             newsMarkers.push(marker);
         });
+        $('#ulMapPointType li span').first().text(Object.keys(local).length);
+        $('#ulMapPointType li span').last().text(Object.keys(changes).length);
 
         // 3. The stories line chart
         new Morris.Line({
