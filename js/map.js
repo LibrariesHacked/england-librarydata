@@ -13,13 +13,22 @@
     L.control.zoom({
         position: 'topright'
     }).addTo(map);
-
     var sidebar = L.control.sidebar('sidebar').addTo(map);
+
+
+
+
+    $('#ex1').slider({
+        formatter: function (value) {
+            return 'Current value: ' + value;
+        }
+    });
 
     // Load the initial set of data
     PublicLibrariesNews.loadData(3, function () {
         var local = PublicLibrariesNews.getStoriesGroupedByLocation('local');
-        $.each(local, function (i, o) {
+        var changes = PublicLibrariesNews.getStoriesGroupedByLocation('changes');
+        $.each(changes, function (i, o) {
             var size = ['small', 20];
             if (o.stories.length >= 5) size = ['medium', 30];
             if (o.stories.length >= 10) size = ['large', 40];

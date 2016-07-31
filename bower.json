@@ -21,6 +21,8 @@
     "font-awesome": "fontawesome#^4.6.3",
     "moment": "^2.14.1",
     "sidebar-v2": "^0.3.0",
-    "morris.js": "^0.5.1"
+    "morris.js": "^0.5.1",
+    "awesome-bootstrap-checkbox": "^0.3.7",
+    "seiyria-bootstrap-slider": "^9.1.1"
   }
 }

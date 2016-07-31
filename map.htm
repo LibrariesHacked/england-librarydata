@@ -11,6 +11,8 @@
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="bower_components/sidebar-v2/css/leaflet-sidebar.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet" />
+    <link href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -48,26 +50,45 @@
                     <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
                     <li><a id="lnkStories" href="#stories" role="tab"><i class="fa fa-map-marker"></i></a></li>
                 </ul>
-                <ul role="tablist">
-                    
-                </ul>
+                <ul role="tablist"></ul>
             </div>
 
             <!-- Tab panes -->
             <div class="sidebar-content">
                 <div class="sidebar-pane" id="home">
                     <h1 class="sidebar-header">
-                        libraries news stories
+                        Libraries news stories
                         <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
                     </h1>
-                    <p class="lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                    <br />
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
                 </div>
                 <div class="sidebar-pane" id="stories">
                     <h1 id="h1Location" class="sidebar-header"><span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                    <br />
                     <div id="lstStories"></div>
                 </div>
                 <div class="sidebar-pane" id="settings">
                     <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                    <br />
+                    <form role="form">
+                        <p>Select the type of news stories you wish to appear on the map.</p>
+                        <div class="checkbox checkbox-success">
+                            <input type="checkbox" id="chbLocal">
+                            <label for="chbLocal">
+                                Local news
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-success">
+                            <input type="checkbox" id="chbChanges">
+                            <label for="chbChanges">
+                                Changes
+                            </label>
+                        </div>
+                        <div>
+                            <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14" />
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -78,6 +99,7 @@
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/sidebar-v2/js/leaflet-sidebar.min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/map.js"></script>
 </body>
