@@ -15,9 +15,6 @@
     }).addTo(map);
     var sidebar = L.control.sidebar('sidebar').addTo(map);
 
-
-
-
     $('#ex1').slider({
         formatter: function (value) {
             return 'Current value: ' + value;

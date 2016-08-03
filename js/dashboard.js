@@ -1,9 +1,8 @@
 ﻿$(function () {
     /////////////////////////////////////////////////
-    // Map
-    // Initialise the map, set center, zoom, etc.
+    // Map.  Initialise the map, set center, zoom, etc.
     /////////////////////////////////////////////////
-    var map = L.map('divMiniMap', { zoomControl: false }).setView([52.55, -2.72], 7);
+    var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 7);
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/librarieshacked.jefmk67b/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -16,14 +15,11 @@
         var data = { 'local': PublicLibrariesNews.getStoriesGroupedByLocation('local'), 'changes': PublicLibrariesNews.getStoriesGroupedByLocation('changes') }
 
         //////////////////////////////////////////////
-        // 1. Populate the changes
+        // 1. Populate the changes and local stories
         //////////////////////////////////////////////
+        var localLocations = PublicLibrariesNews.locationsSortedByCount('local');
+        var changesLocations = PublicLibrariesNews.locationsSortedByCount('changes');
         var currentlyShowing = [0, 2];
-        var locs = Object.keys(data['changes']);
-        locs.sort(function (a, b) {
-            return data['changes'][b].stories.length - data['changes'][a].stories.length;
-        });
-
         var clickChangeItem = function (event) {
             event.preventDefault();
             var item = $(event.currentTarget);
@@ -34,18 +30,15 @@
             $(item).find('span').text((index + 1) + '/' + authSt.length);
             $(item).find('.list-group-item-text').text(authSt[index].text);
         };
-
-        var addLocation = function (index, position) {
+        var addLocation = function (control, index, position) {
             var it = data['changes'][locs[index]];
             var li = '<a href="#" id="aChangeLocation' + index + '" class="list-group-item changes-list" data-current="0" data-auth="' + locs[index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[index] + '</h5><p class="list-group-item-text">' + it.stories[0].text + '</p></a>';
             position == 'first' ? $('#divChangesCounts').prepend(li) : $('#divChangesCounts').append(li);
             $('#aChangeLocation' + index).on('click', clickChangeItem);
         };
-
-        var removeLocation = function (position) {
+        var removeLocation = function (control, position) {
             $('#divChangesCounts a:' + position).remove();
         };
-
         var clickShiftChangeItems = function (event) {
             event.preventDefault();
             var incr = $(event.target).data('direction');
@@ -59,7 +52,6 @@
             addLocation(incr == 1 ? currentlyShowing[1] : currentlyShowing[0], (incr == 1 ? 'last' : 'first'));
         };
         $('#ulChangesSwitch a').on('click', clickShiftChangeItems);
-
         // Initial setup: 3 items.
         for (x = 0 ; x < 3; x++) addLocation(x, 'last');
 
@@ -68,7 +60,12 @@
         //////////////////////////////////////////////
         var miniMapCurrent = 'local';
         var mapLayers = { 'local': '', 'changes': '' };
+        var currentLayer = '';
         var addMiniMapPoints = function (type) {
+            if (currentLayer != '') map.removeLayer(currentLayer);
+            miniMapCurrent = type;
+            $('#ulMapPointType li').attr('class', '');
+            $('#ulMapPointType li#' + type).attr('class', 'active');
             if (mapLayers[type] == '') {
                 var markerArray = [];
                 $.each(data[type], function (i, o) {
@@ -86,15 +83,18 @@
                 });
                 mapLayers[type] = L.layerGroup(markerArray);
             }
-            mapLayers[type].addTo(map);
+            currentLayer = mapLayers[type];
+            currentLayer.addTo(map);
         };
-        $('#ulMapPointType li span').first().text(Object.keys(data['local']).length);
-        $('#ulMapPointType li span').last().text(Object.keys(data['changes']).length);
-        $('#ulMapPointType li span a').first().click(function (e) {
+        $('#ulMapPointType li span').first().text(PublicLibrariesNews.storyCount('local'));
+        $('#ulMapPointType li span').last().text(PublicLibrariesNews.storyCount('changes'));
+        $('#ulMapPointType li a').click(function (e) {
             e.preventDefault();
-            if (miniMapCurrent == 'local') return false;
+            var type = $(e.target).closest('li').attr('id');
+            if (miniMapCurrent == type) return false;
+            addMiniMapPoints(type);
         });
-        addMiniMapPoints('changes');
+        addMiniMapPoints('local');
 
         // 3. The stories line chart
         new Morris.Line({

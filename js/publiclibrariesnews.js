@@ -11,7 +11,7 @@
         // Filenames are in the form PLN_2015_11_changes
         var urls = [];
         for (x = 0; x <= months ; x++) {
-            var date = moment().subtract(x, 'months');
+            var date = moment().subtract(3, 'days').subtract(x, 'months');
             var year = date.year();
             var month = date.month() + 1;
             for (type in this.stories){
@@ -50,7 +50,32 @@
         }.bind(this));
         return locs;
     },
-    getLocationList: function () {
-
+    storyCount: function (type) {
+        var count = 0;
+        $.each(this.stories[type], function (i, y) {
+            $.each(y, function (x, m) {
+                count = count + m.length;
+            }.bind(this));
+        }.bind(this));
+        return count;
+    },
+    locationsSortedByCount: function (type) {
+        var locObj = {};
+        var locs = [];
+        $.each(this.stories[type], function (i, y) {
+            $.each(y, function (x, m) {
+                $.each(m, function (z, s) {
+                    if (!locs[s[0]]) locs[s[0]] = { count: 0 };
+                    locs[s[0]].count = locs[s[0]].count + 1;
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
+        $.each(Object.keys(locObj), function (i, y) {
+            locs.push(i);
+        });
+        locs.sort(function (a, b) {
+            return locs[a].count - locs[b].count;
+        })
+        return locs;
     }
 };

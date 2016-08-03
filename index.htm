@@ -55,6 +55,18 @@
                 </ul>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">local news</h3>
+                    </div>
+                    <div id="divLocalCounts" class="list-group"></div>
+                </div>
+                <ul id="ulLocalSwitch" class="pagination pagination-sm">
+                    <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
+                    <li><a data-direction="1" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">news map</h3>
@@ -69,8 +81,8 @@
                     </div>
                     <div class="panel-footer">
                         <ul id="ulMapPointType" class="nav nav-pills">
-                            <li><a href="#">Local news <span class="badge"></span></a></li>
-                            <li><a href="#">Changes <span class="badge"></span></a></li>
+                            <li id="local"><a href="#">Local news <span class="badge"></span></a></li>
+                            <li id="changes"><a href="#">Changes <span class="badge"></span></a></li>
                         </ul>
                     </div>
                 </div>
