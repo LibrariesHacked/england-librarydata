@@ -60,21 +60,21 @@
         return count;
     },
     locationsSortedByCount: function (type) {
-        var locObj = {};
+        var locsObj = {};
         var locs = [];
         $.each(this.stories[type], function (i, y) {
             $.each(y, function (x, m) {
                 $.each(m, function (z, s) {
-                    if (!locs[s[0]]) locs[s[0]] = { count: 0 };
-                    locs[s[0]].count = locs[s[0]].count + 1;
+                    if (!locsObj[s[0]]) locsObj[s[0]] = { count: 0 };
+                    locsObj[s[0]].count = locsObj[s[0]].count + 1;
                 }.bind(this));
             }.bind(this));
         }.bind(this));
-        $.each(Object.keys(locObj), function (i, y) {
-            locs.push(i);
+        $.each(Object.keys(locsObj), function (i, y) {
+            locs.push(y);
         });
         locs.sort(function (a, b) {
-            return locs[a].count - locs[b].count;
+            return locsObj[a].count - locsObj[b].count;
         })
         return locs;
     }

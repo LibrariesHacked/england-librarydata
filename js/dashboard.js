@@ -17,10 +17,13 @@
         //////////////////////////////////////////////
         // 1. Populate the changes and local stories
         //////////////////////////////////////////////
-        var localLocations = PublicLibrariesNews.locationsSortedByCount('local');
-        var changesLocations = PublicLibrariesNews.locationsSortedByCount('changes');
-        var currentlyShowing = [0, 2];
-        var clickChangeItem = function (event) {
+        var locs = { 
+            changes: PublicLibrariesNews.locationsSortedByCount('changes'), 
+            local: PublicLibrariesNews.locationsSortedByCount('local')
+        };
+        var changesCurrentlyShowing = [0, 2];
+        var localCurrentlyShowing = [0, 2];
+        var clickListItem = function (event) {
             event.preventDefault();
             var item = $(event.currentTarget);
             var authSt = data['changes'][$(item).data('auth')].stories;
@@ -30,11 +33,11 @@
             $(item).find('span').text((index + 1) + '/' + authSt.length);
             $(item).find('.list-group-item-text').text(authSt[index].text);
         };
-        var addLocation = function (control, index, position) {
-            var it = data['changes'][locs[index]];
-            var li = '<a href="#" id="aChangeLocation' + index + '" class="list-group-item changes-list" data-current="0" data-auth="' + locs[index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[index] + '</h5><p class="list-group-item-text">' + it.stories[0].text + '</p></a>';
-            position == 'first' ? $('#divChangesCounts').prepend(li) : $('#divChangesCounts').append(li);
-            $('#aChangeLocation' + index).on('click', clickChangeItem);
+        var addLocation = function (type, index, position) {
+            var it = data[type][locs[type][index]];
+            var li = '<a href="#" id="' + type + 'Location' + index + '" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[index] + '</h5><p class="list-group-item-text">' + it.stories[0].text + '</p></a>';
+            position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
+            $('#' + type + 'Location' + index).on('click', clickListItem);
         };
         var removeLocation = function (control, position) {
             $('#divChangesCounts a:' + position).remove();
@@ -53,7 +56,8 @@
         };
         $('#ulChangesSwitch a').on('click', clickShiftChangeItems);
         // Initial setup: 3 items.
-        for (x = 0 ; x < 3; x++) addLocation(x, 'last');
+        for (x = 0 ; x < 3; x++) addLocation('local', x, 'last');
+        for (x = 0 ; x < 3; x++) addLocation('changes', x, 'last');
 
         //////////////////////////////////////////////
         // 2. Populate the mini map
