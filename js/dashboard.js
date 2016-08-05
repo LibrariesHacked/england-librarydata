@@ -37,7 +37,6 @@
             $(item).find('.list-group-item-text').text(authSt[index].text);
         };
         var addLocation = function (type, index, position) {
-
             var it = data[type][locs[type][index]];
             var li = '<a href="#" id="' + type + 'Location' + index + '" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[type][index] + '</h5><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text).text() + '</p></a>';
             position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
@@ -45,6 +44,21 @@
         };
         var removeLocation = function (type, position) {
             $('#' + type + 'Counts a:' + position).remove();
+        };
+        var updateSwitchChevrons  = function (type){
+            $('#' + type + 'Switch li').attr('class', '');
+            if (currentlyShowing[type][0] != 0) {
+                $('#' + type + 'Switch li a').first().html('&laquo; ' + locs[type][currentlyShowing[type][0] - 1]);
+            } else {
+                $('#' + type + 'Switch li a').first().html('&laquo;');
+                $('#' + type + 'Switch li').first().attr('class', 'disabled');
+            }
+            if (currentlyShowing[type][1] != locs.length - 1) {
+                $('#' + type + 'Switch li a').last().html(locs[type][currentlyShowing[type][1] + 1] + ' &raquo;');
+            } else {
+                $('#' + type + 'Switch li a').last().html('&raquo;');
+                $('#' + type + 'Switch li').last().attr('class', 'disabled');
+            }
         };
         var clickShiftChangeItems = function (e) {
             e.preventDefault();
@@ -54,14 +68,14 @@
             if ((currentlyShowing[type][1] == locs[type].length - 1) || (currentlyShowing[type][0] == 0 && incr == -1)) return false;
             currentlyShowing[type][0] = currentlyShowing[type][0] + incr;
             currentlyShowing[type][1] = currentlyShowing[type][1] + incr;
-            $('#' + type + 'Switch li').attr('class', '');
-            if (currentlyShowing[type][0] == 0) $('#ul' + type + 'Switch li').first().attr('class', 'disabled');
-            if (currentlyShowing[type][1] == locs.length - 1) $('#' + type + 'Switch li').last().attr('class', 'disabled');
+            updateSwitchChevrons(type);
             removeLocation(type, (incr == 1 ? 'first' : 'last'));
             addLocation(type, incr == 1 ? currentlyShowing[type][1] : currentlyShowing[type][0], (incr == 1 ? 'last' : 'first'));
         };
         $('ul.page-story-list li a').on('click', clickShiftChangeItems);
-        // Initial setup: 3 items.
+        // Initial setup: 3 items for changes, 1 for local news (generally longer)
+        updateSwitchChevrons('local');
+        updateSwitchChevrons('changes');
         for (x = 0 ; x < 1; x++) addLocation('local', x, 'last');
         for (x = 0 ; x < 3; x++) addLocation('changes', x, 'last');
 
