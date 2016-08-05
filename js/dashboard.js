@@ -21,12 +21,15 @@
             changes: PublicLibrariesNews.locationsSortedByCount('changes'), 
             local: PublicLibrariesNews.locationsSortedByCount('local')
         };
-        var changesCurrentlyShowing = [0, 2];
-        var localCurrentlyShowing = [0, 2];
-        var clickListItem = function (event) {
-            event.preventDefault();
-            var item = $(event.currentTarget);
-            var authSt = data['changes'][$(item).data('auth')].stories;
+        var currentlyShowing = {
+            changes: [0, 2],
+            local: [0, 0]
+        };
+        var clickListItem = function (e) {
+            e.preventDefault();
+            var type = e.currentTarget.id.substring(0, e.currentTarget.id.indexOf('Location'));
+            var item = $(e.currentTarget);
+            var authSt = data[type][$(item).data('auth')].stories;
             var index = $(item).data('current') + 1;
             if (index == authSt.length) index = 0;
             $(item).data('current', index);
@@ -34,29 +37,32 @@
             $(item).find('.list-group-item-text').text(authSt[index].text);
         };
         var addLocation = function (type, index, position) {
+
             var it = data[type][locs[type][index]];
-            var li = '<a href="#" id="' + type + 'Location' + index + '" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[index] + '</h5><p class="list-group-item-text">' + it.stories[0].text + '</p></a>';
+            var li = '<a href="#" id="' + type + 'Location' + index + '" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[type][index] + '</h5><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text).text() + '</p></a>';
             position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
             $('#' + type + 'Location' + index).on('click', clickListItem);
         };
-        var removeLocation = function (control, position) {
-            $('#divChangesCounts a:' + position).remove();
+        var removeLocation = function (type, position) {
+            $('#' + type + 'Counts a:' + position).remove();
         };
-        var clickShiftChangeItems = function (event) {
-            event.preventDefault();
-            var incr = $(event.target).data('direction');
-            if ((currentlyShowing[1] == locs.length - 1) || (currentlyShowing[0] == 0 && incr == -1)) return false;
-            currentlyShowing[0] = currentlyShowing[0] + incr;
-            currentlyShowing[1] = currentlyShowing[1] + incr;
-            $('#ulChangesSwitch li').attr('class', '');
-            if (currentlyShowing[0] == 0) $('#ulChangesSwitch li').first().attr('class', 'disabled');
-            if (currentlyShowing[1] == locs.length - 1) $('#ulChangesSwitch li').last().attr('class', 'disabled');
-            removeLocation((incr == 1 ? 'first' : 'last'));
-            addLocation(incr == 1 ? currentlyShowing[1] : currentlyShowing[0], (incr == 1 ? 'last' : 'first'));
+        var clickShiftChangeItems = function (e) {
+            e.preventDefault();
+            var id = e.currentTarget.parentNode.parentNode.id;
+            var type = id.substring(0, id.indexOf('Switch'));
+            var incr = $(e.target).data('direction');
+            if ((currentlyShowing[type][1] == locs[type].length - 1) || (currentlyShowing[type][0] == 0 && incr == -1)) return false;
+            currentlyShowing[type][0] = currentlyShowing[type][0] + incr;
+            currentlyShowing[type][1] = currentlyShowing[type][1] + incr;
+            $('#' + type + 'Switch li').attr('class', '');
+            if (currentlyShowing[type][0] == 0) $('#ul' + type + 'Switch li').first().attr('class', 'disabled');
+            if (currentlyShowing[type][1] == locs.length - 1) $('#' + type + 'Switch li').last().attr('class', 'disabled');
+            removeLocation(type, (incr == 1 ? 'first' : 'last'));
+            addLocation(type, incr == 1 ? currentlyShowing[type][1] : currentlyShowing[type][0], (incr == 1 ? 'last' : 'first'));
         };
-        $('#ulChangesSwitch a').on('click', clickShiftChangeItems);
+        $('ul.page-story-list li a').on('click', clickShiftChangeItems);
         // Initial setup: 3 items.
-        for (x = 0 ; x < 3; x++) addLocation('local', x, 'last');
+        for (x = 0 ; x < 1; x++) addLocation('local', x, 'last');
         for (x = 0 ; x < 3; x++) addLocation('changes', x, 'last');
 
         //////////////////////////////////////////////
