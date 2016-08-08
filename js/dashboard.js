@@ -121,18 +121,23 @@
         addMiniMapPoints('local');
 
         // 3. The stories line chart
+        var counts = PublicLibrariesNews.storyCountByMonth();
         new Morris.Line({
             element: 'divStoriesLineChart',
-            data: [
-              { year: '2008', value: 20 },
-              { year: '2009', value: 10 },
-              { year: '2010', value: 5 },
-              { year: '2011', value: 5 },
-              { year: '2012', value: 20 }
-            ],
-            xkey: 'year',
-            ykeys: ['value'],
-            labels: ['Value']
+            data: counts,
+            xkey: 'month',
+            ykeys: ['changes', 'local'],
+            labels: ['Changes', 'Local']
         });
+
+        setTimeout(function () {
+            // Now shuffle the pack.
+            var Shuffle = window.shuffle;
+            var element = document.getElementById('divGrid');
+            var shuffle = new Shuffle(element, {
+                itemSelector: '.col'
+            });
+        }, 500);
+        
     });
 });
