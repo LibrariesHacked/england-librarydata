@@ -138,6 +138,13 @@
                 itemSelector: '.col'
             });
         }, 500);
+
+
+        $('#slDashboardMonths').slider({
+            formatter: function (value) {
+                return 'Current value: ' + value;
+            }
+        });
         
     });
 });
