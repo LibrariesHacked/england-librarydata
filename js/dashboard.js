@@ -17,8 +17,8 @@
         //////////////////////////////////////////////
         // 1. Populate the changes and local stories
         //////////////////////////////////////////////
-        var locs = { 
-            changes: PublicLibrariesNews.locationsSortedByCount('changes'), 
+        var locs = {
+            changes: PublicLibrariesNews.locationsSortedByCount('changes'),
             local: PublicLibrariesNews.locationsSortedByCount('local')
         };
         var currentlyShowing = {
@@ -45,7 +45,7 @@
         var removeLocation = function (type, position) {
             $('#' + type + 'Counts a:' + position).remove();
         };
-        var updateSwitchChevrons  = function (type){
+        var updateSwitchChevrons = function (type) {
             $('#' + type + 'Switch li').attr('class', '');
             if (currentlyShowing[type][0] != 0) {
                 $('#' + type + 'Switch li a').first().html('&laquo; ' + locs[type][currentlyShowing[type][0] - 1]);
@@ -139,12 +139,66 @@
             });
         }, 500);
 
+        // Create a list of day and monthnames.
+        var
+            weekdays = [
+                "Sunday", "Monday", "Tuesday",
+                "Wednesday", "Thursday", "Friday",
+                "Saturday"
+            ],
+            months = [
+                "January", "February", "March",
+                "April", "May", "June", "July",
+                "August", "September", "October",
+                "November", "December"
+            ];
 
-        $('#slDashboardMonths').slider({
-            formatter: function (value) {
-                return 'Current value: ' + value;
+        // Append a suffix to dates.
+        // Example: 23 => 23rd, 1 => 1st.
+        function nth(d) {
+            if (d > 3 && d < 21) return 'th';
+            switch (d % 10) {
+                case 1: return "st";
+                case 2: return "nd";
+                case 3: return "rd";
+                default: return "th";
             }
+        }
+
+        // Create a string representation of the date.
+        function formatDate(date) {
+            return weekdays[date.getDay()] + ", " +
+                date.getDate() + nth(date.getDate()) + " " +
+                months[date.getMonth()] + " " +
+                date.getFullYear();
+        }
+
+        var dateSlider = document.getElementById('range');
+
+        // Create a new date from a string, return as a timestamp.
+        var timestamp = function (str) {
+            return new Date(str).getTime();
+        }
+
+        noUiSlider.create(dateSlider, {
+            // Create two timestamps to define a range.
+            range: {
+                min: timestamp('2010'),
+                max: timestamp('2016')
+            },
+            // Steps of one week
+            step: 7 * 24 * 60 * 60 * 1000,
+            // Two more timestamps indicate the handle starting positions.
+            start: [timestamp('2011'), timestamp('2015')]
         });
-        
+
+        var dateValues = [
+            document.getElementById('event-start'),
+            document.getElementById('event-end')
+        ];
+
+        dateSlider.noUiSlider.on('update', function (values, handle) {
+            //dateValues[handle].innerHTML = formatDate(new Date(+values[handle]));
+        });
     });
 });

@@ -15,12 +15,6 @@
     }).addTo(map);
     var sidebar = L.control.sidebar('sidebar').addTo(map);
 
-    $('#slMapMonths').slider({
-        formatter: function (value) {
-            return 'Current value: ' + value;
-        }
-    });
-
     // Load the initial set of data
     PublicLibrariesNews.loadData(3, function () {
         var local = PublicLibrariesNews.getStoriesGroupedByLocation('local');

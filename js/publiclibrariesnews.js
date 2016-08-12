@@ -11,7 +11,7 @@
         // Filenames are in the form PLN_2015_11_changes
         var urls = [];
         for (x = 0; x <= months ; x++) {
-            var date = moment().subtract(9, 'days').subtract(x, 'months');
+            var date = moment().subtract(14, 'days').subtract(x, 'months');
             var year = date.year();
             var month = date.month() + 1;
             for (type in this.stories){
