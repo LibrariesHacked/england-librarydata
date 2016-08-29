@@ -16,29 +16,40 @@
     var sidebar = L.control.sidebar('sidebar').addTo(map);
 
     // Load the initial set of data
-    PublicLibrariesNews.loadData(3, function () {
+    PublicLibrariesNews.loadData(3, true, false, false, function () {
         var local = PublicLibrariesNews.getStoriesGroupedByLocation('local');
         var changes = PublicLibrariesNews.getStoriesGroupedByLocation('changes');
-        $.each(changes, function (i, o) {
-            var size = ['small', 20];
-            if (o.stories.length >= 5) size = ['medium', 30];
-            if (o.stories.length >= 10) size = ['large', 40];
-            var newsIcon = L.divIcon({ html: '<div><span>' + o.stories.length + '</span></div>', className: "marker-cluster marker-cluster-" + size[0], iconSize: new L.Point(size[1], size[1]) });
-            var marker = L.marker([o.lat, o.lng], { icon: newsIcon });
-            marker.stories = o.stories;
-            marker.title = i;
-            // Attach a click event to the marker.
-            var markerClick = function (e) {
+        var authGeo = PublicLibrariesNews.getAuthGeoWithStories();
+
+        var onEachFeature = function (feature, layer) {
+            layer.on('click', function (e) {
                 $('#lstStories').empty();
-                $('#h1Location').text(e.target.title);
-                $.each(e.target.stories.reverse(), function () {
-                    $('#lstStories').append('<h4>' + moment(this.date).fromNow() + '</h4><p>' + this.text + '</p>');
-                });
+                $('#h1Location').text(e.target.feature.properties.name);
+                if (e.target.feature.properties.local) {
+                    $.each(e.target.feature.properties.local.stories.reverse(), function () {
+                        $('#lstStories').append('<h4>' + moment(this.date).fromNow() + '</h4><p>' + this.text + '</p>');
+                    });
+                }
                 sidebar.open('stories');
-            };
-            marker.on('click', markerClick);
-            marker.addTo(map);
-            newsMarkers.push(marker);
+            });
+        };
+        // Now load in the authority boundaries 
+        var authBoundaries = new L.geoJson(null, {
+            style: function (feature) {
+                var style = { fillColor: "#ccc", color: "#ccc", weight: 1, opacity: 0.5, fillOpacity: 0.1 };
+                if (feature.properties.local) {
+                    if (feature.properties.local.stories.length > 2) style.fillOpacity = 0.2;
+                    if (feature.properties.local.stories.length > 3) style.fillOpacity = 0.3;
+                    if (feature.properties.local.stories.length > 4) style.fillOpacity = 0.4;
+                    if (feature.properties.local.stories.length > 5) style.fillOpacity = 0.5;
+                }
+                return style;
+            },
+            onEachFeature: onEachFeature
+        });
+        authBoundaries.addTo(map);
+        $(authGeo.features).each(function (key, data) {
+            authBoundaries.addData(data);
         });
     });
 });

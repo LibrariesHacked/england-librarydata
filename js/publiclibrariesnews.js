@@ -1,17 +1,29 @@
 ﻿var PublicLibrariesNews = {
     locationsUrl: '/data/PLNLocations.json',
     dataUrl: '/data/PLN_YY_M_TYPE.json',
+    authGeoUrl: '/data/AuthoritiesGeo.json',
+    authUrl: '/data/Authorities.json',
+    librariesUrl: '/data/Libraries.json',
+    authoritiesGeo: null,
+    authorities: null,
+    libraries: null,
     locations: {},
     stories: {
         changes: {},
         local: {}
     },
-    loadData: function (months, callback) {
+    loadData: function (months, authGeo, auth, libraries, callback) {
         // Need to work out which files to load.
         // Filenames are in the form PLN_2015_11_changes
         var urls = [];
+
+        // 
+        if (authGeo) urls.push(['', '', 'authgeo', this.authGeoUrl]);
+        if (auth) urls.push(['', '', 'authorities', this.authUrl]);
+        if (libraries) urls.push(['', '', 'libraries', this.librariesUrl]);
+
         for (x = 0; x <= months ; x++) {
-            var date = moment().subtract(26, 'days').subtract(x, 'months');
+            var date = moment().subtract(30, 'days').subtract(x, 'months');
             var year = date.year();
             var month = date.month() + 1;
             for (type in this.stories){
@@ -32,11 +44,24 @@
                 var month = urls[i][0];
                 var year = urls[i][1];
                 var type = urls[i][2];
-                if (type != 'locations') this.stories[type][year][month] = data[0];
+                if (type == 'changes' || type == 'local') this.stories[type][year][month] = data[0];
                 if (type == 'locations') this.locations = data[0];
+                if (type == 'libraries') this.libraries = data[0];
+                if (type == 'authgeo') this.authoritiesGeo = data[0];
+                if (type == 'authorities') this.authorities = data[0];
             }.bind(this));
             callback();
         }.bind(this));
+    },
+    getAuthGeoWithStories: function () {
+        var authGeoData = this.authoritiesGeo;
+        var changes = this.getStoriesGroupedByLocation('changes');
+        var local = this.getStoriesGroupedByLocation('local')
+        $.each(authGeoData.features, function (x, y) {
+            if (changes[y.properties.name]) authGeoData.features[x].properties['changes'] = changes[y.properties.name];
+            if (local[y.properties.name]) authGeoData.features[x].properties['local'] = local[y.properties.name];
+        }.bind(this));
+        return authGeoData;
     },
     getStoriesGroupedByLocation: function (type) {
         var locs = {};
