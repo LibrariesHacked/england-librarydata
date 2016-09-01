@@ -25,9 +25,39 @@
             layer.on('click', function (e) {
                 $('#lstStories').empty();
                 $('#h1Location').text(e.target.feature.properties.name);
+
+                // Show authority details
+                $('#lstStories').append('<h4>Authority details</h4>');
+                var listDetailsHtml = '<div class="list-group">'
+                    + '<li class="list-group-item">'
+                    + '<span class="badge">200</span>'
+                    + 'Population'
+                    + '</li>'
+                    + '<li class="list-group-item">'
+                    + '<span class="badge">' + feature.properties.hectares + ' ha</span>'
+                    + 'Area'
+                    + '</li>'
+                    + '</div>';
+                $('#lstStories').append(listDetailsHtml);
+
+
+                // Show libraries
+
+
+                // Show changes
+                if (e.target.feature.properties.changes) {
+                    $('#lstStories').append('<h4>Changes</h4>');
+                    var changes = e.target.feature.properties.changes.stories;
+                    $.each(changes.reverse(), function () {
+                        $('#lstStories').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text + '</p>');
+                    });
+                }
+                // Show local
                 if (e.target.feature.properties.local) {
-                    $.each(e.target.feature.properties.local.stories.reverse(), function () {
-                        $('#lstStories').append('<h4>' + moment(this.date).fromNow() + '</h4><p>' + this.text + '</p>');
+                    var loc = e.target.feature.properties.local.stories;
+                    $('#lstStories').append('<h4>Local news</h4>');
+                    $.each(loc.reverse(), function () {
+                        $('#lstStories').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text + '</p>');
                     });
                 }
                 sidebar.open('stories');

@@ -9,9 +9,11 @@ These are instructions to set up a spatial database using the Libraries Taskforc
 
 The spreadsheet is distributed as an Excel file.
 
-Open 
+To convert that file it was opened in Excel and the rows copied and saved to a new file, and then saved as CSV (in Save as dialog: )
 
 ## Setup receiving table
+
+The data can then be imported directly into a database.  
 
 ```
 
@@ -75,7 +77,45 @@ copy (
 ## Create libraries table
 
 
-## Import OS boundaries data
+## Additional dataset: OS Code-point Open
+
+The Ordnance Survey have an open data product listing all postcodes in the UK, complete with geo-cordinates (the centre of the postcode) and various codes specifying the authorities that postcode falls within.
+
+For example, for the postcode GL194JW:
+
+| Postcode | 
+|  |  |  |
+
+This data is provided as a series of CSV files.  There are many ways to combine CSV files into one depending on operating system.  For a simple Windows PC, run the following command using the cmd.exe tool.
+
+```
+copy *.csv postcodes.csv
+```
+
+Once the data is in a single CSV file it can be imported into a database.  Create the table and then copy the postcodes CSV data into it.
+
+```
+create table public.postcodes
+(
+  postcode character varying(8) NOT NULL,
+  positional_quality_indicator integer,
+  eastings numeric,
+  northings numeric,
+  country_code character varying(9),
+  nhs_regional_ha_code character varying(9),
+  nhs_ha_code character varying(9),
+  admin_county_code character varying(9),
+  admin_district_code character varying(9),
+  admin_ward_code character varying(9),
+  CONSTRAINT pk_postcode PRIMARY KEY (postcode)
+)
+```
+
+```
+COPY postcodes FROM 'C:\Users\dave_\Desktop\CSV\postcodes.csv' DELIMITER ',' CSV;
+```
+
+## Additional dataset: OS boundaries
 
 The Ordnance Survey release 
 
@@ -95,3 +135,11 @@ shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\unitary_electoral_division_
 shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\westminster_const_region.shp" | psql -d uklibraries -U "postgres"
 ```
 
+## Additional dataset: ONS Population estimates mid-2015
+
+
+## Additional dataset: Lower super output areas
+
+
+
+## Additional dataset: Indices of deprivation
