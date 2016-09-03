@@ -29,12 +29,16 @@ The data can then be imported directly into a database.
 
 ```
 insert into authorities(name)
-select distinct authority from raw order by authority
+select distinct authority 
+from raw 
+order by authority
 ```
 
 ```
 update authorities a
-set code = (select code from district_borough_unitary_region r where replace(replace(replace(replace(r.name, ' City',''), ' London Boro',''), ' (B)',''), ' District','') = a.name)
+set code = (
+	select code from district_borough_unitary_region r 
+	where replace(replace(replace(replace(r.name, ' City',''), ' London Boro',''), ' (B)',''), ' District','') = a.name)
 ```
 
 
@@ -49,7 +53,13 @@ on d.code = b.code
 ```
 
 
-Export the authorities:
+Export an authorities CSV file:
+
+```
+
+```
+
+Export the authorities as GeoJSON:
 
 ```
 copy (
@@ -57,25 +67,78 @@ copy (
 	from (
 		select 'FeatureCollection' As type, array_to_json(array_agg(f)) as features 
 		from (
-			select 'Feature' As type, ST_AsGeoJSON(lg.geom)::json As geometry, row_to_json((SELECT l FROM (SELECT name, type, code, hectares) As l)) as properties
+			select 'Feature' As type, ST_AsGeoJSON(lg.geom)::json As geometry, row_to_json((SELECT l FROM (SELECT authority_id, name, type, code, hectares) As l)) as properties
 			from (
-				select a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700),4326), 0.001) as Geom 
+				select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700),4326), 0.001) as Geom 
 				from authorities a
 				join county_region c
 				on a.code = c.code
 				union
-				select b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700), 4326), 0.001) as Geom from authorities b
+				select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700), 4326), 0.001) as Geom 
+				from authorities b
 				join district_borough_unitary_region d
 				on d.code = b.code
 			) As lg   
 		) As f 
 	)  As fc
-) To 'C:\development\librarieshacked\public-libraries-news\data\Authorities.json'
+) To 'AuthoritiesGeo.json'
 ```
 
 
 ## Create libraries table
 
+```
+
+```
+
+
+```
+insert into libraries(
+	name, authority_id, postcode, eastings, northings, closed, 
+	statutory2010, statutory2016, type, closed_year, opened_year, 
+	replacement, notes)
+select 	r.library, a.id, p.postcode, p.eastings, p.northings, 
+	case 	when r.xl = 'XL' then true else false end, 
+	case 	when r.statutoryapril2010 = 'yes' then true else false end,
+	case 	when r.statutoryjuly2016 = 'yes' then true else false end,
+	case 	when r.lal = 'LAL' then 'LAL'
+			when r.crl = 'CRL' then 'CRL'
+			when r.cl = 'CL' then 'CL'
+			when r.icl = 'ICL' then 'ICL' end,
+	cast(replace(r.yearclosed,'?','0') as integer),
+	cast(replace(r.new,'?', '0') as integer),
+	case 	when lower(r.replacement) = 'yes' then true else false end,
+	r.notes
+from raw r
+join authorities a
+on a.name = r.authority
+left outer join postcodes p
+on r.postcode = p.postcode
+order by r.authority
+```
+
+Export the libraries data.
+
+```
+copy (
+	select 	l.name,
+		a.id "authority_id",
+		l.postcode,
+		ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), 4326)) "lng", 
+		ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), 4326)) "lat",
+		l.closed,
+		l.statutory2010,
+		l.statutory2016,
+		type, 
+		closed_year,
+		opened_year,
+		replacement,
+		notes
+	from libraries l
+	join authorities a
+	on a.id = l.authority_id
+) to 'Libraries.csv' DELIMITER ',' CSV HEADER;
+```
 
 ## Additional dataset: OS Code-point Open
 
@@ -112,34 +175,39 @@ create table public.postcodes
 ```
 
 ```
-COPY postcodes FROM 'C:\Users\dave_\Desktop\CSV\postcodes.csv' DELIMITER ',' CSV;
+COPY postcodes FROM 'postcodes.csv' DELIMITER ',' CSV;
 ```
 
 ## Additional dataset: OS boundaries
 
 The Ordnance Survey release 
 
-
 ```
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\county_electoral_division_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\county_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\district_borough_unitary_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\district_borough_unitary_ward_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\european_region_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\greater_london_const_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\high_water_polyline.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\parish_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\scotland_and_wales_const_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\scotland_and_wales_region_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\unitary_electoral_division_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "C:\Users\dave_\Desktop\Boundaries\Data\GB\westminster_const_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "county_electoral_division_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "county_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "district_borough_unitary_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "district_borough_unitary_ward_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "european_region_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "greater_london_const_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "high_water_polyline.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "parish_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "scotland_and_wales_const_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "scotland_and_wales_region_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "unitary_electoral_division_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "westminster_const_region.shp" | psql -d uklibraries -U "postgres"
 ```
 
 ## Additional dataset: ONS Population estimates mid-2015
 
+The Office for National Statistics release [mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland), the last of these being for 2015 (release June 2016).
+
+
+
 
 ## Additional dataset: Lower super output areas
 
-
+To do.
 
 ## Additional dataset: Indices of deprivation
+
+To do.

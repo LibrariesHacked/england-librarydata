@@ -9,7 +9,7 @@
     <title>{ libraries: news } | hacked projects</title>
     <link href="bower_components/bootswatch/united/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
-    <link href="bower_components/sidebar-v2/css/leaflet-sidebar.min.css" rel="stylesheet" />
+    <link href="bower_components/leaflet-sidebar/src/L.Control.Sidebar.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet" />
     <link href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" />
@@ -18,69 +18,16 @@
 <body>
     <div id="mapContainer" class="container-fluid">
         <div id="sidebar" class="sidebar collapsed">
-            <!-- Nav tabs -->
-            <div class="sidebar-tabs">
-                <ul role="tablist">
-                    <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                    <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
-                    <li><a id="lnkStories" href="#stories" role="tab"><i class="fa fa-map-marker"></i></a></li>
-                </ul>
-                <ul role="tablist"></ul>
-            </div>
-
-            <!-- Tab panes -->
-            <div class="sidebar-content">
-                <div class="sidebar-pane" id="home">
-                    <h1 class="sidebar-header">
-                        Libraries news stories
-                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-                    </h1>
-                    <br />
-                    <p>This map displays the spread of Public Libraries News stories.</p>
-                    <h4>Instructions</h4>
-                    <ul>
-                        <li>Click on a marker to see the news for that area.</li>
-                        <li>Select the settings tab to modify how much data to display.</li>
-                    </ul>
-                </div>
-                <div class="sidebar-pane" id="stories">
-                    <h1 id="h1Location" class="sidebar-header"><span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                    <br />
-                    <div id="lstStories"></div>
-                </div>
-                <div class="sidebar-pane" id="settings">
-                    <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                    <br />
-                    <form role="form">
-                        <p>Select the type of news stories you wish to appear on the map.</p>
-                        <div class="checkbox checkbox-success">
-                            <input type="checkbox" id="chbLocal">
-                            <label for="chbLocal">
-                                Local news
-                            </label>
-                        </div>
-                        <div class="checkbox checkbox-success">
-                            <input type="checkbox" id="chbChanges">
-                            <label for="chbChanges">
-                                Changes
-                            </label>
-                        </div>
-                        <p>How many months worth of stories do you want to see?</p>
-                        <div>
-                            <input id="slMapMonths" data-slider-id='ex1Slider' type="text" data-slider-min="3" data-slider-max="20" data-slider-step="1" data-slider-value="3" />
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
         <div id="map"></div>
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="bower_components/sidebar-v2/js/leaflet-sidebar.min.js"></script>
+    <script src="bower_components/leaflet-sidebar/src/L.Control.Sidebar.js"></script>
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+    <script src="bower_components/papaparse/papaparse.min.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/map.js"></script>
 </body>

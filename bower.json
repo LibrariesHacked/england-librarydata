@@ -24,6 +24,8 @@
     "morris.js": "^0.5.1",
     "awesome-bootstrap-checkbox": "^0.3.7",
     "shufflejs": "^4.0.1",
-    "nouislider": "^8.5.1"
+    "nouislider": "^8.5.1",
+    "papaparse": "^4.1.2",
+    "leaflet-sidebar": "^0.1.9"
   }
 }

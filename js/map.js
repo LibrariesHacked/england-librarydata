@@ -8,59 +8,56 @@
     var newsMarkers = [];
     var map = L.map('map', { zoomControl: false }).setView([52.55, -2.72], 7);
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/librarieshacked.jefmk67b/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors.  Contains OS data &copy; Crown copyright and database right 2016.  Contains Royal Mail data &copy; Royal Mail copyright and Database right 2016.  Contains National Statistics data &copy; Crown copyright and database right 2016.'
     }).addTo(map);
     L.control.zoom({
         position: 'topright'
     }).addTo(map);
-    var sidebar = L.control.sidebar('sidebar').addTo(map);
+    var sidebar = L.control.sidebar('sidebar', {
+        position: 'left'
+    });
+    map.addControl(sidebar);
 
     // Load the initial set of data
-    PublicLibrariesNews.loadData(3, true, false, false, function () {
+    PublicLibrariesNews.loadData(3, true, false, true, function () {
         var local = PublicLibrariesNews.getStoriesGroupedByLocation('local');
         var changes = PublicLibrariesNews.getStoriesGroupedByLocation('changes');
         var authGeo = PublicLibrariesNews.getAuthGeoWithStories();
-
+        var libraries = PublicLibrariesNews.getLibrariesByAuthority();
         var onEachFeature = function (feature, layer) {
             layer.on('click', function (e) {
-                $('#lstStories').empty();
-                $('#h1Location').text(e.target.feature.properties.name);
+                $('#sidebar').empty();
 
                 // Show authority details
-                $('#lstStories').append('<h4>Authority details</h4>');
-                var listDetailsHtml = '<div class="list-group">'
-                    + '<li class="list-group-item">'
-                    + '<span class="badge">200</span>'
-                    + 'Population'
-                    + '</li>'
-                    + '<li class="list-group-item">'
-                    + '<span class="badge">' + feature.properties.hectares + ' ha</span>'
-                    + 'Area'
-                    + '</li>'
-                    + '</div>';
-                $('#lstStories').append(listDetailsHtml);
-
-
+                $('#sidebar').append('<h3>' + feature.properties.name + '</h3>');
+                $('#sidebar').append('<small>' + feature.properties.type + '.  Population: .  Area: ' + feature.properties.hectares + '</small>');
+                $('#sidebar').append('<hr>');
                 // Show libraries
+                $('#sidebar').append('<h4>Libraries</h4><table>');
+                $.each(libraries[feature.properties['authority_id']], function (i, lib) {
+                    $('#sidebar').append('<tr><td>' + lib.name + '</td></tr>');
+                });
+                $('#sidebar').append('</table>');
 
-
+                $('#sidebar').append('<hr>');
                 // Show changes
                 if (e.target.feature.properties.changes) {
-                    $('#lstStories').append('<h4>Changes</h4>');
+                    $('#sidebar').append('<h4>Changes</h4>');
                     var changes = e.target.feature.properties.changes.stories;
                     $.each(changes.reverse(), function () {
-                        $('#lstStories').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text + '</p>');
+                        $('#sidebar').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text + '</p>');
                     });
+                    $('#sidebar').append('<hr>');
                 }
                 // Show local
                 if (e.target.feature.properties.local) {
                     var loc = e.target.feature.properties.local.stories;
-                    $('#lstStories').append('<h4>Local news</h4>');
+                    $('#sidebar').append('<h4>Local news</h4>');
                     $.each(loc.reverse(), function () {
-                        $('#lstStories').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text + '</p>');
+                        $('#sidebar').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text + '</p>');
                     });
                 }
-                sidebar.open('stories');
+                sidebar.show();
             });
         };
         // Now load in the authority boundaries 

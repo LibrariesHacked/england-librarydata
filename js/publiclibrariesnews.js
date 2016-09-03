@@ -2,8 +2,8 @@
     locationsUrl: '/data/PLNLocations.json',
     dataUrl: '/data/PLN_YY_M_TYPE.json',
     authGeoUrl: '/data/AuthoritiesGeo.json',
-    authUrl: '/data/Authorities.json',
-    librariesUrl: '/data/Libraries.json',
+    authUrl: '/data/Authorities.csv',
+    librariesUrl: '/data/Libraries.csv',
     authoritiesGeo: null,
     authorities: null,
     libraries: null,
@@ -16,8 +16,6 @@
         // Need to work out which files to load.
         // Filenames are in the form PLN_2015_11_changes
         var urls = [];
-
-        // 
         if (authGeo) urls.push(['', '', 'authgeo', this.authGeoUrl]);
         if (auth) urls.push(['', '', 'authorities', this.authUrl]);
         if (libraries) urls.push(['', '', 'libraries', this.librariesUrl]);
@@ -46,9 +44,9 @@
                 var type = urls[i][2];
                 if (type == 'changes' || type == 'local') this.stories[type][year][month] = data[0];
                 if (type == 'locations') this.locations = data[0];
-                if (type == 'libraries') this.libraries = data[0];
+                if (type == 'libraries') this.libraries = Papa.parse(data[0], { header: true });
                 if (type == 'authgeo') this.authoritiesGeo = data[0];
-                if (type == 'authorities') this.authorities = data[0];
+                if (type == 'authorities') this.authorities = Papa.parse(data[0], { header: true });
             }.bind(this));
             callback();
         }.bind(this));
@@ -62,6 +60,14 @@
             if (local[y.properties.name]) authGeoData.features[x].properties['local'] = local[y.properties.name];
         }.bind(this));
         return authGeoData;
+    },
+    getLibrariesByAuthority: function () {
+        var authLibraries = {};
+        $.each(this.libraries.data, function (i, lib) {
+            if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
+            authLibraries[lib['authority_id']].push(lib);
+        }.bind(this));
+        return authLibraries;
     },
     getStoriesGroupedByLocation: function (type) {
         var locs = {};
