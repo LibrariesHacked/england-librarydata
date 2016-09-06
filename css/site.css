@@ -133,3 +133,11 @@
 	text-align: center;
 	margin: 0;
 }
+
+.leaflet-container #sidebar a.btn {
+    color: #FFFFFF !important;
+}
+
+.btn-libs {
+    margin: 2px;
+}
