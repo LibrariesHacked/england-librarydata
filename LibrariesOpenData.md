@@ -67,17 +67,21 @@ copy (
 	from (
 		select 'FeatureCollection' As type, array_to_json(array_agg(f)) as features 
 		from (
-			select 'Feature' As type, ST_AsGeoJSON(lg.geom)::json As geometry, row_to_json((SELECT l FROM (SELECT authority_id, name, type, code, hectares) As l)) as properties
+			select 'Feature' As type, ST_AsGeoJSON(lg.geom)::json As geometry, row_to_json((SELECT l FROM (SELECT authority_id, name, type, code, hectares, population) As l)) as properties
 			from (
-				select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700),4326), 0.001) as Geom 
+				select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, p.population as Population, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700),4326), 0.001) as Geom 
 				from authorities a
 				join county_region c
 				on a.code = c.code
+				left outer join population p
+				on p.code = a.code
 				union
-				select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700), 4326), 0.001) as Geom 
+				select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, p.population as Population, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700), 4326), 0.001) as Geom 
 				from authorities b
 				join district_borough_unitary_region d
 				on d.code = b.code
+				left outer join population p
+				on p.code = b.code
 			) As lg   
 		) As f 
 	)  As fc
@@ -202,6 +206,18 @@ shp2pgsql "westminster_const_region.shp" | psql -d uklibraries -U "postgres"
 The Office for National Statistics release [mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland), the last of these being for 2015 (release June 2016).
 
 
+Create a basic table with 3 columns to store the counts.
+
+```
+
+```
+
+
+Import the data.
+
+```
+COPY population FROM 'C:\Development\LibrariesHacked\public-libraries-news\data\UKPopulation.csv' DELIMITER ',' CSV;
+```
 
 
 ## Additional dataset: Lower super output areas

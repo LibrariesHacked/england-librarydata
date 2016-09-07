@@ -217,3 +217,4 @@ pip-log.txt
 
 /bower_components/
 data/Postcodes.csv
+data/AuthoritiesGeo.json

@@ -138,6 +138,10 @@
     color: #FFFFFF !important;
 }
 
+.leaflet-container a.close {
+    z-index: 99999 !important;
+}
+
 .btn-libs {
     margin: 2px;
 }
