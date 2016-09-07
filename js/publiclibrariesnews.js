@@ -1,9 +1,9 @@
 ﻿var PublicLibrariesNews = {
-    locationsUrl: '/data/PLNLocations.json?v=1',
-    dataUrl: '/data/PLN_YY_M_TYPE.json?v=1',
-    authGeoUrl: '/data/AuthoritiesGeo.json?v=1',
-    authUrl: '/data/Authorities.csv>v=1',
-    librariesUrl: '/data/Libraries.csv?v=1',
+    locationsUrl: '/data/PLNLocations.json?v=2',
+    dataUrl: '/data/PLN_YY_M_TYPE.json?v=2',
+    authGeoUrl: '/data/AuthoritiesGeo.json?v=2',
+    authUrl: '/data/Authorities.csv>v=2',
+    librariesUrl: '/data/Libraries.csv?v=2',
     authoritiesGeo: null,
     authorities: null,
     libraries: null,
@@ -21,7 +21,7 @@
         if (libraries) urls.push(['', '', 'libraries', this.librariesUrl]);
 
         for (x = 0; x <= months ; x++) {
-            var date = moment().subtract(30, 'days').subtract(x, 'months');
+            var date = moment().subtract(x, 'months');
             var year = date.year();
             var month = date.month() + 1;
             for (type in this.stories){
