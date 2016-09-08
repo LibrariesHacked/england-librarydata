@@ -7,5 +7,11 @@
     				XL: { type: 'Closed', description: '', cssClass: 'danger', colour: '#DF382C' }
     },
     markerPoints: { radius: 4, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
-    boundaryLines: { fillColor: "#ccc", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 }
+    boundaryLines: {
+    				normal: { fillColor: "#ccc", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 },
+    				selected: { fillColor: "#ccc", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 },
+    				le: { fillColor: "#ccc", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 },
+    				gl: { fillColor: "#ccc", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 },
+    				bn: { fillColor: "#ccc", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 }
+    }
 };

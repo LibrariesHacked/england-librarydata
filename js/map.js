@@ -39,8 +39,8 @@
     /////////////////////////////////////////////////////////
     var setMapStyles = function () {
         authBoundaries.setStyle(function (feature) {
-        				var style = config.boundaryLines;
-            if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return { color: "red", weight: 3, opacity: 0.8, fillOpacity: 0 };
+        				var style = config.boundaryLines.normal;
+            if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
             if (feature.properties['authority_id'] == selectedAuth) return { color: "#5E5E5E", weight: 3, opacity: 0.8, fillOpacity: 0 };
             var libKeys = Object.keys(libraries);
             libKeys.sort(function (a, b) {
