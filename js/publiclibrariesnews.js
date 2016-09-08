@@ -55,9 +55,28 @@
         var authGeoData = this.authoritiesGeo;
         var changes = this.getStoriesGroupedByLocation('changes');
         var local = this.getStoriesGroupedByLocation('local')
+        var authLocalStoriesSort = authGeoData.features.splice().sort(function (a, b) {
+        				return local[a.name].length - local[b.name].length;
+        });
+        var position = libKeys.indexOf(String(feature.properties['authority_id']));
+        var med = (position / libKeys.length);
         $.each(authGeoData.features, function (x, y) {
             if (changes[y.properties.name]) authGeoData.features[x].properties['changes'] = changes[y.properties.name];
             if (local[y.properties.name]) authGeoData.features[x].properties['local'] = local[y.properties.name];
+            // Also add in some statistical properties about the stories
+            authGeoData.features[x].properties['rankLocalStories'] = 1;
+            authGeoData.features[x].properties['rankChanges']
+        }.bind(this));
+        return authGeoData;
+    },
+    getAuthGeoWithStoriesAndLibraries: function() {
+    				var authGeoData = this.getAuthGeoDataWithStories();
+    				$.each(authGeoData.features, function (x, y) {
+    								// Add in the libraries.
+    								if (!libs[lib.type]) libs[lib.type] = { libs: [] };
+            	if ((lib.type != '' && lib.closed == '') || lib.lat != '') libs[lib.type].libs.push(lib);
+            	// Also add in some statistical properties about the libraries
+            	
         }.bind(this));
         return authGeoData;
     },

@@ -33,18 +33,19 @@
     // Map shading options
     // 1. Number of libraries
     // 2. Libraries per population
+    // Closed libraries
     // 3. Local news stories (PLN)
     // 4. Changes (PLN)
     /////////////////////////////////////////////////////////
     var setMapStyles = function () {
         authBoundaries.setStyle(function (feature) {
+        				var style = config.boundaryLines;
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return { color: "red", weight: 3, opacity: 0.8, fillOpacity: 0 };
             if (feature.properties['authority_id'] == selectedAuth) return { color: "#5E5E5E", weight: 3, opacity: 0.8, fillOpacity: 0 };
-            var style = { fillColor: "#ccc", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 };
             var libKeys = Object.keys(libraries);
             libKeys.sort(function (a, b) {
-                if (style == 1) return libraries[a].length - libraries[b].length;
-                if (style == 2) return (libraries[a].length / feature.properties['authority_id'].population) - (libraries[b].length / feature.properties['authority_id'].population);
+                if (mapType == 1) return libraries[a].length - libraries[b].length;
+                if (mapType == 2) return (libraries[a].length / feature.properties['authority_id'].population) - (libraries[b].length / feature.properties['authority_id'].population);
             });
             var position = libKeys.indexOf(String(feature.properties['authority_id']));
             var med = (position / libKeys.length);
