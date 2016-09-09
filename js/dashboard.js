@@ -3,6 +3,8 @@
     // Map.  Initialise the map, set center, zoom, etc.
     /////////////////////////////////////////////////
     var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 7);
+    var plnData = null;
+    var libraries = null;
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/librarieshacked.jefmk67b/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -11,11 +13,31 @@
     }).addTo(map);
 
     // Load the initial set of data - for the dashboard start with 1 month
-    PublicLibrariesNews.loadData(2, false, false, false, function () {
-        var data = { 'local': PublicLibrariesNews.getStoriesGroupedByLocation('local'), 'changes': PublicLibrariesNews.getStoriesGroupedByLocation('changes') }
+    PublicLibrariesNews.loadData(2, true, false, true, function () {
+        plnData = { 'local': PublicLibrariesNews.getStoriesGroupedByLocation('local'), 'changes': PublicLibrariesNews.getStoriesGroupedByLocation('changes') }
+        libraries = PublicLibrariesNews.getLibrariesByAuthority();
 
         //////////////////////////////////////////////
-        // 1. Populate the changes and local stories
+        // 1. 
+        //////////////////////////////////////////////
+        $.each(libraries, function (i, x) {
+            $('#selLibraryTypeAuthority').append($("<option></option>")
+                    .attr("value", x)
+                    .text(i + ' (' + x.length + ' libraries)'));
+        });
+        
+        Morris.Donut({
+            element: 'divLibrariesDonutChart',
+            data: [
+              { label: "Download Sales", value: 12 },
+              { label: "In-Store Sales", value: 30 },
+              { label: "Mail-Order Sales", value: 20 }
+            ]
+        });
+
+
+        //////////////////////////////////////////////
+        // 2. Populate the changes and local stories
         //////////////////////////////////////////////
         var locs = {
             changes: PublicLibrariesNews.locationsSortedByCount('changes'),
@@ -29,7 +51,7 @@
             e.preventDefault();
             var type = e.currentTarget.id.substring(0, e.currentTarget.id.indexOf('Location'));
             var item = $(e.currentTarget);
-            var authSt = data[type][$(item).data('auth')].stories;
+            var authSt = plnData[type][$(item).data('auth')].stories;
             var index = $(item).data('current') + 1;
             if (index == authSt.length) index = 0;
             $(item).data('current', index);
@@ -37,8 +59,8 @@
             $(item).find('.list-group-item-text').text(authSt[index].text);
         };
         var addLocation = function (type, index, position) {
-            var it = data[type][locs[type][index]];
-            var li = '<a href="#" id="' + type + 'Location' + index + '" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[type][index] + '</h5><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text).text() + '</p></a>';
+            var it = plnData[type][locs[type][index]];
+            var li = '<a href="#" id="' + type + 'Location' + index + '" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[type][index] + '</h5><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(locs[type][index] + ' – ', '')).text() + '</p></a>';
             position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
             $('#' + type + 'Location' + index).on('click', clickListItem);
         };
@@ -92,7 +114,7 @@
             $('#ulMapPointType li#' + type).attr('class', 'active');
             if (mapLayers[type] == '') {
                 var markerArray = [];
-                $.each(data[type], function (i, o) {
+                $.each(plnData[type], function (i, o) {
                     var size = ['small', 20];
                     if (o.stories.length >= 5) size = ['medium', 30];
                     if (o.stories.length >= 10) size = ['large', 40];
@@ -138,67 +160,5 @@
                 itemSelector: '.col'
             });
         }, 500);
-
-        // Create a list of day and monthnames.
-        var
-            weekdays = [
-                "Sunday", "Monday", "Tuesday",
-                "Wednesday", "Thursday", "Friday",
-                "Saturday"
-            ],
-            months = [
-                "January", "February", "March",
-                "April", "May", "June", "July",
-                "August", "September", "October",
-                "November", "December"
-            ];
-
-        // Append a suffix to dates.
-        // Example: 23 => 23rd, 1 => 1st.
-        function nth(d) {
-            if (d > 3 && d < 21) return 'th';
-            switch (d % 10) {
-                case 1: return "st";
-                case 2: return "nd";
-                case 3: return "rd";
-                default: return "th";
-            }
-        }
-
-        // Create a string representation of the date.
-        function formatDate(date) {
-            return weekdays[date.getDay()] + ", " +
-                date.getDate() + nth(date.getDate()) + " " +
-                months[date.getMonth()] + " " +
-                date.getFullYear();
-        }
-
-        var dateSlider = document.getElementById('range');
-
-        // Create a new date from a string, return as a timestamp.
-        var timestamp = function (str) {
-            return new Date(str).getTime();
-        }
-
-        noUiSlider.create(dateSlider, {
-            // Create two timestamps to define a range.
-            range: {
-                min: timestamp('2010'),
-                max: timestamp('2016')
-            },
-            // Steps of one week
-            step: 7 * 24 * 60 * 60 * 1000,
-            // Two more timestamps indicate the handle starting positions.
-            start: [timestamp('2011'), timestamp('2015')]
-        });
-
-        var dateValues = [
-            document.getElementById('event-start'),
-            document.getElementById('event-end')
-        ];
-
-        dateSlider.noUiSlider.on('update', function (values, handle) {
-            //dateValues[handle].innerHTML = formatDate(new Date(+values[handle]));
-        });
     });
 });

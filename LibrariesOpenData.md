@@ -222,8 +222,25 @@ COPY population FROM 'C:\Development\LibrariesHacked\public-libraries-news\data\
 
 ## Additional dataset: Lower super output areas
 
-To do.
+- Download from http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries
+- Select Lower Super Output Areas (December 2001) Full Clipped Boundaries in England and Wales
+
+
+
+```
+shp2pgsql "LSOA_2001_EW_BFC_V2.shp" | psql -d uklibraries -U "postgres"
+```
 
 ## Additional dataset: Indices of deprivation
 
-To do.
+- Download from https://www.gov.uk/government/statistics/english-indices-of-deprivation-2015
+- Select to download the CSV *File 7: all ranks, deciles and scores for the indices of deprivation, and population denominators*
+
+Create the table:
+
+
+
+
+```
+COPY imd FROM 'File_7_ID_2015_All_ranks__deciles_and_scores_for_the_Indices_of_Deprivation__and_population_denominators.csv' DELIMITER ',' CSV HEADER;
+```

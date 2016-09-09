@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{ libraries: uk } | hacked projects</title>
+    <title>{ libraries: england } | hacked projects</title>
     <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="bower_components/morris.js/morris.css" rel="stylesheet" />
-    <link href="bower_components/nouislider/distribute/nouislider.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -24,18 +23,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">{ libraries: news }</a>
+                <a class="navbar-brand" href="/">{ libraries: england }</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-left">
                     <li><a href="/">dashboard</a></li>
                     <li><a href="/map">map</a></li>
-                    <!--<li><a href="/tables">data tables</a></li>
+                    <li><a href="/tables">data tables</a></li>
                     <li><a href="/api">API</a></li>
                     <li><a href="/map">widget</a></li>-->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <!--<li><a href="#">about</a></li>-->
+                    <li><a href="#">about</a></li>
                 </ul>
             </div>
         </div>
@@ -44,11 +43,16 @@
         <br />
         <div id="divGrid" class="row">
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-danger">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">libraries</h3>
                     </div>
-                    <div id="divLibrariesPieChart"></div>
+                    <div class="panel-body">
+                        <select id="selLibraryTypeAuthority" class="form-control">
+                            <option value="">All authorities</option>
+                        </select>
+                    </div>
+                    <div id="divLibrariesDonutChart"></div>
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
@@ -66,7 +70,7 @@
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h3 class="panel-title">news map</h3>
+                        <h3 class="panel-title">news and changes map</h3>
                     </div>
                     <div id="divMiniMap"></div>
                     <div id="divMiniMapContent" class="panel-body">
@@ -97,6 +101,14 @@
                 </ul>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">find my library</h3>
+                    </div>
+                    <div class="panel-body"></div>
+                </div>
+            </div>
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">stories over time</h3>
@@ -117,7 +129,7 @@
     <script src="bower_components/raphael/raphael.min.js"></script>
     <script src="bower_components/morris.js/morris.min.js"></script>
     <script src="bower_components/shufflejs/dist/shuffle.min.js"></script>
-    <script src="bower_components/nouislider/distribute/nouislider.min.js"></script>
+    <script src="bower_components/papaparse/papaparse.min.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/dashboard.js"></script>
 </body>

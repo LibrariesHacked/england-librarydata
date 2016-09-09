@@ -7,7 +7,7 @@
     var libraries = null;
     var markerArray = L.layerGroup([]);
     var selectedAuth = '';
-    var style = 1;
+    var mapType = 1;
     var map = L.map('map', { zoomControl: false }).setView([52.55, -2.72], 7);
     L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors.  Contains OS data &copy; Crown copyright and database right 2016.  Contains Royal Mail data &copy; Royal Mail copyright and Database right 2016.  Contains National Statistics data &copy; Crown copyright and database right 2016.'
@@ -39,17 +39,11 @@
     /////////////////////////////////////////////////////////
     var setMapStyles = function () {
         authBoundaries.setStyle(function (feature) {
-        				var style = config.boundaryLines.normal;
+            var style = config.boundaryLines.normal;
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
             if (feature.properties['authority_id'] == selectedAuth) return { color: "#5E5E5E", weight: 3, opacity: 0.8, fillOpacity: 0 };
-            var libKeys = Object.keys(libraries);
-            libKeys.sort(function (a, b) {
-                if (mapType == 1) return libraries[a].length - libraries[b].length;
-                if (mapType == 2) return (libraries[a].length / feature.properties['authority_id'].population) - (libraries[b].length / feature.properties['authority_id'].population);
-            });
-            var position = libKeys.indexOf(String(feature.properties['authority_id']));
-            var med = (position / libKeys.length);
-            style.fillOpacity = med.toFixed(1);
+            if (mapType == 1) style.fillOpacity = feature.properties['pcLocalNews'].toFixed(1);
+            if (mapType == 1) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
             return style;
         });
     };
@@ -61,12 +55,12 @@
         map.removeLayer(markerArray);
         markerArray.clearLayers();
         $.each(libraries, function (x, lib) {
-            var style = { radius: 4, stroke: true, color: libStyles[lib.type].colour };
+            var style = { radius: 4, stroke: true, color: config.libStyles[lib.type].colour };
             var m = L.circleMarker([lib.lat, lib.lng], style);
             m.on('click', function (e) {
                 clickLibrary(lib);
             });
-            m.bindTooltip(lib.name, { });
+            m.bindTooltip(lib.name, {});
             markerArray.addLayer(m);
         });
         map.addLayer(markerArray);
@@ -77,8 +71,8 @@
     /////////////////////////////////////////////////////////
     var clickLibrary = function (lib) {
         $('#divLibSelected').empty();
-        $('#divLibSelected').append('<p class="lead text-' + libStyles[lib.type].cssClass + '">' + lib.name + '</p>');
-        $('#divLibSelected').append('<p>' + libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
+        $('#divLibSelected').append('<p class="lead text-' + config.libStyles[lib.type].cssClass + '">' + lib.name + '</p>');
+        $('#divLibSelected').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
         if (lib.closed == 't') $('#divLibSelected').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
         map.flyTo(L.latLng(lib.lat, lib.lng), 13);
     };
@@ -124,21 +118,20 @@
             if (libs[k].libs.length > 0) {
                 var type = $('<div>');
                 var hd = $('<h5>', {
-                    text: libs[k].libs.length + ' ' + libStyles[k].type
+                    text: libs[k].libs.length + ' ' + config.libStyles[k].type
                 }).appendTo(type);
                 $.each(libs[k].libs, function (x, l) {
                     $('<a>', {
                         text: l.name,
                         title: l.name,
                         href: '#',
-                        'class': 'btn btn-xs btn-' + libStyles[l.type].cssClass + ' btn-libs',
+                        'class': 'btn btn-xs btn-' + config.libStyles[l.type].cssClass + ' btn-libs',
                         click: function () {
                             clickLibrary(l);
                             return false;
                         }
                     }).appendTo(type);
                 });
-                
 
                 $('#sidebar').append(type);
             }

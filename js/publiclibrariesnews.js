@@ -24,15 +24,15 @@
             var date = moment().subtract(x, 'months');
             var year = date.year();
             var month = date.month() + 1;
-            for (type in this.stories){
+            for (type in this.stories) {
                 if (!this.stories[type][year]) this.stories[type][year] = {};
                 if (!this.stories[type][year][month]) {
                     this.stories[type][year][month] = {};
-                    urls.push([month,year,type,this.dataUrl.replace('YY',year).replace('M',month).replace('TYPE',type)]);
+                    urls.push([month, year, type, this.dataUrl.replace('YY', year).replace('M', month).replace('TYPE', type)]);
                 }
             }
         }
-        if (Object.keys(this.locations).length == 0) urls.push(['','','locations',this.locationsUrl]);
+        if (Object.keys(this.locations).length == 0) urls.push(['', '', 'locations', this.locationsUrl]);
         var requests = [];
         for (i = 0; i < urls.length; i++) {
             requests.push($.ajax(urls[i][3]));
@@ -54,36 +54,43 @@
     getAuthGeoWithStories: function () {
         var authGeoData = this.authoritiesGeo;
         var changes = this.getStoriesGroupedByLocation('changes');
-        var local = this.getStoriesGroupedByLocation('local')
-        var authLocalStoriesSort = authGeoData.features.splice().sort(function (a, b) {
-        				return local[a.name].length - local[b.name].length;
-        });
-        var position = libKeys.indexOf(String(feature.properties['authority_id']));
-        var med = (position / libKeys.length);
+        var local = this.getStoriesGroupedByLocation('local');
+        var totalChanges = 0;
+        var totalLocal = 0;
         $.each(authGeoData.features, function (x, y) {
             if (changes[y.properties.name]) authGeoData.features[x].properties['changes'] = changes[y.properties.name];
             if (local[y.properties.name]) authGeoData.features[x].properties['local'] = local[y.properties.name];
-            // Also add in some statistical properties about the stories
-            authGeoData.features[x].properties['rankLocalStories'] = 1;
-            authGeoData.features[x].properties['rankChanges']
+            totalLocal = totalLocal + (local[y.properties.name] ? local[y.properties.name].stories.length : 0);
+            totalChanges = totalChanges + (changes[y.properties.name] ? changes[y.properties.name].stories.length : 0);
+        }.bind(this));
+        $.each(authGeoData.features, function (x, y) {
+            authGeoData.features[x].properties['pcLocalNews'] = (authGeoData.features[x].properties['local'] ? (authGeoData.features[x].properties['local'].stories.length / totalLocal) * 30 : 0);
+            authGeoData.features[x].properties['pcChanges'] = (authGeoData.features[x].properties['changes'] ? (authGeoData.features[x].properties['changes'].stories.length / totalChanges) * 50 : 0);
         }.bind(this));
         return authGeoData;
     },
-    getAuthGeoWithStoriesAndLibraries: function() {
-    				var authGeoData = this.getAuthGeoDataWithStories();
-    				$.each(authGeoData.features, function (x, y) {
-    								// Add in the libraries.
-    								if (!libs[lib.type]) libs[lib.type] = { libs: [] };
-            	if ((lib.type != '' && lib.closed == '') || lib.lat != '') libs[lib.type].libs.push(lib);
-            	// Also add in some statistical properties about the libraries
-            	
+    getAuthGeoWithStoriesAndLibraries: function () {
+        var authGeoData = this.getAuthGeoDataWithStories();
+        var libs = this.getLibrariesByAuthority();
+        var auth = {};
+        $.each(authGeoData.features, function (x, y) {
+            authGeoData.features[x].libraries = {};
+            $.each(libraries[authGeoData.features[x].properties.authority_id], function () {
+                if (!authGeoData.features[x].libraries[libs.type]) authGeoData.features[x].libraries[lib.type] = { libs: [] };
+                if ((lib.type != '' && lib.closed == '') || lib.lat != '') libs[lib.type].libs.push(lib);
+            });
+            auth[authGeoData.features[x].properties.name] = { idx: x };
         }.bind(this));
+        var authLALSortedLibraryCount = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[a].properties.libraries['LAL'] - authGeoData.features[b].properties.libraries['LAL'];
+        });
         return authGeoData;
     },
     getLibrariesByAuthority: function () {
         var authLibraries = {};
         $.each(this.libraries.data, function (i, lib) {
             if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
+            if (lib.type == '') lib.type = 'XL';
             authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;
