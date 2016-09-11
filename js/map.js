@@ -62,16 +62,7 @@
         map.addLayer(markerArray);
     };
 
-    /////////////////////////////////////////////////////////
-    // Function: clickLibrary
-    /////////////////////////////////////////////////////////
-    var clickLibrary = function (lib) {
-        $('#divLibSelected').empty();
-        $('#divLibSelected').append('<p class="lead text-' + config.libStyles[lib.type].cssClass + '">' + lib.name + '</p>');
-        $('#divLibSelected').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
-        if (lib.closed == 't') $('#divLibSelected').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
-        map.flyTo(L.latLng(lib.lat, lib.lng), 13);
-    };
+    
 
     /////////////////////////////////////////////////////////
     // Function: displayPLNStories
@@ -90,11 +81,26 @@
     };
 
     /////////////////////////////////////////////////////////
+    // Function: clickLibrary
+    /////////////////////////////////////////////////////////
+    var clickLibrary = function (lib) {
+        sidebar.close();
+        $('#liLibrary').removeClass('disabled');
+        $('#sidebar-librarycontent').empty();
+        $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[lib.type].cssClass + '">' + lib.name + '</h3>');
+        $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
+        if (lib.closed == 't') $('#sidebar-librarycontent').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
+        map.flyTo(L.latLng(lib.lat, lib.lng), 13);
+        sidebar.open('library');
+    };
+
+    /////////////////////////////////////////////////////////
     // Function: clickAuth
     /////////////////////////////////////////////////////////
     var clickAuth = function (e, feature, layer) {
         map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(-400, 0) });
         selectedAuth = feature.properties['authority_id'];
+        $('#liAuthority').removeClass('disabled');
         $('#sidebar-authoritycontent').empty();
 
         // Show authority details
