@@ -9,25 +9,58 @@
     <title>{ libraries: england } | hacked projects</title>
     <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
-    <link href="bower_components/leaflet-sidebar/src/L.Control.Sidebar.css" rel="stylesheet" />
+    <link href="bower_components/sidebar-v2/css/leaflet-sidebar.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet" />
     <link href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" />
+    <link href="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
     <div id="mapContainer" class="container-fluid">
         <div id="sidebar" class="sidebar collapsed">
+            <div class="sidebar-tabs">
+                <ul role="tablist">
+                    <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                    <li class="disabled"><a href="#authority" role="tab"><i class="fa fa-building"></i></a></li>
+                    <li class="disabled"><a href="#library" role="tab"><i class="fa fa-building"></i></a></li>
+                </ul>
+                <ul role="tablist">
+                    <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+                </ul>
+            </div>
+            <div class="sidebar-content">
+                <div class="sidebar-pane" id="home">
+                    <h1 class="sidebar-header">
+                        { libraries: england } <span class="sidebar-close"><i class="fa fa-caret-right"></i></span>
+                    </h1>
+                    <div id="sidebar-maincontent"></div>
+                </div>
+                <div class="sidebar-pane" id="authority">
+                    <h1 class="sidebar-header">Authority<span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
+                    <div id="sidebar-authoritycontent"></div>
+                </div>
+                <div class="sidebar-pane" id="library">
+                    <h1 class="sidebar-header">Library<span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
+                    <div id="sidebar-librarycontent"></div>
+                </div>
+                <div class="sidebar-pane" id="settings">
+                    <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
+                    <div id="sidebar-settingscontent"></div>
+                </div>
+            </div>
         </div>
         <div id="map"></div>
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="bower_components/leaflet-sidebar/src/L.Control.Sidebar.js"></script>
+    <script src="bower_components/sidebar-v2/js/leaflet-sidebar.min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="bower_components/papaparse/papaparse.min.js"></script>
+    <script src="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src="bower_components/leaflet-geometry/dist/leaflet.geometryutil.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/map.js"></script>
     <script src="js/config.js"></script>

@@ -56,7 +56,21 @@ on d.code = b.code
 Export an authorities CSV file:
 
 ```
-
+copy (
+	select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, p.population as Population
+	from authorities a
+	join county_region c
+	on a.code = c.code
+	left outer join population p
+	on p.code = a.code
+	union
+	select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, p.population as Population 
+	from authorities b
+	join district_borough_unitary_region d
+	on d.code = b.code
+	left outer join population p
+	on p.code = b.code
+) TO 'C:\Development\LibrariesHacked\public-libraries-news\data\Authorities.csv' DELIMITER ',' CSV HEADER;
 ```
 
 Export the authorities as GeoJSON:

@@ -2,7 +2,7 @@
     locationsUrl: '/data/PLNLocations.json?v=2',
     dataUrl: '/data/PLN_YY_M_TYPE.json?v=2',
     authGeoUrl: '/data/AuthoritiesGeo.json?v=2',
-    authUrl: '/data/Authorities.csv>v=2',
+    authUrl: '/data/Authorities.csv?v=2',
     librariesUrl: '/data/Libraries.csv?v=2',
     authoritiesGeo: null,
     authorities: null,
@@ -44,12 +44,32 @@
                 var type = urls[i][2];
                 if (type == 'changes' || type == 'local') this.stories[type][year][month] = data[0];
                 if (type == 'locations') this.locations = data[0];
-                if (type == 'libraries') this.libraries = Papa.parse(data[0], { header: true });
+                if (type == 'libraries') this.libraries = Papa.parse(data[0], { header: true }).data;
                 if (type == 'authgeo') this.authoritiesGeo = data[0];
-                if (type == 'authorities') this.authorities = Papa.parse(data[0], { header: true });
+                if (type == 'authorities') this.authorities = Papa.parse(data[0], { header: true }).data;
             }.bind(this));
             callback();
         }.bind(this));
+    },
+    getAuthoritiesWithStories: function () {
+        var authorities = this.authorities;
+        var changes = this.getStoriesGroupedByLocation('changes');
+        var local = this.getStoriesGroupedByLocation('local');
+        $.each(authorities, function (x, y) {
+            if (changes[y.name]) authorities[x]['changes'] = changes[y.name];
+            if (local[y.name]) authorities[x]['local'] = local[y.name];
+        }.bind(this));
+        return authorities;
+    },
+    getAuthoritiesWithLibraries: function () {
+        var authorities = {};
+        var authorityArray = this.authorities.slice().sort(function (a, b) { return a.name - b.name });
+        var libraries = this.getLibrariesByAuthority();
+        $.each(authorityArray, function (i, auth) {
+            if (!authorities[auth['name']]) authorities[auth['name']] = { libraries: [] };
+            authorities[auth['name']].libraries = libraries[auth['authority_id']];
+        }.bind(this));
+        return authorities;
     },
     getAuthGeoWithStories: function () {
         var authGeoData = this.authoritiesGeo;
@@ -88,7 +108,7 @@
     },
     getLibrariesByAuthority: function () {
         var authLibraries = {};
-        $.each(this.libraries.data, function (i, lib) {
+        $.each(this.libraries, function (i, lib) {
             if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
             if (lib.type == '') lib.type = 'XL';
             authLibraries[lib['authority_id']].push(lib);

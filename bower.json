@@ -2,7 +2,7 @@
   "name": "public-libraries-news",
   "homepage": "https://github.com/LibrariesHacked/public-libraries-news",
   "authors": [
-    "Dave <david_rowe@bathnes.gov.uk>"
+    "Dave <info@librarieshacked.org>"
   ],
   "description": "",
   "main": "",
@@ -25,7 +25,12 @@
     "shufflejs": "^4.0.1",
     "nouislider": "^8.5.1",
     "papaparse": "^4.1.2",
-    "leaflet-sidebar": "^0.1.9",
+    "leaflet.locatecontrol": "^0.52.0",
+    "leaflet-geometry": "^0.4.0",
+    "leaflet": "v1.0.0-rc.3"
+  },
+  "resolutions": {
+    "font-awesome": "^4.6.3",
     "leaflet": "v1.0.0-rc.3"
   }
 }

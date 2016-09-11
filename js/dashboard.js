@@ -5,6 +5,8 @@
     var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 7);
     var plnData = null;
     var libraries = null;
+    var authLibs = null;
+    var typeDonut = null;
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/librarieshacked.jefmk67b/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -13,28 +15,44 @@
     }).addTo(map);
 
     // Load the initial set of data - for the dashboard start with 1 month
-    PublicLibrariesNews.loadData(2, true, false, true, function () {
+    PublicLibrariesNews.loadData(2, false, true, true, function () {
         plnData = { 'local': PublicLibrariesNews.getStoriesGroupedByLocation('local'), 'changes': PublicLibrariesNews.getStoriesGroupedByLocation('changes') }
-        libraries = PublicLibrariesNews.getLibrariesByAuthority();
+        authLibs = PublicLibrariesNews.getAuthoritiesWithLibraries();
 
         //////////////////////////////////////////////
         // 1. 
         //////////////////////////////////////////////
-        $.each(libraries, function (i, x) {
-            $('#selLibraryTypeAuthority').append($("<option></option>")
-                    .attr("value", x)
-                    .text(i + ' (' + x.length + ' libraries)'));
-        });
-        
-        Morris.Donut({
+        typeDonut = Morris.Donut({
             element: 'divLibrariesDonutChart',
-            data: [
-              { label: "Download Sales", value: 12 },
-              { label: "In-Store Sales", value: 30 },
-              { label: "Mail-Order Sales", value: 20 }
-            ]
+            data: [{ label: 'Loading', value: 1 }],
+            colors: $.map(Object.keys(config.libStyles), function (x, y) {
+                return config.libStyles[x].colour;
+            }),
+            resize: true
         });
-
+        var updateLibTypesDonut = function (libAuthority) {
+            var libTypes = {};
+            var chartData = [];
+            $.each(Object.keys(authLibs).sort(), function (i, x) {
+                if (x == libAuthority | !libAuthority) {
+                    $.each(authLibs[x].libraries, function (y, z) {
+                        if (!libTypes[z.type]) libTypes[z.type] = 0;
+                        libTypes[z.type] = libTypes[z.type] + 1;
+                    });
+                }
+            });
+            $.each(libTypes, function (t, c) {
+                chartData.push({ label: (config.libStyles[t] ? config.libStyles[t].type : 'Unknown'), value: c });
+            });
+            typeDonut.setData(chartData);
+        };
+        $.each(Object.keys(authLibs).sort(), function (i, x) {
+            $('#selLibraryTypeAuthority').append($("<option></option>").attr("value", x).text(x));
+        });
+        $('#selLibraryTypeAuthority').change(function () {
+            updateLibTypesDonut($('#selLibraryTypeAuthority').find(":selected").val());
+        });
+        updateLibTypesDonut();
 
         //////////////////////////////////////////////
         // 2. Populate the changes and local stories
@@ -142,16 +160,10 @@
         });
         addMiniMapPoints('local');
 
-        // 3. The stories line chart
-        var counts = PublicLibrariesNews.storyCountByMonth();
-        new Morris.Line({
-            element: 'divStoriesLineChart',
-            data: counts,
-            xkey: 'month',
-            ykeys: ['changes', 'local'],
-            labels: ['Changes', 'Local']
-        });
 
+        ////////////////////////////////////////////
+        // SHUFFLE
+        ////////////////////////////////////////////
         setTimeout(function () {
             // Now shuffle the pack.
             var Shuffle = window.shuffle;

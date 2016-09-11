@@ -18,7 +18,7 @@
 
 .page-story-list {
     padding: 0 !important;
-    margin: -10px 0 0 0 !important;
+    margin: 0 0 0 0 !important;
 }
 
 #divMiniMap {
@@ -29,6 +29,11 @@
 #divStoriesLineChart {
     height: 200px;
 }
+
+#divLibrariesDonutChart {
+    height: 250px;
+}
+
 
 #divMiniMapContent {
     display: none;
@@ -115,23 +120,22 @@
         font-weight: 700;
     }
 
-
-
-    #showcase {
-	margin: 0 20px;
-	text-align: center;
+#showcase {
+    margin: 0 20px;
+    text-align: center;
 }
+
 #range {
-	height: 10px;
-	margin: 0 auto 30px;
+    height: 10px;
+    margin: 0 auto 30px;
 }
-#value-span,
-#value-input {
-	width: 50%;
-	float: left;
-	display: block;
-	text-align: center;
-	margin: 0;
+
+#value-span, #value-input {
+    width: 50%;
+    float: left;
+    display: block;
+    text-align: center;
+    margin: 0;
 }
 
 .leaflet-container #sidebar a.btn {

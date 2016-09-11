@@ -45,7 +45,7 @@
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h3 class="panel-title">libraries</h3>
+                        <h3 class="panel-title">libraries by authority</h3>
                     </div>
                     <div class="panel-body">
                         <select id="selLibraryTypeAuthority" class="form-control">
@@ -61,11 +61,13 @@
                         <h3 class="panel-title">changes</h3>
                     </div>
                     <div id="changesCounts" class="list-group"></div>
+                    <div class="panel-footer">
+                        <ul id="changesSwitch" class="pagination pagination-sm page-story-list">
+                            <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
+                            <li><a data-direction="1" href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <ul id="changesSwitch" class="pagination pagination-sm page-story-list">
-                    <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
-                    <li><a data-direction="1" href="#">&raquo;</a></li>
-                </ul>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-info">
@@ -94,11 +96,13 @@
                         <h3 class="panel-title">local news</h3>
                     </div>
                     <div id="localCounts" class="list-group"></div>
+                    <div class="panel-footer">
+                        <ul id="localSwitch" class="pagination pagination-sm page-story-list">
+                            <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
+                            <li><a data-direction="1" href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <ul id="localSwitch" class="pagination pagination-sm page-story-list">
-                    <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
-                    <li><a data-direction="1" href="#">&raquo;</a></li>
-                </ul>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-warning">
@@ -106,14 +110,6 @@
                         <h3 class="panel-title">find my library</h3>
                     </div>
                     <div class="panel-body"></div>
-                </div>
-            </div>
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">stories over time</h3>
-                    </div>
-                    <div id="divStoriesLineChart"></div>
                 </div>
             </div>
         </div>
@@ -130,6 +126,7 @@
     <script src="bower_components/morris.js/morris.min.js"></script>
     <script src="bower_components/shufflejs/dist/shuffle.min.js"></script>
     <script src="bower_components/papaparse/papaparse.min.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/dashboard.js"></script>
 </body>

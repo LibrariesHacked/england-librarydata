@@ -8,17 +8,13 @@
     var markerArray = L.layerGroup([]);
     var selectedAuth = '';
     var mapType = 1;
-    var map = L.map('map', { zoomControl: false }).setView([52.55, -2.72], 7);
-    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
+    var map = L.map('map').setView([52.55, -2.72], 7);
+    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors.  Contains OS data &copy; Crown copyright and database right 2016.  Contains Royal Mail data &copy; Royal Mail copyright and Database right 2016.  Contains National Statistics data &copy; Crown copyright and database right 2016.'
     }).addTo(map);
-    L.control.zoom({
-        position: 'topright'
-    }).addTo(map);
-    var sidebar = L.control.sidebar('sidebar', {
-        position: 'left'
-    });
+    var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
     map.addControl(sidebar);
+    L.control.locate().addTo(map);
 
     var numFormat = function (num) {
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
@@ -41,7 +37,7 @@
         authBoundaries.setStyle(function (feature) {
             var style = config.boundaryLines.normal;
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
-            if (feature.properties['authority_id'] == selectedAuth) return { color: "#5E5E5E", weight: 3, opacity: 0.8, fillOpacity: 0 };
+            if (feature.properties['authority_id'] == selectedAuth) return config.boundaryLines.selected;
             if (mapType == 1) style.fillOpacity = feature.properties['pcLocalNews'].toFixed(1);
             if (mapType == 1) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
             return style;
@@ -97,18 +93,18 @@
     // Function: clickAuth
     /////////////////////////////////////////////////////////
     var clickAuth = function (e, feature, layer) {
-        map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(400, 0) });
+        map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(-400, 0) });
         selectedAuth = feature.properties['authority_id'];
+        $('#sidebar-authoritycontent').empty();
 
-        $('#sidebar').empty();
         // Show authority details
-        $('#sidebar').append('<h3>' + feature.properties.name + '</h3>');
-        $('#sidebar').append('<div class="row"><div class="col col-md-4"><p class="lead text-info">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success">' + numFormat(libraries[feature.properties['authority_id']].length) + ' libraries</p></div><//div>');
+        $('#sidebar-authoritycontent').append('<h3>' + feature.properties.name + '</h3>');
+        $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success">' + numFormat(libraries[feature.properties['authority_id']].length) + ' libraries</p></div><//div>');
+        $('#sidebar-authoritycontent').append('<hr>');
 
-        $('#sidebar').append('<hr>');
         // Show libraries group by type
-        $('#sidebar').append('<div id="divLibSelected"><p>Select a library to see further details.</p></div>');
-        $('#sidebar').append('<h4>Libraries</h4>');
+        $('#sidebar-authoritycontent').append('<div id="divLibSelected"><p>Select a library to see further details.</p></div>');
+        $('#sidebar-authoritycontent').append('<h4>Libraries</h4>');
         var libs = {};
         $.each(libraries[feature.properties['authority_id']], function (i, lib) {
             if (!libs[lib.type]) libs[lib.type] = { libs: [] };
@@ -133,13 +129,13 @@
                     }).appendTo(type);
                 });
 
-                $('#sidebar').append(type);
+                $('#sidebar-authoritycontent').append(type);
             }
         });
         addLibrariesToMap(libraries[feature.properties['authority_id']]);
         displayPLNStories('changes', feature.properties, 'Changes');
         displayPLNStories('local', feature.properties, 'Local news');
-        sidebar.show();
+        sidebar.open('authority');
         setMapStyles();
     };
 
@@ -164,5 +160,17 @@
             authBoundaries.addData(data);
         });
         setMapStyles();
+
+        ////
+        // Event: Zoom out
+        /////////////
+        map.on('zoomend', function () {
+            if (map.getZoom() < 8) {
+                map.removeLayer(markerArray);
+                markerArray.clearLayers();
+                selectedAuth = '';
+                setMapStyles();
+            }
+        });
     });
 });

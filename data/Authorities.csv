@@ -1,0 +1,152 @@
+authority_id,name,type,code,hectares,population
+129,Tameside,Metropolitan District,E08000008,10315.421,221692
+71,Leicestershire,County,E10000018,208378.684,675309
+142,West Sussex,County,E10000032,202346.329,836256
+144,Wigan,Metropolitan District,E08000010,18817.091,322022
+45,Gloucestershire,County,E10000013,270452.825,617162
+87,North Tyneside,Metropolitan District,E08000022,8481.918,202494
+55,Herefordshire,Unitary Authority,E06000019,217970.958,188099
+32,Derby,Unitary Authority,E06000015,7803.111,254251
+16,Bristol,Unitary Authority,E06000023,23533.937,449328
+51,Haringey,London Borough,E09000014,2959.837,272864
+122,Stockton on Tees,Unitary Authority,E06000004,20973.097,194803
+103,Rochdale,Metropolitan District,E08000005,15812.803,214195
+26,City of London,London Borough,E09000001,314.942,8760
+137,Waltham Forest,London Borough,E09000031,3880.793,271170
+21,Cambridgeshire,County,E10000003,305400.769,647238
+48,Halton,Unitary Authority,E06000006,9032.148,126528
+77,Medway,Unitary Authority,E06000035,26906.393,276492
+125,Sunderland,Metropolitan District,E08000024,13963.011,277150
+78,Merton,London Borough,E09000024,3762.466,204565
+69,Leeds,Metropolitan District,E08000035,55170.639,774060
+41,East Sussex,County,E10000011,172516.861,544064
+109,Sheffield,Metropolitan District,E08000019,36793.009,569737
+60,Islington,London Borough,E09000019,1485.664,227692
+128,Swindon,Unitary Authority,E06000030,23009.336,217160
+40,East Riding of Yorkshire,Unitary Authority,E06000011,249479.584,336685
+67,Lambeth,London Borough,E09000022,2724.94,324431
+4,Bath and NE Somerset,Unitary Authority,E06000022,35112.321,184874
+150,Worcestershire,County,E10000034,174051.43,578593
+86,North Somerset,Unitary Authority,E06000024,39080.451,209944
+43,Essex,County,E10000012,369530.887,1443151
+94,Oxfordshire,County,E10000025,260594.765,677810
+79,Middlesbrough,Unitary Authority,E06000002,5455.357,139509
+111,Slough,Unitary Authority,E06000039,3254.201,145734
+9,Blackpool,Unitary Authority,E06000009,4315.074,139578
+33,Derbyshire,County,E10000007,255076.235,782365
+143,Westminster,London Borough,E09000033,2203.005,242299
+56,Hertfordshire,County,E10000015,164306.486,1166339
+37,Dudley,Metropolitan District,E08000027,9795.819,316464
+133,Tower Hamlets,London Borough,E09000030,2157.501,295236
+97,Poole,Unitary Authority,E06000029,7471.614,150577
+61,Kensington and Chelsea,London Borough,E09000020,1238.379,157711
+66,Knowsley,Metropolitan District,E08000011,8650.007,147231
+31,Darlington,Unitary Authority,E06000005,19747.56,105389
+34,Devon,County,E10000008,663609.856,773077
+7,Birmingham,Metropolitan District,E08000025,26779.121,1111307
+20,Calderdale,Metropolitan District,E08000033,36396.104,208402
+49,Hammersmith and Fulham,London Borough,E09000013,1715.409,179410
+127,Sutton,London Borough,E09000029,4384.698,200145
+64,Kingston upon Thames,London Borough,E09000021,3726.117,173525
+68,Lancashire,County,E10000017,308300.799,1191691
+83,Norfolk,County,E10000020,550829.042,884978
+95,Peterborough,Unitary Authority,E06000031,34343.798,193980
+76,Manchester,Metropolitan District,E08000003,11564.826,530292
+131,Thurrock,Unitary Authority,E06000034,18431.778,165184
+85,North Lincolnshire,Unitary Authority,E06000013,87568.475,169820
+39,Ealing,London Borough,E09000009,5554.428,343059
+141,West Berkshire,Unitary Authority,E06000037,70416.943,156020
+124,Suffolk,County,E10000029,385357.501,741895
+96,Plymouth,Unitary Authority,E06000026,8436.268,262712
+100,Redbridge,London Borough,E09000026,5644.225,296793
+1,Barking and Dagenham,London Borough,E09000002,3779.934,201979
+89,Northamptonshire,County,E10000021,236699.028,723026
+6,Bexley,London Borough,E09000004,6428.649,242142
+44,Gateshead,Metropolitan District,E08000037,14407.989,200996
+24,Cheshire East,Unitary Authority,E06000049,116635.737,375392
+35,Doncaster,Metropolitan District,E08000017,56855.102,304813
+110,Shropshire,Unitary Authority,E06000051,319727.55,311380
+36,Dorset,County,E10000009,257297.381,420585
+139,Warrington,Unitary Authority,E06000007,18238.376,207695
+3,Barnsley,Metropolitan District,E08000016,32907.763,239319
+11,Bournemouth,Unitary Authority,E06000028,4716.808,194516
+90,Northumberland,Unitary Authority,E06000057,507818.004,315263
+151,York,Unitary Authority,E06000014,27201.473,206856
+149,Wolverhampton,Metropolitan District,E08000031,6943.665,254406
+113,Somerset,County,E10000027,351392.025,545390
+17,Bromley,London Borough,E09000006,15013.487,324857
+75,Luton,Unitary Authority,E06000032,4335.251,214710
+99,Reading,Unitary Authority,E06000038,4039.798,161739
+70,Leicester City,Unitary Authority,E06000016,7334.215,342627
+12,Bracknell Forest,Unitary Authority,E06000036,10938.421,118982
+140,Warwickshire,County,E10000031,197752.257,554002
+50,Hampshire,County,E10000014,373790.599,1353043
+116,Southampton,Unitary Authority,E06000045,5638.515,249537
+13,Bradford,Metropolitan District,E08000032,36641.986,531176
+54,Havering,London Borough,E09000016,11445.735,249085
+88,North Yorkshire,County,E10000023,805294.068,602277
+138,Wandsworth,London Borough,E09000032,3522.022,314544
+107,Sandwell,Metropolitan District,E08000028,8555.891,319455
+145,Wiltshire,Unitary Authority,E06000054,325533.806,486093
+63,Kingston upon Hull,Unitary Authority,E06000010,8149.757,258995
+5,Bedford,Unitary Authority,E06000055,47640.838,166252
+82,Newham,London Borough,E09000025,3857.806,332817
+8,Blackburn with Darwen,Unitary Authority,E06000008,13702.199,146846
+81,Newcastle upon Tyne,Metropolitan District,E08000021,11511.782,292883
+120,Staffordshire,County,E10000028,262331.444,862562
+25,Cheshire West and Chester,Unitary Authority,E06000050,94120.736,333917
+28,Coventry,Metropolitan District,E08000026,9863.907,345385
+2,Barnet,London Borough,E09000003,8674.837,379691
+146,Windsor and Maidenhead,Unitary Authority,E06000040,19842.706,147708
+14,Brent,London Borough,E09000005,4323.27,324012
+74,Liverpool,Metropolitan District,E08000012,13353.38,478580
+117,Southend on Sea,Unitary Authority,E06000033,6790.098,178702
+84,North East Lincolnshire,Unitary Authority,E06000012,20355.412,159570
+52,Harrow,London Borough,E09000015,5046.33,247130
+130,Telford and Wrekin,Unitary Authority,E06000020,29031.346,171159
+22,Camden,London Borough,E09000007,2178.932,241059
+59,Isle of Wight,Unitary Authority,E06000046,39492.895,139395
+118,Southwark,London Borough,E09000028,2991.34,308901
+136,Walsall,Metropolitan District,E08000030,10397.35,276095
+29,Croydon,London Borough,E09000008,8649.441,379031
+80,Milton Keynes,Unitary Authority,E06000042,30862.673,261762
+73,Lincolnshire,County,E10000019,610276.872,736665
+58,Hounslow,London Borough,E09000018,5658.541,268770
+46,Greenwich,London Borough,E09000011,5044.19,274803
+15,Brighton and Hove,Unitary Authority,E06000043,8537.682,285276
+42,Enfield,London Borough,E09000010,8220.025,328433
+19,Bury,Metropolitan District,E08000002,9946.009,187884
+10,Bolton,Metropolitan District,E08000001,13979.21,281619
+72,Lewisham,London Borough,E09000023,3531.706,297325
+135,Wakefield,Metropolitan District,E08000036,33861.969,333759
+106,Salford,Metropolitan District,E08000006,9719.732,245614
+38,Durham,Unitary Authority,E06000047,223269.869,519695
+105,Rutland,Unitary Authority,E06000017,39374.897,38046
+62,Kent,County,E10000016,363955.258,1524719
+114,South Gloucestershire,Unitary Authority,E06000025,53664.531,274661
+101,Redcar and Cleveland,Unitary Authority,E06000003,25389.087,135275
+91,Nottingham,Unitary Authority,E06000018,7461.352,318901
+57,Hillingdon,London Borough,E09000017,11570.063,297735
+102,Richmond upon Thames,London Borough,E09000027,5876.111,194730
+27,Cornwall,Unitary Authority,E06000052,361335.741,549404
+18,Buckinghamshire,County,E10000002,156494.916,528400
+108,Sefton,Metropolitan District,E08000014,20477.967,273707
+93,Oldham,Metropolitan District,E08000004,14234.507,230823
+147,Wirral,Metropolitan District,E08000015,25639.898,320900
+53,Hartlepool,Unitary Authority,E06000001,9844.17,92493
+104,Rotherham,Metropolitan District,E08000018,28653.431,260786
+115,South Tyneside,Metropolitan District,E08000023,6710.839,148671
+23,Central Bedfordshire,Unitary Authority,E06000056,71566.521,274022
+132,Torbay,Unitary Authority,E06000027,11946.705,133373
+92,Nottinghamshire,County,E10000024,208689.497,805848
+123,Stoke on Trent,Unitary Authority,E06000021,9344.849,251648
+30,Cumbria,County,E10000006,718247.316,497996
+112,Solihull,Metropolitan District,E08000029,17828.205,210445
+148,Wokingham,Unitary Authority,E06000041,17896.545,160409
+126,Surrey,County,E10000030,167007.319,1168809
+98,Portsmouth,Unitary Authority,E06000044,6014.447,211758
+65,Kirklees,Metropolitan District,E08000034,40855.166,434321
+121,Stockport,Metropolitan District,E08000007,12604.032,288733
+134,Trafford,Metropolitan District,E08000009,10604.476,233288
+47,Hackney,London Borough,E09000012,1904.902,269009
+119,St Helens,Metropolitan District,E08000013,13635.876,177612
