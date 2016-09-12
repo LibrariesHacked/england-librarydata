@@ -151,10 +151,16 @@ copy (
 		closed_year,
 		opened_year,
 		replacement,
-		notes
+		notes,
+		-- Add the LSOA data
+		ls.lsoa11nm "lsoa_name",
+		ls.lsoa11cd "lsoa_code"
+		-- Add the deprivation data
 	from libraries l
 	join authorities a
 	on a.id = l.authority_id
+	join lsoa_boundaries ls
+	on ST_Within(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), ST_SetSRID(ls.geom, 27700))
 ) to 'Libraries.csv' DELIMITER ',' CSV HEADER;
 ```
 

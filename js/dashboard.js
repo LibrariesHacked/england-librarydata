@@ -15,7 +15,7 @@
     }).addTo(map);
 
     // Load the initial set of data - for the dashboard start with 1 month
-    PublicLibrariesNews.loadData(2, false, true, true, function () {
+    PublicLibrariesNews.loadData(2, false, true, true, true, function () {
         plnData = { 'local': PublicLibrariesNews.getStoriesGroupedByLocation('local'), 'changes': PublicLibrariesNews.getStoriesGroupedByLocation('changes') }
         authLibs = PublicLibrariesNews.getAuthoritiesWithLibraries();
 

@@ -22,8 +22,9 @@
             <div class="sidebar-tabs">
                 <ul role="tablist">
                     <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                    <li class="disabled" id="liAuthority"><a href="#authority" role="tab"><i class="fa fa-building"></i></a></li>
+                    <li class="disabled" id="liAuthority"><a href="#authority" role="tab"><i class="fa fa-list"></i></a></li>
                     <li class="disabled" id="liLibrary"><a href="#library" role="tab"><i class="fa fa-building"></i></a></li>
+                    <li class="disabled" id="liNews"><a href="#news" role="tab"><i class="fa fa-newspaper-o"></i></a></li>
                 </ul>
                 <ul role="tablist">
                     <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
@@ -34,7 +35,9 @@
                     <h1 class="sidebar-header">
                         { libraries: england } <span class="sidebar-close"><i class="fa fa-caret-right"></i></span>
                     </h1>
-                    <div id="sidebar-maincontent"></div>
+                    <div id="sidebar-maincontent">
+
+                    </div>
                 </div>
                 <div class="sidebar-pane" id="authority">
                     <h1 class="sidebar-header">Authority<span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
@@ -44,9 +47,19 @@
                     <h1 class="sidebar-header">Library<span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
                     <div id="sidebar-librarycontent"></div>
                 </div>
+                <div class="sidebar-pane" id="news">
+                    <h1 class="sidebar-header">News and changes<span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
+                    <div id="sidebar-newscontent"></div>
+                </div>
                 <div class="sidebar-pane" id="settings">
                     <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
-                    <div id="sidebar-settingscontent"></div>
+                    <div id="sidebar-settingscontent">
+                        <h2>Map display settings</h2>
+                        <p>Customise the map display here.</p>
+                        <h3>Shading</h3>
+                        <p>The shading of the authority regions represents concentration of different aspects of the data, for each authority.</p>
+
+                    </div>
                 </div>
             </div>
         </div>

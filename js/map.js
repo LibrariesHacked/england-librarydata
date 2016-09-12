@@ -62,7 +62,6 @@
         map.addLayer(markerArray);
     };
 
-    
 
     /////////////////////////////////////////////////////////
     // Function: displayPLNStories
@@ -71,11 +70,12 @@
     /////////////////////////////////////////////////////////
     var displayPLNStories = function (type, properties, header) {
         if (properties[type]) {
-            $('#sidebar').append('<hr>');
+            $('#liNews').removeClass('disabled');
+            $('#sidebar-newscontent').append('<hr>');
             var st = properties[type].stories.slice();
-            $('#sidebar').append('<h4>' + header + '</h4>');
+            $('#sidebar-newscontent').append('<h4>' + header + '</h4>');
             $.each(st.reverse(), function () {
-                $('#sidebar').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text.replace(properties.name + ' – ', '') + '</p>');
+                $('#sidebar-newscontent').append('<small>' + moment(this.date).fromNow() + '</small><p>' + this.text.replace(properties.name + ' – ', '') + '</p>');
             });
         }
     };
@@ -85,9 +85,17 @@
     /////////////////////////////////////////////////////////
     var clickLibrary = function (lib) {
         sidebar.close();
+        
         $('#liLibrary').removeClass('disabled');
         $('#sidebar-librarycontent').empty();
         $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[lib.type].cssClass + '">' + lib.name + '</h3>');
+
+        // Display latest tweet
+        var tweet = PublicLibrariesNews.getLatestLibraryTweet(lib.name);
+        if (tweet) {
+            $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + twitter[11] + '</div>');
+        }
+
         $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
         if (lib.closed == 't') $('#sidebar-librarycontent').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
         map.flyTo(L.latLng(lib.lat, lib.lng), 13);
@@ -107,6 +115,12 @@
         $('#sidebar-authoritycontent').append('<h3>' + feature.properties.name + '</h3>');
         $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success">' + numFormat(libraries[feature.properties['authority_id']].length) + ' libraries</p></div><//div>');
         $('#sidebar-authoritycontent').append('<hr>');
+
+        // Display latest tweet
+        var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);
+        if (tweet) {
+            $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
+        }
 
         // Show libraries group by type
         $('#sidebar-authoritycontent').append('<div id="divLibSelected"><p>Select a library to see further details.</p></div>');
@@ -139,6 +153,8 @@
             }
         });
         addLibrariesToMap(libraries[feature.properties['authority_id']]);
+        $('#sidebar-newscontent').empty();
+        $('#liNews').addClass('disabled');
         displayPLNStories('changes', feature.properties, 'Changes');
         displayPLNStories('local', feature.properties, 'Local news');
         sidebar.open('authority');
@@ -149,7 +165,7 @@
     // INIT
     // Load the initial set of data
     /////////////////////////////////////////////////////////////
-    PublicLibrariesNews.loadData(3, true, false, true, function () {
+    PublicLibrariesNews.loadData(3, true, false, true, true, function () {
         var authGeo = PublicLibrariesNews.getAuthGeoWithStories();
         libraries = PublicLibrariesNews.getLibrariesByAuthority();
         var onEachFeature = function (feature, layer) {

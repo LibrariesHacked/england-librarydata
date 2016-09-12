@@ -3,22 +3,30 @@
     dataUrl: '/data/PLN_YY_M_TYPE.json?v=2',
     authGeoUrl: '/data/AuthoritiesGeo.json?v=2',
     authUrl: '/data/Authorities.csv?v=2',
+    authTwitterUrl: '/data/AuthoritiesTwitter.json?v=2',
+    libTwitterUrl: '/data/LibrariesTwitter.json?v=2',
     librariesUrl: '/data/Libraries.csv?v=2',
     authoritiesGeo: null,
     authorities: null,
     libraries: null,
+    authoritiesTwitter: null,
+    librariesTwitter: null,
     locations: {},
     stories: {
         changes: {},
         local: {}
     },
-    loadData: function (months, authGeo, auth, libraries, callback) {
+    loadData: function (months, authGeo, auth, libraries, twitter, callback) {
         // Need to work out which files to load.
         // Filenames are in the form PLN_2015_11_changes
         var urls = [];
         if (authGeo) urls.push(['', '', 'authgeo', this.authGeoUrl]);
         if (auth) urls.push(['', '', 'authorities', this.authUrl]);
         if (libraries) urls.push(['', '', 'libraries', this.librariesUrl]);
+        if (twitter) {
+            urls.push(['', '', 'authtwitter', this.authTwitterUrl]);
+            urls.push(['', '', 'libtwitter', this.libTwitterUrl]);
+        }
 
         for (x = 0; x <= months ; x++) {
             var date = moment().subtract(x, 'months');
@@ -47,6 +55,8 @@
                 if (type == 'libraries') this.libraries = Papa.parse(data[0], { header: true }).data;
                 if (type == 'authgeo') this.authoritiesGeo = data[0];
                 if (type == 'authorities') this.authorities = Papa.parse(data[0], { header: true }).data;
+                if (type == 'authtwitter') this.authoritiesTwitter = data[0];
+                if (type == 'libtwitter') this.librariesTwitter = data[0];
             }.bind(this));
             callback();
         }.bind(this));
@@ -114,6 +124,20 @@
             authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;
+    },
+    getLatestAuthorityTweet: function (auth) {
+        var tweet = null;
+        $.each(this.authoritiesTwitter, function (i, t) {
+            if (t[0].toLowerCase().replace('county council', '').trim() == auth.toLowerCase().replace('county council', '').trim()) tweet = t;
+        }.bind(this));
+        return tweet;
+    },
+    getLatestLibraryTweet: function (lib) {
+        var tweet = null;
+        $.each(this.librariesTwitter, function (i, t) {
+            if (t[0].toLowerCase() == lib.toLowerCase()) tweet = t;
+        }.bind(this));
+        return tweet;
     },
     getStoriesGroupedByLocation: function (type) {
         var locs = {};
