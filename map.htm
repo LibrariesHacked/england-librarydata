@@ -25,6 +25,7 @@
                     <li class="disabled" id="liAuthority"><a href="#authority" role="tab"><i class="fa fa-list"></i></a></li>
                     <li class="disabled" id="liLibrary"><a href="#library" role="tab"><i class="fa fa-building"></i></a></li>
                     <li class="disabled" id="liNews"><a href="#news" role="tab"><i class="fa fa-newspaper-o"></i></a></li>
+                    <li id="liLocation"><a href="#location" role="tab"><i class="fa fa-map-marker"></i></a></li>
                 </ul>
                 <ul role="tablist">
                     <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
@@ -36,7 +37,14 @@
                         { libraries: england } <span class="sidebar-close"><i class="fa fa-caret-right"></i></span>
                     </h1>
                     <div id="sidebar-maincontent">
-
+                        <h2>Map of English library authorities</h2>
+                        <p>This is a map</p>
+                        <p>It is embellished with a number of open datasets.</p>
+                        <ul>
+                            <li>Authority boundary lines, as published by the OS.</li>
+                            <li>The indices of deprivation, available from the ONS.</li>
+                            <li></li>
+                        </ul>
                     </div>
                 </div>
                 <div class="sidebar-pane" id="authority">
@@ -57,9 +65,17 @@
                         <h2>Map display settings</h2>
                         <p>Customise the map display here.</p>
                         <h3>Shading</h3>
-                        <p>The shading of the authority regions represents concentration of different aspects of the data, for each authority.</p>
-
+                        <p>The shading of the authority regions represents concentration of different aspects of the data, for each authority.  Select an option below</p>
+                        <ul id="style-changer" class="nav nav-pills nav-stacked">
+                            <li class="active"><a href="#" data-style="1">Number of libraries</a></li>
+                            <li><a href="#" data-style="2">Number of libraries per population</a></li>
+                            <li><a href="#" data-style="3">Number of libraries per area</a></li>
+                        </ul>
                     </div>
+                </div>
+                <div class="sidebar-pane" id="location">
+                    <h1 class="sidebar-header">Your location <span class="sidebar-close"><i class="fa fa-caret-right"></i></span></h1>
+                    <div id="sidebar-locationcontent"></div>
                 </div>
             </div>
         </div>

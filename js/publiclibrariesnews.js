@@ -100,19 +100,24 @@
         return authGeoData;
     },
     getAuthGeoWithStoriesAndLibraries: function () {
-        var authGeoData = this.getAuthGeoDataWithStories();
+        var authGeoData = this.getAuthGeoWithStories();
         var libs = this.getLibrariesByAuthority();
         var auth = {};
         $.each(authGeoData.features, function (x, y) {
-            authGeoData.features[x].libraries = {};
-            $.each(libraries[authGeoData.features[x].properties.authority_id], function () {
-                if (!authGeoData.features[x].libraries[libs.type]) authGeoData.features[x].libraries[lib.type] = { libs: [] };
-                if ((lib.type != '' && lib.closed == '') || lib.lat != '') libs[lib.type].libs.push(lib);
+            var nonClosedCount = 0;
+            authGeoData.features[x].properties.libraries = {};
+            $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
+                if (!authGeoData.features[x].properties.libraries[l.type]) authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
+                if ((l.type != '' && l.closed == '') || l.lat != '') authGeoData.features[x].properties.libraries[l.type].libs.push(l);
+                if (l.type != 'XL') nonClosedCount = nonClosedCount + 1;
             });
+            authGeoData.features[x].properties['libraryCount'] = nonClosedCount;
             auth[authGeoData.features[x].properties.name] = { idx: x };
         }.bind(this));
         var authLALSortedLibraryCount = Object.keys(auth).sort(function (a, b) {
-            return authGeoData.features[a].properties.libraries['LAL'] - authGeoData.features[b].properties.libraries['LAL'];
+            var aLal = authGeoData.features[auth[a].idx].properties.libraries;
+            var bLal = authGeoData.features[auth[b].idx].properties.libraries;
+            return (b['LAL'] ? b['LAL'].length : 0) - (a['LAL'] ? a['LAL'].length : 0);
         });
         return authGeoData;
     },

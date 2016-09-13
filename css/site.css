@@ -149,3 +149,7 @@
 .btn-libs {
     margin: 2px;
 }
+
+#sidebar-maincontent, #sidebar-authoritycontent, #sidebar-librarycontent, #sidebar-newscontent, #sidebar-settingscontent {
+    padding-right: 20px;
+}

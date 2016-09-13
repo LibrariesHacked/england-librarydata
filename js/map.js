@@ -4,7 +4,6 @@
     // Map - Initialise the map, set center, zoom, etc.
     /////////////////////////////////////////////////
     var authBoundaries = null;
-    var libraries = null;
     var markerArray = L.layerGroup([]);
     var selectedAuth = '';
     var mapType = 1;
@@ -29,17 +28,23 @@
     // Map shading options
     // 1. Number of libraries
     // 2. Libraries per population
-    // Closed libraries
-    // 3. Local news stories (PLN)
-    // 4. Changes (PLN)
+    // 3. Libraries per area
+    // 4. Closed libraries
+    // 5. Local news stories (PLN)
+    // 6. Changes (PLN)
     /////////////////////////////////////////////////////////
     var setMapStyles = function () {
+        if (selectedAuth == '') map.flyToBounds(authBoundaries.getBounds(), { paddingTopLeft: L.point(-350, 0) });
         authBoundaries.setStyle(function (feature) {
             var style = config.boundaryLines.normal;
+            if (selectedAuth != '' && feature.properties['authority_id'] != selectedAuth) return config.boundaryLines.nonselected;
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
+            if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 45) return config.boundaryLines.gl;
             if (feature.properties['authority_id'] == selectedAuth) return config.boundaryLines.selected;
             if (mapType == 1) style.fillOpacity = feature.properties['pcLocalNews'].toFixed(1);
-            if (mapType == 1) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
+            if (mapType == 2) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
+            if (mapType == 3) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
+            if (mapType == 4) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
             return style;
         });
     };
@@ -50,18 +55,21 @@
     var addLibrariesToMap = function (libraries) {
         map.removeLayer(markerArray);
         markerArray.clearLayers();
-        $.each(libraries, function (x, lib) {
-            var style = { radius: 4, stroke: true, color: config.libStyles[lib.type].colour };
-            var m = L.circleMarker([lib.lat, lib.lng], style);
-            m.on('click', function (e) {
-                clickLibrary(lib);
+        $.each(Object.keys(libraries), function (i, t) {
+            var style = { radius: 4, stroke: true, color: config.libStyles[t].colour };
+            $.each(libraries[t].libs, function (x, lib) {
+                if (lib.lat && lib.lng) {
+                    var m = L.circleMarker([lib.lat, lib.lng], style);
+                    m.on('click', function (e) {
+                        clickLibrary(lib);
+                    });
+                    m.bindTooltip(lib.name, {});
+                    markerArray.addLayer(m);
+                }
             });
-            m.bindTooltip(lib.name, {});
-            markerArray.addLayer(m);
         });
         map.addLayer(markerArray);
     };
-
 
     /////////////////////////////////////////////////////////
     // Function: displayPLNStories
@@ -85,58 +93,58 @@
     /////////////////////////////////////////////////////////
     var clickLibrary = function (lib) {
         sidebar.close();
-        
-        $('#liLibrary').removeClass('disabled');
-        $('#sidebar-librarycontent').empty();
-        $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[lib.type].cssClass + '">' + lib.name + '</h3>');
 
-        // Display latest tweet
-        var tweet = PublicLibrariesNews.getLatestLibraryTweet(lib.name);
-        if (tweet) {
-            $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + twitter[11] + '</div>');
-        }
+        var displayLib = function () {
+            map.off('moveend', displayLib);
+            $('#liLibrary').removeClass('disabled');
+            $('#sidebar-librarycontent').empty();
+            $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[lib.type].cssClass + '">' + lib.name + '</h3>');
 
-        $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
-        if (lib.closed == 't') $('#sidebar-librarycontent').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
+            // Display latest tweet
+            var tweet = PublicLibrariesNews.getLatestLibraryTweet(lib.name);
+            if (tweet) {
+                $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + twitter[11] + '</div>');
+            }
+
+            $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
+            if (lib.closed == 't') $('#sidebar-librarycontent').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
+
+            sidebar.open('library');
+        };
+        map.on('moveend', displayLib);
         map.flyTo(L.latLng(lib.lat, lib.lng), 13);
-        sidebar.open('library');
     };
 
     /////////////////////////////////////////////////////////
     // Function: clickAuth
     /////////////////////////////////////////////////////////
     var clickAuth = function (e, feature, layer) {
-        map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(-400, 0) });
-        selectedAuth = feature.properties['authority_id'];
-        $('#liAuthority').removeClass('disabled');
-        $('#sidebar-authoritycontent').empty();
+        sidebar.close();
+        var displayAuthority = function () {
+            map.off('moveend', displayAuthority);
+            selectedAuth = feature.properties['authority_id'];
+            $('#liAuthority').removeClass('disabled');
+            $('#sidebar-authoritycontent').empty();
 
-        // Show authority details
-        $('#sidebar-authoritycontent').append('<h3>' + feature.properties.name + '</h3>');
-        $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success">' + numFormat(libraries[feature.properties['authority_id']].length) + ' libraries</p></div><//div>');
-        $('#sidebar-authoritycontent').append('<hr>');
+            // Show authority details
+            $('#sidebar-authoritycontent').append('<h3>' + feature.properties.name + '</h3>');
+            $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success">' + numFormat(feature.properties.libraryCount) + ' libraries</p></div><//div>');
 
-        // Display latest tweet
-        var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);
-        if (tweet) {
-            $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
-        }
+            // Display latest tweet
+            var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);
+            if (tweet) {
+                $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="' + '' + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow()  + '</strong> ' + tweet[11] + '</div>');
+            }
 
-        // Show libraries group by type
-        $('#sidebar-authoritycontent').append('<div id="divLibSelected"><p>Select a library to see further details.</p></div>');
-        $('#sidebar-authoritycontent').append('<h4>Libraries</h4>');
-        var libs = {};
-        $.each(libraries[feature.properties['authority_id']], function (i, lib) {
-            if (!libs[lib.type]) libs[lib.type] = { libs: [] };
-            if ((lib.type != '' && lib.closed == '') || lib.lat != '') libs[lib.type].libs.push(lib);
-        });
-        $.each(Object.keys(libs), function (i, k) {
-            if (libs[k].libs.length > 0) {
+            // Show libraries group by type
+            $('#sidebar-authoritycontent').append('<h4>Libraries</h4>');
+            $('#sidebar-authoritycontent').append('<p>Select a library to see further details.</p>');
+            $.each(Object.keys(feature.properties.libraries), function (i, k) {
                 var type = $('<div>');
                 var hd = $('<h5>', {
-                    text: libs[k].libs.length + ' ' + config.libStyles[k].type
+                    text: feature.properties.libraries[k].libs.length + ' ' + config.libStyles[k].type
                 }).appendTo(type);
-                $.each(libs[k].libs, function (x, l) {
+                $.each(feature.properties.libraries[k].libs, function (x, l) {
                     $('<a>', {
                         text: l.name,
                         title: l.name,
@@ -148,17 +156,19 @@
                         }
                     }).appendTo(type);
                 });
-
                 $('#sidebar-authoritycontent').append(type);
-            }
-        });
-        addLibrariesToMap(libraries[feature.properties['authority_id']]);
-        $('#sidebar-newscontent').empty();
-        $('#liNews').addClass('disabled');
-        displayPLNStories('changes', feature.properties, 'Changes');
-        displayPLNStories('local', feature.properties, 'Local news');
-        sidebar.open('authority');
-        setMapStyles();
+            });
+            addLibrariesToMap(feature.properties.libraries);
+            $('#sidebar-newscontent').empty();
+            $('#liNews').addClass('disabled');
+            displayPLNStories('changes', feature.properties, 'Changes');
+            displayPLNStories('local', feature.properties, 'Local news');
+            sidebar.open('authority');
+            setMapStyles();
+        };
+
+        map.on('moveend', displayAuthority);
+        map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(-350, 0) });
     };
 
     /////////////////////////////////////////////////////////////
@@ -166,8 +176,7 @@
     // Load the initial set of data
     /////////////////////////////////////////////////////////////
     PublicLibrariesNews.loadData(3, true, false, true, true, function () {
-        var authGeo = PublicLibrariesNews.getAuthGeoWithStories();
-        libraries = PublicLibrariesNews.getLibrariesByAuthority();
+        var authGeo = PublicLibrariesNews.getAuthGeoWithStoriesAndLibraries();
         var onEachFeature = function (feature, layer) {
             layer.on('click', function (e) {
                 clickAuth(e, feature, layer)
@@ -183,16 +192,30 @@
         });
         setMapStyles();
 
-        ////
-        // Event: Zoom out
-        /////////////
+        /////////////////////////////////////////////////////////////
+        // EVENT: Zoom out
+        // On zooming out of the map at a certain level remove markers
+        // and return to full UK state.
+        /////////////////////////////////////////////////////////////
         map.on('zoomend', function () {
-            if (map.getZoom() < 8) {
+            if (markerArray.getLayers().length > 0 && map.getZoom() < 9) {
                 map.removeLayer(markerArray);
                 markerArray.clearLayers();
                 selectedAuth = '';
                 setMapStyles();
             }
+        });
+
+        /////////////////////////////////////////////////////////////
+        // EVENT: 
+        // 
+        /////////////////////////////////////////////////////////////
+        $('#style-changer li a').on('click', function (e) {
+            $('#style-changer li').removeClass('active');
+            $(e.target.parentElement).addClass('active')
+            e.preventDefault();
+            mapType = e.target.dataset.style;
+            setMapStyles();
         });
     });
 });
