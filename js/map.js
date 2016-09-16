@@ -41,10 +41,13 @@
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 45) return config.boundaryLines.gl;
             if (feature.properties['authority_id'] == selectedAuth) return config.boundaryLines.selected;
-            if (mapType == 1) style.fillOpacity = feature.properties['pcLocalNews'].toFixed(1);
-            if (mapType == 2) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
-            if (mapType == 3) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
-            if (mapType == 4) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
+            if (mapType == 1) style.fillOpacity = feature.properties['pcLibraries'].toFixed(1);
+            if (mapType == 2) style.fillOpacity = feature.properties['pcLibrariesPerPopulation'].toFixed(1);
+            if (mapType == 3) style.fillOpacity = feature.properties['pcLibrariesPerArea'].toFixed(1);
+            if (mapType == 4) style.fillOpacity = feature.properties['pcLalLibraries'].toFixed(1);
+            if (mapType == 5) style.fillOpacity = feature.properties['pcLalLibraries'].toFixed(1);
+            if (mapType == 6) style.fillOpacity = feature.properties['pcLocalNews'].toFixed(1);
+            if (mapType == 7) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
             return style;
         });
     };
@@ -200,9 +203,9 @@
         map.on('zoomend', function () {
             if (markerArray.getLayers().length > 0 && map.getZoom() < 9) {
                 map.removeLayer(markerArray);
-                markerArray.clearLayers();
-                selectedAuth = '';
-                setMapStyles();
+            }
+            if (markerArray.getLayers().length > 0 && map.getZoom() >= 9) {
+                map.addLayer(markerArray);
             }
         });
 

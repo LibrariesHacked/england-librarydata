@@ -61,6 +61,13 @@
             callback();
         }.bind(this));
     },
+    searchByPostcode: function (postcode, callback) {
+        $.get('api.postcodes.io/postcodes/' + postcode, function (data) {
+            var lat = data.result.latitude;
+            var lng = data.result.longitiude;
+            callback({ lat: lat, lng: lng });
+        });
+    },
     getAuthoritiesWithStories: function () {
         var authorities = this.authorities;
         var changes = this.getStoriesGroupedByLocation('changes');
@@ -105,20 +112,48 @@
         var auth = {};
         $.each(authGeoData.features, function (x, y) {
             var nonClosedCount = 0;
+            var closedCount = 0;
+            var localAuthorityCount = 0;
             authGeoData.features[x].properties.libraries = {};
             $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
                 if (!authGeoData.features[x].properties.libraries[l.type]) authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
                 if ((l.type != '' && l.closed == '') || l.lat != '') authGeoData.features[x].properties.libraries[l.type].libs.push(l);
                 if (l.type != 'XL') nonClosedCount = nonClosedCount + 1;
+                if (l.type == 'XL') closedCount = closedCount + 1;
+                if (l.type == 'LAL') localAuthorityCount = localAuthorityCount + 1;
             });
             authGeoData.features[x].properties['libraryCount'] = nonClosedCount;
+            authGeoData.features[x].properties['libraryCountPerPopulation'] = nonClosedCount / authGeoData.features[x].properties.population;
+            authGeoData.features[x].properties['libraryCountPerArea'] = nonClosedCount / authGeoData.features[x].properties.hectares;
+            authGeoData.features[x].properties['closedLibraryCount'] = closedCount;
+            authGeoData.features[x].properties['lalLibraryCount'] = localAuthorityCount;
             auth[authGeoData.features[x].properties.name] = { idx: x };
         }.bind(this));
-        var authLALSortedLibraryCount = Object.keys(auth).sort(function (a, b) {
-            var aLal = authGeoData.features[auth[a].idx].properties.libraries;
-            var bLal = authGeoData.features[auth[b].idx].properties.libraries;
-            return (b['LAL'] ? b['LAL'].length : 0) - (a['LAL'] ? a['LAL'].length : 0);
+        var librariesSorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[b].idx].properties.lalLibraryCount - authGeoData.features[auth[a].idx].properties.lalLibraryCount;
         });
+        var librariesPerPopulationSorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[b].idx].properties.libraryCountPerPopulation - authGeoData.features[auth[a].idx].properties.libraryCountPerPopulation;
+        });
+        var librariesPerAreaSorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[b].idx].properties.libraryCountPerArea - authGeoData.features[auth[a].idx].properties.libraryCountPerArea;
+        });
+        var authLALSorted = Object.keys(auth).sort(function (a, b) {
+            var a = authGeoData.features[auth[a].idx].properties.libraries;
+            var b = authGeoData.features[auth[b].idx].properties.libraries;
+            return (b['LAL'] ? b['LAL'].libs.length : 0) - (a['LAL'] ? a['LAL'].libs.length : 0);
+        });
+        var closedLibrariesSorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[b].idx].properties.closedLibraryCount - authGeoData.features[auth[a].idx].properties.closedLibraryCount;
+        });
+        $.each(authGeoData.features, function (x, y) {
+            authGeoData.features[x].properties['pcLibraries'] = librariesSorted.indexOf(y.properties.name) / Object.keys(librariesSorted).length;
+            authGeoData.features[x].properties['pcLibrariesPerPopulation'] = librariesPerPopulationSorted.indexOf(y.properties.name) / Object.keys(librariesPerPopulationSorted).length;
+            authGeoData.features[x].properties['pcLibrariesPerArea'] = librariesPerAreaSorted.indexOf(y.properties.name) / Object.keys(librariesPerAreaSorted).length;
+            authGeoData.features[x].properties['pcClosedLibraries'] = closedLibrariesSorted.indexOf(y.properties.name) / Object.keys(closedLibrariesSorted).length;
+            authGeoData.features[x].properties['pcLalLibraries'] = authLALSorted.indexOf(y.properties.name) / Object.keys(authLALSorted).length;
+            
+        }.bind(this));
         return authGeoData;
     },
     getLibrariesByAuthority: function () {
