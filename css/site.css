@@ -26,6 +26,15 @@
     height: 200px;
 }
 
+#divFmlMap {
+    width: 100%;
+    height: 300px;
+}
+
+#divFmlForm, #divFmlForm * {
+    z-index: 2147483647 !important;
+}
+
 #divStoriesLineChart {
     height: 200px;
 }

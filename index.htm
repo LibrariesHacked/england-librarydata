@@ -10,7 +10,6 @@
     <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
-    <link href="bower_components/morris.js/morris.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -52,7 +51,7 @@
                             <option value="">All authorities</option>
                         </select>
                     </div>
-                    <div id="divLibrariesDonutChart"></div>
+                    <canvas id="divLibrariesDonutChart"></canvas>
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
@@ -109,8 +108,8 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">find my library</h3>
                     </div>
-                    <div class="panel-body">
-                        <div class="form-group">
+                    <div class="panel-body" id="divFmlMap">
+                        <div class="form-group" id="divFmlForm">
                             <label class="control-label">Search by postcode</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-home"></span></span>
@@ -128,7 +127,12 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">libraries location stats</h3>
                     </div>
-                    <div class="panel-body"></div>
+                    <div class="panel-body">
+                        <select id="selLibraryType" class="form-control">
+                            <option value="">All types</option>
+                        </select>
+                    </div>
+                    <div id="divLibrariesStatsBarChart"></div>
                 </div>
             </div>
         </div>
@@ -142,9 +146,10 @@
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/raphael/raphael.min.js"></script>
-    <script src="bower_components/morris.js/morris.min.js"></script>
     <script src="bower_components/shufflejs/dist/shuffle.min.js"></script>
     <script src="bower_components/papaparse/papaparse.min.js"></script>
+    <script src="bower_components/leaflet-geometry/dist/leaflet.geometryutil.js"></script>
+    <script src="bower_components/chart.js/dist/Chart.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/dashboard.js"></script>

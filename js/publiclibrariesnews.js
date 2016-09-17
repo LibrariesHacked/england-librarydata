@@ -62,9 +62,9 @@
         }.bind(this));
     },
     searchByPostcode: function (postcode, callback) {
-        $.get('api.postcodes.io/postcodes/' + postcode, function (data) {
+        $.get('https://api.postcodes.io/postcodes/' + postcode, function (data) {
             var lat = data.result.latitude;
-            var lng = data.result.longitiude;
+            var lng = data.result.longitude;
             callback({ lat: lat, lng: lng });
         });
     },
@@ -147,11 +147,11 @@
             return authGeoData.features[auth[b].idx].properties.closedLibraryCount - authGeoData.features[auth[a].idx].properties.closedLibraryCount;
         });
         $.each(authGeoData.features, function (x, y) {
-            authGeoData.features[x].properties['pcLibraries'] = librariesSorted.indexOf(y.properties.name) / Object.keys(librariesSorted).length;
-            authGeoData.features[x].properties['pcLibrariesPerPopulation'] = librariesPerPopulationSorted.indexOf(y.properties.name) / Object.keys(librariesPerPopulationSorted).length;
-            authGeoData.features[x].properties['pcLibrariesPerArea'] = librariesPerAreaSorted.indexOf(y.properties.name) / Object.keys(librariesPerAreaSorted).length;
-            authGeoData.features[x].properties['pcClosedLibraries'] = closedLibrariesSorted.indexOf(y.properties.name) / Object.keys(closedLibrariesSorted).length;
-            authGeoData.features[x].properties['pcLalLibraries'] = authLALSorted.indexOf(y.properties.name) / Object.keys(authLALSorted).length;
+            authGeoData.features[x].properties['pcLibraries'] = librariesSorted.indexOf(y.properties.name) / Object.keys(librariesSorted).length.toFixed(1);
+            authGeoData.features[x].properties['pcLibrariesPerPopulation'] = librariesPerPopulationSorted.indexOf(y.properties.name) / Object.keys(librariesPerPopulationSorted).length.toFixed(1);
+            authGeoData.features[x].properties['pcLibrariesPerArea'] = librariesPerAreaSorted.indexOf(y.properties.name) / Object.keys(librariesPerAreaSorted).length.toFixed(1);
+            authGeoData.features[x].properties['pcClosedLibraries'] = closedLibrariesSorted.indexOf(y.properties.name) / Object.keys(closedLibrariesSorted).length.toFixed(1);
+            authGeoData.features[x].properties['pcLalLibraries'] = authLALSorted.indexOf(y.properties.name) / Object.keys(authLALSorted).length.toFixed(1);
             
         }.bind(this));
         return authGeoData;
@@ -164,6 +164,13 @@
             authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;
+    },
+    getLibraryLocations: function () {
+        var libArray = [];
+        $.each(this.libraries, function (i, lib) {
+            if (lib.type != '' && lib.type != 'XL' && lib.lat && lib.lng && lib.lat != '' && lib.lng != '') libArray.push(L.latLng(lib.lat, lib.lng));
+        }.bind(this));
+        return libArray;
     },
     getLatestAuthorityTweet: function (auth) {
         var tweet = null;

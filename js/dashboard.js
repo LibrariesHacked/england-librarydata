@@ -3,6 +3,7 @@
     // Map.  Initialise the map, set center, zoom, etc.
     /////////////////////////////////////////////////
     var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 7);
+    var fmlMap = null;
     var plnData = null;
     var libraries = null;
     var authLibs = null;
@@ -22,17 +23,46 @@
         //////////////////////////////////////////////
         // 1. 
         //////////////////////////////////////////////
-        typeDonut = Morris.Donut({
-            element: 'divLibrariesDonutChart',
-            data: [{ label: 'Loading', value: 1 }],
-            colors: $.map(Object.keys(config.libStyles), function (x, y) {
-                return config.libStyles[x].colour;
-            }),
-            resize: true
+        //typeDonut = Morris.Donut({
+        //    element: 'divLibrariesDonutChart',
+        //    data: [{ label: 'Loading', value: 1 }],
+        //    colors: $.map(Object.keys(config.libStyles), function (x, y) {
+        //        return config.libStyles[x].colour;
+        //    }),
+        //    resize: true
+        //});
+        var typeDonut = new Chart($('#divLibrariesDonutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: [''],
+                datasets: [
+                    {
+                        data: [1],
+                        backgroundColor: [],
+                        hoverBackgroundColor: []
+                    }]
+            },
+            animation: {
+                animateScale: true
+            }
         });
         var updateLibTypesDonut = function (libAuthority) {
             var libTypes = {};
-            var chartData = [];
+
+            //for (i in typeDonut.datasets[0].points) typeDonut.removeData();
+
+            var chartData = {
+                labels: [], 
+                datasets: {
+                    data: [],
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                        return config.libStyles[x].colour;
+                    }),
+                    hoverBackgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                        return config.libStyles[x].colour;
+                    })
+                }
+            };
             $.each(Object.keys(authLibs).sort(), function (i, x) {
                 if (x == libAuthority | !libAuthority) {
                     $.each(authLibs[x].libraries, function (y, z) {
@@ -42,9 +72,12 @@
                 }
             });
             $.each(libTypes, function (t, c) {
-                chartData.push({ label: (config.libStyles[t] ? config.libStyles[t].type : 'Unknown'), value: c });
+                chartData.labels.push((config.libStyles[t] ? config.libStyles[t].type : 'Unknown'));
+                chartData.datasets.data.push(c);
             });
-            typeDonut.setData(chartData);
+            typeDonut.config.data.datasets[0] = chartData.datasets;
+            typeDonut.config.data.labels = chartData.labels;
+            typeDonut.update();
         };
         $.each(Object.keys(authLibs).sort(), function (i, x) {
             $('#selLibraryTypeAuthority').append($("<option></option>").attr("value", x).text(x));
@@ -181,7 +214,20 @@
             var pattern = new RegExp('^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$');
             var valid = pattern.test($('#txtPostcode').val());
 
-            alert(valid);
+            PublicLibrariesNews.searchByPostcode($('#txtPostcode').val(), function (data) {
+                if (fmlMap == null) {
+                    fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
+                    L.tileLayer('http://{s}.tiles.mapbox.com/v3/librarieshacked.jefmk67b/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(fmlMap);
+                }
+
+                // Get closest
+                var closest = L.GeometryUtil.closest(fmlMap, PublicLibrariesNews.getLibraryLocations(), L.latLng(data.lat, data.lng), false);
+
+                // Zoom to user location
+                fmlMap.flyTo(L.latLng(data.lat, data.lng), 13);
+            });
         });
     });
 });
