@@ -1,6 +1,6 @@
 # Public Libraries News
 
-Project to display public libraries news data in a data dashboard.
+Project to display English libraries data in a data dashboard.
 
 ## What is it?
 
