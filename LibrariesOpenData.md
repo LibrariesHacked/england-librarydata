@@ -154,13 +154,22 @@ copy (
 		notes,
 		-- Add the LSOA data
 		ls.lsoa11nm "lsoa_name",
-		ls.lsoa11cd "lsoa_code"
+		ls.lsoa11cd "lsoa_code",
 		-- Add the deprivation data
+		i.imd_decile,
+		i.income_decile ,
+		i.education_decile,
+		i.health_decile,
+		i.crime_decile,
+		i.housing_decile,
+		i.environment_decile
 	from libraries l
 	join authorities a
 	on a.id = l.authority_id
 	join lsoa_boundaries ls
 	on ST_Within(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), ST_SetSRID(ls.geom, 27700))
+	join imd i
+	on i.lsoa_code = ls.lsoa11cd
 ) to 'Libraries.csv' DELIMITER ',' CSV HEADER;
 ```
 

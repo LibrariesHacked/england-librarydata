@@ -23,14 +23,6 @@
         //////////////////////////////////////////////
         // 1. 
         //////////////////////////////////////////////
-        //typeDonut = Morris.Donut({
-        //    element: 'divLibrariesDonutChart',
-        //    data: [{ label: 'Loading', value: 1 }],
-        //    colors: $.map(Object.keys(config.libStyles), function (x, y) {
-        //        return config.libStyles[x].colour;
-        //    }),
-        //    resize: true
-        //});
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
             type: 'doughnut',
             data: {
@@ -42,15 +34,17 @@
                         hoverBackgroundColor: []
                     }]
             },
-            animation: {
-                animateScale: true
+            options: {
+                animation: {
+                    animateScale: true
+                },
+                legend: {
+                    position: 'bottom'
+                }
             }
         });
         var updateLibTypesDonut = function (libAuthority) {
-            var libTypes = {};
-
-            //for (i in typeDonut.datasets[0].points) typeDonut.removeData();
-
+            var libTypes = { LAL: 0, CRL: 0, ICL: 0, CL: 0, XL: 0 };
             var chartData = {
                 labels: [], 
                 datasets: {
@@ -66,7 +60,6 @@
             $.each(Object.keys(authLibs).sort(), function (i, x) {
                 if (x == libAuthority | !libAuthority) {
                     $.each(authLibs[x].libraries, function (y, z) {
-                        if (!libTypes[z.type]) libTypes[z.type] = 0;
                         libTypes[z.type] = libTypes[z.type] + 1;
                     });
                 }
@@ -153,7 +146,7 @@
         for (x = 0 ; x < 3; x++) addLocation('changes', x, 'last');
 
         //////////////////////////////////////////////
-        // 2. Populate the mini map
+        // 3. Populate the mini map
         //////////////////////////////////////////////
         var miniMapCurrent = 'local';
         var mapLayers = { 'local': '', 'changes': '' };
@@ -194,18 +187,74 @@
         addMiniMapPoints('local');
 
 
-        ////////////////////////////////////////////
-        // SHUFFLE
-        ////////////////////////////////////////////
-        setTimeout(function () {
-            // Now shuffle the pack.
-            var Shuffle = window.shuffle;
-            var element = document.getElementById('divGrid');
-            var shuffle = new Shuffle(element, {
-                itemSelector: '.col'
+        //////////////////////////////////////////////
+        // 4. 
+        //////////////////////////////////////////////
+        var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
+            type: 'horizontalBar',
+            data: {
+                labels: [''],
+                datasets: [
+                    {
+                        data: [1],
+                        backgroundColor: [],
+                        hoverBackgroundColor: []
+                    }]
+            },
+            options: {
+                animation: {
+                    animateScale: true
+                }
+            }
+        });
+        var updateLibTypeStatsBar = function (type) {
+            var indices = {
+                multiple: { title: 'Multiple', count: 0, value: 0 },
+                income: { title: 'Income', count: 0, value: 0 },
+                education: { title: 'Education', count: 0, value: 0 },
+                health: { title: 'Health', count: 0, value: 0 },
+                crime: { title: 'Crime', count: 0, value: 0 },
+                environment: { title: 'Environment', count: 0, value: 0 }
+            };
+            var chartData = {
+                labels: [],
+                datasets: {
+                    data: [],
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                        return config.libStyles[x].colour;
+                    }),
+                    hoverBackgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                        return config.libStyles[x].colour;
+                    })
+                }
+            };
+            $.each(Object.keys(authLibs).sort(), function (i, x) {
+                $.each(authLibs[x].libraries, function (y, z) {
+                    if (z.type == type || !type) {
+                        indices.multiple = { title: indices.multiple.title, count: indices.multiple.count + 1, value: indices.multiple.value + parseInt(z['imd_decile']) };
+                        indices.income = { title: indices.income.title, count: indices.income.count + 1, value: indices.income.value + parseInt(z['income_decile']) };
+                        indices.education = { title: indices.education.title, count: indices.education.count + 1, value: indices.education.value + parseInt(z['education_decile']) };
+                        indices.health = { title: indices.health.title, count: indices.health.count + 1, value: indices.health.value + parseInt(z['health_decile']) };
+                        indices.crime = { title: indices.crime.title, count: indices.crime.count + 1, value: indices.crime.value + parseInt(z['crime_decile']) };
+                        indices.environment = { title: indices.environment.title, count: indices.environment.count + 1, value: indices.environment.value + parseInt(z['environment_decile']) };
+                    }
+                });
             });
-        }, 500);
-
+            $.each(Object.keys(indices), function (t, c) {
+                chartData.labels.push(indices[c].title);
+                chartData.datasets.data.push((indices[c].value / indices[c].count).toFixed(1));
+            });
+            typeBar.config.data.datasets[0] = chartData.datasets;
+            typeBar.config.data.labels = chartData.labels;
+            typeBar.update();
+        };
+        $.each(Object.keys(config.libStyles), function (i, x) {
+            $('#selLibraryType').append($("<option></option>").attr("value", x).text(config.libStyles[x].type));
+        });
+        $('#selLibraryType').change(function () {
+            updateLibTypeStatsBar($('#selLibraryType').find(":selected").val());
+        });
+        updateLibTypeStatsBar();
 
         ////////////////////////////////////////////
         // EVENT: Postcode search
@@ -229,5 +278,14 @@
                 fmlMap.flyTo(L.latLng(data.lat, data.lng), 13);
             });
         });
+
+        ////////////////////////////////////////////
+        // ON LOAD: SHUFFLE
+        ////////////////////////////////////////////
+        setTimeout(function () {
+            var Shuffle = window.shuffle;
+            var element = document.getElementById('divGrid');
+            var shuffle = new Shuffle(element, { itemSelector: '.col' });
+        }, 250);
     });
 });
