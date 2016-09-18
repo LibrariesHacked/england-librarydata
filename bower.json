@@ -27,7 +27,12 @@
     "leaflet.locatecontrol": "^0.52.0",
     "leaflet-geometry": "^0.4.0",
     "leaflet": "v1.0.0-rc.3",
-    "chart.js": "npm:chart.js#^2.2.2"
+    "chart.js": "npm:chart.js#^2.2.2",
+    "datatables.net": "^1.10.12",
+    "datatables.net-bs": "^1.10.12",
+    "datatables.net-buttons-bs": "^1.2.2",
+    "datatables.net-responsive": "^2.1.0",
+    "datatables.net-responsive-bs": "^2.1.0"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",

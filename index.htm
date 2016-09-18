@@ -52,6 +52,12 @@
                     <div class="panel-body">
                         <canvas id="divLibrariesDonutChart"></canvas>
                     </div>
+                    <div id="divAuthDetails" class="panel-body">
+                        <p class="lead">All authorities: Libraries</p>
+                        <select id="selLibraryTypeLibrary" class="form-control">
+                            <option value="">Select a library</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
@@ -69,7 +75,7 @@
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-info">
+                <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">news and changes map</h3>
                     </div>
@@ -104,11 +110,11 @@
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-warning">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title">find my library</h3>
                     </div>
-                    <div class="panel-body" id="divFmlMap">
+                    <div class="panel-body">
                         <div class="form-group" id="divFmlForm">
                             <label class="control-label">Search by postcode</label>
                             <div class="input-group">
@@ -120,16 +126,17 @@
                             </div>
                         </div>
                     </div>
+                    <div id="divFmlMap" class="panel-body"></div>
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-warning">
+                <div class="panel panel-success">
                     <div class="panel-heading">
-                        <h3 class="panel-title">libraries area stats</h3>
+                        <h3 class="panel-title">library area stats</h3>
                     </div>
                     <div class="panel-body">
-                        <select id="selLibraryType" class="form-control">
-                            <option value="">All types</option>
+                        <select id="selAreaStatsAuthority" class="form-control">
+                            <option value="">All authorities</option>
                         </select>
                     </div>
                     <div class="panel-body">
