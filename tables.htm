@@ -8,6 +8,9 @@
     <meta name="author" content="">
     <title>{ libraries: england } | hacked projects</title>
     <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -26,7 +29,7 @@
                 <ul class="nav navbar-nav navbar-left">
                     <li><a href="/">dashboard</a></li>
                     <li><a href="/map">map</a></li>
-                    <li  class="active"><a href="/tables">data tables</a></li>
+                    <li class="active"><a href="/tables">data tables</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">about</a></li>
@@ -34,27 +37,40 @@
             </div>
         </div>
     </nav>
-    <div class="container">
-        <h2>Library authorities in England</h2>
+    <div id="main" class="container">
+        <h3>Library authorities in England</h3>
         <p></p>
-        <table id="tblAuthorities" class="table"></table>
-
-        <h2>Libraries in England</h2>
+        <div class="table-responsive">
+            <table id="tblAuthorities" class="table table-condensed dt-responsive"></table>
+        </div>
+        <h3>Libraries in England</h3>
         <p></p>
-        <table id="tblLibraries" class="table"></table>
-
-        <h2>Public Libraries News - Local news</h2>
+        <div class="table-responsive">
+            <table id="tblLibraries" class="table table-condensed dt-responsive"></table>
+        </div>
+        <h3>Public Libraries News - Local news</h3>
         <p></p>
-        <table id="tblPlnLocal" class="table"></table>
-
-        <h2>Public Libraries News - Changes</h2>
+        <div class="table-responsive">
+            <table id="tblPlnLocal" class="table table-condensed dt-responsive"></table>
+        </div>
+        <h3>Public Libraries News - Changes</h3>
         <p></p>
-        <table id="tblPlnChanges" class="table"></table>
-
+        <div class="table-responsive">
+            <table id="tblPlnChanges" class="table table-condensed dt-responsive"></table>
+        </div>
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="bower_components/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="bower_components/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="bower_components/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
+    <script src="js/tables.js"></script>
 </body>
 </html>
