@@ -2,14 +2,14 @@
     /////////////////////////////////////////////////
     // Map.  Initialise the map, set center, zoom, etc.
     /////////////////////////////////////////////////
-    var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 7);
+    var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 6);
     var fmlMap = null;
     var plnData = null;
     var libraries = null;
     var authLibs = null;
     var typeDonut = null;
-    L.tileLayer('http://{s}.tiles.mapbox.com/v3/librarieshacked.jefmk67b/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
+        attribution: '&copy; <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     L.control.zoom({
         position: 'topright'
@@ -21,7 +21,7 @@
         authLibs = PublicLibrariesNews.getAuthoritiesWithLibraries();
 
         //////////////////////////////////////////////
-        // 1. 
+        // 1. Library types by authority
         //////////////////////////////////////////////
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
             type: 'doughnut',
@@ -74,6 +74,12 @@
         };
         $.each(Object.keys(authLibs).sort(), function (i, x) {
             $('#selLibraryTypeAuthority').append($("<option></option>").attr("value", x).text(x));
+            if (authLibs[x] && authLibs[x].libraries) {
+                var libs = authLibs[x].libraries.sort(function (a, b) { return b.name = a.name });
+                $.each(libs, function (y, z) {
+                    $('#selLibraryTypeLibrary').append($("<option></option>").attr("value", z.name).text(z.name));
+                });
+            }
         });
         $('#selLibraryTypeAuthority').change(function () {
             updateLibTypesDonut($('#selLibraryTypeAuthority').find(":selected").val());
@@ -91,7 +97,7 @@
             changes: [0, 2],
             local: [0, 0]
         };
-        var clickListItem = function (e) {
+        var clickNextItem = function (e) {
             e.preventDefault();
             var type = e.currentTarget.id.substring(0, e.currentTarget.id.indexOf('Location'));
             var item = $(e.currentTarget);
@@ -104,9 +110,15 @@
         };
         var addLocation = function (type, index, position) {
             var it = plnData[type][locs[type][index]];
-            var li = '<a href="#" id="' + type + 'Location' + index + '" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '"><span class="badge">1/' + it.stories.length + '</span><h4 class="list-group-item-heading">' + locs[type][index] + '</h5><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(locs[type][index] + ' – ', '')).text() + '</p></a>';
+            var li = '<div href="#" class="list-group-item ' + type + '-list">' +
+                '<span class="badge">1/' + it.stories.length + '</span>' +
+                '<h4 class="list-group-item-heading">' + locs[type][index] + '</h4>' +
+                '<p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(locs[type][index] + ' – ', '')).text() + '</p>' +
+                '<p class="pull-right"><a id="' + type + 'Location' + index + '" href="#" data-current="0" data-auth="' + locs[type][index] + '">next item &raquo;</a></p>' +
+                '<p><a href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
+                
             position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
-            $('#' + type + 'Location' + index).on('click', clickListItem);
+            $('#' + type + 'Location' + index).on('click', clickNextItem);
         };
         var removeLocation = function (type, position) {
             $('#' + type + 'Counts a:' + position).remove();
@@ -256,9 +268,12 @@
         });
         updateLibTypeStatsBar();
 
-        ////////////////////////////////////////////
+
+        /////////////////////////////////////////
+        // 5. Find My Library
+        ////////////////////////////////////////
+
         // EVENT: Postcode search
-        ////////////////////////////////////////////
         $('#btnPostcodeSearch').on('click', function (e) {
             var pattern = new RegExp('^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$');
             var valid = pattern.test($('#txtPostcode').val());
@@ -266,8 +281,8 @@
             PublicLibrariesNews.searchByPostcode($('#txtPostcode').val(), function (data) {
                 if (fmlMap == null) {
                     fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
-                    L.tileLayer('http://{s}.tiles.mapbox.com/v3/librarieshacked.jefmk67b/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
+                        attribution: '&copy; <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                     }).addTo(fmlMap);
                 }
 
@@ -276,6 +291,12 @@
 
                 // Zoom to user location
                 fmlMap.flyTo(L.latLng(data.lat, data.lng), 13);
+
+                // Disable keyboard shortcuts when on the postcode text box.
+                var disableKeyboard = function() { fmlMap.keyboard.disable(); };
+                var enableKeyboard = function() { fmlMap.keyboard.enable(); };
+                $('#txtPostcode').on('focus', disableKeyboard);
+                $('#txtPostcode').off('focus', enableKeyboard);
             });
         });
 
