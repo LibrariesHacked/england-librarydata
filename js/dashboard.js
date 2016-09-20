@@ -8,6 +8,7 @@
     var libraries = null;
     var authLibs = null;
     var typeDonut = null;
+    var shuffle = null;
     L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
         attribution: '&copy; <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
@@ -32,7 +33,8 @@
                         data: [1],
                         backgroundColor: [],
                         hoverBackgroundColor: []
-                    }]
+                    }
+                ]
             },
             options: {
                 animation: {
@@ -100,8 +102,9 @@
         var updateLibraryDetailsSelect = function (authority) {
             var allLibs = [];
             $('#selLibraryDetailsLibrary').empty();
+            $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('Select a library'));
             $.each(Object.keys(authLibs).sort(), function (i, x) {
-                if (authLibs[x] && authLibs[x].libraries && (i == authority || !authority)) allLibs = allLibs.concat(authLibs[x].libraries);
+                if (authLibs[x] && authLibs[x].libraries && (x == authority)) allLibs = allLibs.concat(authLibs[x].libraries);
             });
             allLibs.sort(function (a, b) { return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); });
             $.each(allLibs, function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.name).text(z.name)) });
@@ -115,44 +118,51 @@
             updateLibraryDetailsSelect($('#selLibraryDetailsAuthority').find(":selected").val());
         });
 
-
+        // Event: On selecting a library, display that library's details.
+        $('#selLibraryDetailsLibrary').change(function () {
+            if ($('#selLibraryDetailsLibrary').find(":selected").val() == '') return;
+            var libAuth = [$('#selLibraryDetailsLibrary').find(":selected").val(), $('#selLibraryDetailsAuthority').find(":selected").val()];
+            var library = null;
+            $.each(authLibs[libAuth[1]].libraries, function (i, x) { if (x.name == libAuth[0]) library = x; });
+            $('#divLibraryDetails').empty();
+            $('#divLibraryDetails').append('<h4>' + library.name + '</h4>');
+            $('#divLibraryDetails').append('<small>' + (library.type ? config.libStyles[library.type].type : '') + '</small>');
+            $('#divLibraryDetails').append('<p>' + (library.address ? '' : '') + '</p>');
+            $('#divLibraryDetails').append('<p>' + (library.notes ? library.notes : '') +  '</p>');
+            shuffle.update();
+        });
 
         /////////////////////////////////////////////////////////////////
         // 3. Widgets: Public Libraries News Local and changes stories
         /////////////////////////////////////////////////////////////////
-        var locs = {
-            changes: PublicLibrariesNews.locationsSortedByCount('changes'),
-            local: PublicLibrariesNews.locationsSortedByCount('local')
-        };
-        var currentlyShowing = {
-            changes: [0, 2],
-            local: [0, 0]
-        };
+        var locs = { changes: PublicLibrariesNews.locationsSortedByCount('changes'), local: PublicLibrariesNews.locationsSortedByCount('local') };
+        var currentlyShowing = { changes: [0, 2], local: [0, 0] };
         var clickNextItem = function (e) {
             e.preventDefault();
             var type = e.currentTarget.id.substring(0, e.currentTarget.id.indexOf('Location'));
-            var item = $(e.currentTarget);
+            var item = $(e.currentTarget.parentNode.parentNode);
             var authSt = plnData[type][$(item).data('auth')].stories;
             var index = $(item).data('current') + 1;
             if (index == authSt.length) index = 0;
             $(item).data('current', index);
             $(item).find('span').text((index + 1) + '/' + authSt.length);
-            $(item).find('.list-group-item-text').text(authSt[index].text);
+            $(item).find('.list-group-item-text').html(authSt[index].text.replace($(item).data('auth') + ' – ', ''));
+            shuffle.update();
         };
         var addLocation = function (type, index, position) {
             var it = plnData[type][locs[type][index]];
-            var li = '<div href="#" class="list-group-item ' + type + '-list">' +
+            var li = '<div href="#" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '">' +
                 '<span class="badge">1/' + it.stories.length + '</span>' +
                 '<h4 class="list-group-item-heading">' + locs[type][index] + '</h4>' +
                 '<p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(locs[type][index] + ' – ', '')).text() + '</p>' +
-                '<p class="pull-right"><a id="' + type + 'Location' + index + '" href="#" data-current="0" data-auth="' + locs[type][index] + '">next item &raquo;</a></p>' +
+                (it.stories.length > 1 ? '<p class="pull-right"><a id="' + type + 'Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
                 '<p><a href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
 
             position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
             $('#' + type + 'Location' + index).on('click', clickNextItem);
         };
         var removeLocation = function (type, position) {
-            $('#' + type + 'Counts a:' + position).remove();
+            $('#' + type + 'Counts div:' + position).remove();
         };
         var updateSwitchChevrons = function (type) {
             $('#' + type + 'Switch li').attr('class', '');
@@ -180,6 +190,7 @@
             updateSwitchChevrons(type);
             removeLocation(type, (incr == 1 ? 'first' : 'last'));
             addLocation(type, incr == 1 ? currentlyShowing[type][1] : currentlyShowing[type][0], (incr == 1 ? 'last' : 'first'));
+            shuffle.update();
         };
         $('ul.page-story-list li a').on('click', clickShiftChangeItems);
         // Initial setup: 3 items for changes, 1 for local news (generally longer)
@@ -228,6 +239,19 @@
             addMiniMapPoints(type);
         });
         addMiniMapPoints('local');
+
+
+
+
+        //////////////////////////////////////////////
+        // 4. Twitter
+        //////////////////////////////////////////////
+
+
+
+
+
+
 
 
         //////////////////////////////////////////////
@@ -337,7 +361,7 @@
         setTimeout(function () {
             var Shuffle = window.shuffle;
             var element = document.getElementById('divGrid');
-            var shuffle = new Shuffle(element, { itemSelector: '.col' });
+            shuffle = new Shuffle(element, { itemSelector: '.col' });
         }, 250);
     });
 });
