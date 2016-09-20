@@ -46,7 +46,7 @@
         var updateLibTypesDonut = function (libAuthority) {
             var libTypes = { LAL: 0, CRL: 0, ICL: 0, CL: 0, XL: 0 };
             var chartData = {
-                labels: [], 
+                labels: [],
                 datasets: {
                     data: [],
                     backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
@@ -72,23 +72,54 @@
             typeDonut.config.data.labels = chartData.labels;
             typeDonut.update();
         };
+
+        // Initially populate the library authorities select control.
         $.each(Object.keys(authLibs).sort(), function (i, x) {
             $('#selLibraryTypeAuthority').append($("<option></option>").attr("value", x).text(x));
-            if (authLibs[x] && authLibs[x].libraries) {
-                var libs = authLibs[x].libraries.sort(function (a, b) { return b.name = a.name });
-                $.each(libs, function (y, z) {
-                    $('#selLibraryTypeLibrary').append($("<option></option>").attr("value", z.name).text(z.name));
-                });
-            }
         });
+
+        // Event: On changing the library authority, update the donut chart.
         $('#selLibraryTypeAuthority').change(function () {
             updateLibTypesDonut($('#selLibraryTypeAuthority').find(":selected").val());
         });
+
+        // Initially set the library types donut chart.
         updateLibTypesDonut();
 
+
         //////////////////////////////////////////////
-        // 2. Populate the changes and local stories
+        // 2. Widget: Library details by authority
         //////////////////////////////////////////////
+
+        // Populate the authority control
+        $.each(Object.keys(authLibs).sort(), function (i, x) {
+            $('#selLibraryDetailsAuthority').append($("<option></option>").attr("value", x).text(x));
+        });
+
+        // Populate the select library control
+        var updateLibraryDetailsSelect = function (authority) {
+            var allLibs = [];
+            $('#selLibraryDetailsLibrary').empty();
+            $.each(Object.keys(authLibs).sort(), function (i, x) {
+                if (authLibs[x] && authLibs[x].libraries && (i == authority || !authority)) allLibs = allLibs.concat(authLibs[x].libraries);
+            });
+            allLibs.sort(function (a, b) { return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); });
+            $.each(allLibs, function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.name).text(z.name)) });
+        };
+
+        // Initially set the library select for all libraries.
+        updateLibraryDetailsSelect();
+
+        // Event: On changing the library authority, update the library select chart.
+        $('#selLibraryDetailsAuthority').change(function () {
+            updateLibraryDetailsSelect($('#selLibraryDetailsAuthority').find(":selected").val());
+        });
+
+
+
+        /////////////////////////////////////////////////////////////////
+        // 3. Widgets: Public Libraries News Local and changes stories
+        /////////////////////////////////////////////////////////////////
         var locs = {
             changes: PublicLibrariesNews.locationsSortedByCount('changes'),
             local: PublicLibrariesNews.locationsSortedByCount('local')
@@ -116,7 +147,7 @@
                 '<p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(locs[type][index] + ' – ', '')).text() + '</p>' +
                 '<p class="pull-right"><a id="' + type + 'Location' + index + '" href="#" data-current="0" data-auth="' + locs[type][index] + '">next item &raquo;</a></p>' +
                 '<p><a href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
-                
+
             position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
             $('#' + type + 'Location' + index).on('click', clickNextItem);
         };
@@ -293,8 +324,8 @@
                 fmlMap.flyTo(L.latLng(data.lat, data.lng), 13);
 
                 // Disable keyboard shortcuts when on the postcode text box.
-                var disableKeyboard = function() { fmlMap.keyboard.disable(); };
-                var enableKeyboard = function() { fmlMap.keyboard.enable(); };
+                var disableKeyboard = function () { fmlMap.keyboard.disable(); };
+                var enableKeyboard = function () { fmlMap.keyboard.enable(); };
                 $('#txtPostcode').on('focus', disableKeyboard);
                 $('#txtPostcode').off('focus', enableKeyboard);
             });

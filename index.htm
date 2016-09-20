@@ -38,11 +38,12 @@
     </nav>
     <div id="main" class="container">
         <br />
+        <!-- Widget 1: Library types by authority -->
         <div id="divGrid" class="row">
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-info">
+                <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">libraries by authority</h3>
+                        <h3 class="panel-title">library types by authority</h3>
                     </div>
                     <div class="panel-body">
                         <select id="selLibraryTypeAuthority" class="form-control">
@@ -52,13 +53,32 @@
                     <div class="panel-body">
                         <canvas id="divLibrariesDonutChart"></canvas>
                     </div>
-                    <div id="divAuthDetails" class="panel-body">
-                        <select id="selLibraryTypeLibrary" class="form-control">
-                            <option value="">Select a library</option>
-                        </select>
+                </div>
+            </div>
+            <!-- Widget 2: Library details by authority -->
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">libraries by authority</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <select id="selLibraryDetailsAuthority" class="form-control">
+                                <option value="">All authorities</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select id="selLibraryDetailsLibrary" class="form-control">
+                                <option value="">Select a library</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <canvas id="divLibrariesDonutChart"></canvas>
                     </div>
                 </div>
             </div>
+            <!-- Widget 3: Public libraries news changes -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-danger">
                     <div class="panel-heading">
@@ -73,8 +93,9 @@
                     </div>
                 </div>
             </div>
+            <!-- Widget 4: Public libraries news - map -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-default">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">news and changes map</h3>
                     </div>
@@ -94,6 +115,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Widget 5: Public libraries news - changes -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-warning">
                     <div class="panel-heading">
@@ -108,12 +130,13 @@
                     </div>
                 </div>
             </div>
+            <!-- Widget 6: Find My Library -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-primary">
+                <div class="panel panel-success">
                     <div class="panel-heading">
                         <h3 class="panel-title">find my library</h3>
                     </div>
-                    <div class="panel-body" id="divFmlMap" >
+                    <div class="panel-body" id="divFmlMap">
                         <div class="form-group" id="divFmlForm">
                             <label class="control-label">Search by postcode</label>
                             <div class="input-group">
@@ -127,8 +150,9 @@
                     </div>
                 </div>
             </div>
+            <!-- Widget 7: Libraries area stats -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-success">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title">library area stats</h3>
                     </div>
@@ -140,7 +164,6 @@
                     <div class="panel-body">
                         <canvas id="divLibrariesStatsBarChart"></canvas>
                     </div>
-                    
                 </div>
             </div>
         </div>
