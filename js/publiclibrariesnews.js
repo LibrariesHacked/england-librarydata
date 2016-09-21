@@ -61,6 +61,20 @@
             callback();
         }.bind(this));
     },
+    getAuthorityListSorted: function () {
+        return $.map(this.authorities, function (i, x) { return i.name }).sort();
+    },
+    getLibrariesListSorted: function (authority) {
+        var libraries = this.getLibrariesByAuthority();
+        return $.map(this.authorities, function (i, x) {
+            if (x.name == authority || !authority) return $.map(libraries[i.name], function(y, z) { return y.name });
+        }).sort();
+    },
+    getCountLibrariesByAuthorityType: function (authority, type) {
+        $.each(this.libraries, function () {
+
+        });
+    },
     searchByPostcode: function (postcode, callback) {
         $.get('https://api.postcodes.io/postcodes/' + postcode, function (data) {
             var lat = data.result.latitude;

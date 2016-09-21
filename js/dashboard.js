@@ -4,9 +4,6 @@
     /////////////////////////////////////////////////
     var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 6);
     var fmlMap = null;
-    var plnData = null;
-    var libraries = null;
-    var authLibs = null;
     var typeDonut = null;
     var shuffle = null;
     L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
@@ -18,8 +15,6 @@
 
     // Load the initial set of data - for the dashboard start with 1 month
     PublicLibrariesNews.loadData(2, false, true, true, true, function () {
-        plnData = { 'local': PublicLibrariesNews.getStoriesGroupedByLocation('local'), 'changes': PublicLibrariesNews.getStoriesGroupedByLocation('changes') }
-        authLibs = PublicLibrariesNews.getAuthoritiesWithLibraries();
 
         //////////////////////////////////////////////
         // 1. Library types by authority
@@ -59,16 +54,9 @@
                     })
                 }
             };
-            $.each(Object.keys(authLibs).sort(), function (i, x) {
-                if (x == libAuthority | !libAuthority) {
-                    $.each(authLibs[x].libraries, function (y, z) {
-                        libTypes[z.type] = libTypes[z.type] + 1;
-                    });
-                }
-            });
-            $.each(libTypes, function (t, c) {
+            $.each(Object.keys(config.libStyles), function (t, c) {
                 chartData.labels.push((config.libStyles[t] ? config.libStyles[t].type : 'Unknown'));
-                chartData.datasets.data.push(c);
+                chartData.datasets.data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, t));
             });
             typeDonut.config.data.datasets[0] = chartData.datasets;
             typeDonut.config.data.labels = chartData.labels;
@@ -76,38 +64,26 @@
         };
 
         // Initially populate the library authorities select control.
-        $.each(Object.keys(authLibs).sort(), function (i, x) {
-            $('#selLibraryTypeAuthority').append($("<option></option>").attr("value", x).text(x));
-        });
+        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selLibraryTypeAuthority').append($("<option></option>").attr("value", x).text(x)); });
 
         // Event: On changing the library authority, update the donut chart.
-        $('#selLibraryTypeAuthority').change(function () {
-            updateLibTypesDonut($('#selLibraryTypeAuthority').find(":selected").val());
-        });
+        $('#selLibraryTypeAuthority').change(function () { updateLibTypesDonut($('#selLibraryTypeAuthority').find(":selected").val()); });
 
         // Initially set the library types donut chart.
         updateLibTypesDonut();
-
 
         //////////////////////////////////////////////
         // 2. Widget: Library details by authority
         //////////////////////////////////////////////
 
         // Populate the authority control
-        $.each(Object.keys(authLibs).sort(), function (i, x) {
-            $('#selLibraryDetailsAuthority').append($("<option></option>").attr("value", x).text(x));
-        });
+        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selLibraryDetailsAuthority').append($("<option></option>").attr("value", x).text(x)); });
 
         // Populate the select library control
         var updateLibraryDetailsSelect = function (authority) {
-            var allLibs = [];
             $('#selLibraryDetailsLibrary').empty();
             $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('Select a library'));
-            $.each(Object.keys(authLibs).sort(), function (i, x) {
-                if (authLibs[x] && authLibs[x].libraries && (x == authority)) allLibs = allLibs.concat(authLibs[x].libraries);
-            });
-            allLibs.sort(function (a, b) { return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0); });
-            $.each(allLibs, function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.name).text(z.name)) });
+            $.each(PublicLibrariesNews.getAuthorityListSorted(), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.name).text(z.name)) });
         };
 
         // Initially set the library select for all libraries.
