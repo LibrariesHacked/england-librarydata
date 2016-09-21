@@ -32,7 +32,8 @@
     "datatables.net-bs": "^1.10.12",
     "datatables.net-buttons-bs": "^1.2.2",
     "datatables.net-responsive": "^2.1.0",
-    "datatables.net-responsive-bs": "^2.1.0"
+    "datatables.net-responsive-bs": "^2.1.0",
+    "drmonty-leaflet-awesome-markers": "^2.0.2"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",

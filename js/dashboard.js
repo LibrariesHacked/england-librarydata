@@ -18,6 +18,7 @@
 
         //////////////////////////////////////////////
         // 1. Library types by authority
+        // 
         //////////////////////////////////////////////
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
             type: 'doughnut',
@@ -65,6 +66,7 @@
 
         //////////////////////////////////////////////
         // 2. Widget: Library details by authority
+        // 
         //////////////////////////////////////////////
 
         // Populate the authority control
@@ -102,7 +104,8 @@
         });
 
         /////////////////////////////////////////////////////////////////
-        // 3. Widgets: Public Libraries News Local and changes stories
+        // 3/5. Widgets: Public Libraries News Local and changes stories
+        // 
         /////////////////////////////////////////////////////////////////
         var locs = { changes: PublicLibrariesNews.locationsSortedByCount('changes'), local: PublicLibrariesNews.locationsSortedByCount('local') };
         var currentlyShowing = { changes: [0, 2], local: [0, 0] };
@@ -169,7 +172,8 @@
         for (x = 0 ; x < 3; x++) addLocation('changes', x, 'last');
 
         //////////////////////////////////////////////
-        // 3. Populate the mini map
+        // 4. Populate the mini map
+        // 
         //////////////////////////////////////////////
         var miniMapCurrent = 'local';
         var mapLayers = { 'local': '', 'changes': '' };
@@ -186,12 +190,10 @@
                     if (o.stories.length >= 5) size = ['medium', 30];
                     if (o.stories.length >= 10) size = ['large', 40];
                     var newsIcon = L.divIcon({ html: '<div><span>' + o.stories.length + '</span></div>', className: "marker-cluster marker-cluster-" + size[0], iconSize: new L.Point(size[1], size[1]) });
-                    var marker = L.marker([o.lat, o.lng], { icon: newsIcon });
-                    marker.stories = o.stories;
-                    marker.title = i;
-                    var markerClick = function (e) {
-                    };
-                    marker.on('click', markerClick);
+
+                    var popup = L.popup({ maxWidth: 160, maxHeight: 140, closeButton: false })
+                        .setContent('<h5>' + i + '</h5>' + $.map(o.stories, function (s, i) { return s.text.replace(i + ' – ', '') }).join('<hr>'));
+                    var marker = L.marker([o.lat, o.lng], { icon: newsIcon }).bindPopup(popup);
                     markerArray.push(marker);
                 });
                 mapLayers[type] = L.layerGroup(markerArray);
@@ -211,62 +213,24 @@
 
 
         //////////////////////////////////////////////
-        // 4. Twitter
+        // 6. Twitter
+        // 
         //////////////////////////////////////////////
 
 
-
-
-
-
-
-
-        //////////////////////////////////////////////
-        // 4. 
-        //////////////////////////////////////////////
-        var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
-            type: 'horizontalBar',
-            data: {
-                labels: ['Multiple', 'Crime', 'Income', 'Health', 'Education'],
-                datasets: []
-            },
-            options: {
-                animation: {
-                    animateScale: true
-                }
-            }
-        });
-        var updateLibTypeStatsBar = function (authority) {
-            typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
-                var ind = PublicLibrariesNews.getDeprivationIndicesByAuthorityAndLibType(authority, x);
-                return {
-                    label: config.libStyles[x].type,
-                    data: $.map(Object.keys(ind), function (i, y) {
-                        var sum = 0;
-                        $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
-                        return Math.round(sum / ind[i].length);
-                    }),
-                    backgroundColor: config.libStyles[x].colour,
-                    hoverBackgroundColor: config.libStyles[x].colour
-                };
-            });
-            typeBar.update();
-        };
-        $.each(Object.keys(config.libStyles), function (i, x) {
-            $('#selLibraryType').append($("<option></option>").attr("value", x).text(config.libStyles[x].type));
-        });
-        $('#selLibraryType').change(function () {
-            updateLibTypeStatsBar($('#selLibraryType').find(":selected").val());
-        });
-        updateLibTypeStatsBar();
 
 
         /////////////////////////////////////////
-        // 5. Find My Library
+        // 7. Find My Library
         ////////////////////////////////////////
 
         // EVENT: Postcode search
         $('#btnPostcodeSearch').on('click', function (e) {
+
+            // Show spinner
+            $('#spFmlSpinner').removeClass('fa-home');
+            $('#spFmlSpinner').addClass('fa-spinner');
+
             var pattern = new RegExp('^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$');
             var valid = pattern.test($('#txtPostcode').val());
 
@@ -289,8 +253,55 @@
                 var enableKeyboard = function () { fmlMap.keyboard.enable(); };
                 $('#txtPostcode').on('focus', disableKeyboard);
                 $('#txtPostcode').off('focus', enableKeyboard);
+
+                $('#spFmlSpinner').removeClass('fa-spinner');
+                $('#spFmlSpinner').addClass('fa-home');
             });
         });
+
+        //////////////////////////////////////////////
+        // 8.
+        //  
+        //////////////////////////////////////////////
+        var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Multiple', 'Crime', 'Income', 'Health', 'Education'],
+                datasets: []
+            },
+            options: {
+                animation: {
+                    animateScale: true
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        });
+        var updateLibTypeStatsBar = function (authority) {
+            typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
+                var ind = PublicLibrariesNews.getDeprivationIndicesByAuthorityAndLibType(authority, x);
+                return {
+                    label: config.libStyles[x].type,
+                    data: $.map(Object.keys(ind), function (i, y) {
+                        var sum = 0;
+                        $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
+                        return ind[i] == 0 ? '' : (sum / ind[i].length).toFixed(1);
+                    }),
+                    backgroundColor: config.libStyles[x].colour,
+                    hoverBackgroundColor: config.libStyles[x].colour
+                };
+            });
+            typeBar.update();
+        };
+        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAreaStatsAuthority').append($("<option></option>").attr("value", x).text(x)); });
+        $('#selAreaStatsAuthority').change(function () {
+            updateLibTypeStatsBar($('#selAreaStatsAuthority').find(":selected").val());
+        });
+        updateLibTypeStatsBar();
+
+
+
 
         ////////////////////////////////////////////
         // ON LOAD: SHUFFLE

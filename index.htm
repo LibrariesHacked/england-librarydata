@@ -9,6 +9,7 @@
     <title>{ libraries: england } | hacked projects</title>
     <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="bower_components/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
@@ -30,9 +31,7 @@
                     <li><a href="/map">map</a></li>
                     <li><a href="/tables">data tables</a></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">about</a></li>
-                </ul>
+                <ul class="nav navbar-nav navbar-right"></ul>
             </div>
         </div>
     </nav>
@@ -128,7 +127,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Widget 6: Find My Library -->
+            <!-- Widget 7: Find My Library -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-success">
                     <div class="panel-heading">
@@ -138,7 +137,7 @@
                         <div class="form-group" id="divFmlForm">
                             <label class="control-label">Search by postcode</label>
                             <div class="input-group">
-                                <span class="input-group-addon"><span class="fa fa-home"></span></span>
+                                <span class="input-group-addon"><span class="fa fa-home" id="spFmlSpinner"></span></span>
                                 <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 6AX" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
                                 <span class="input-group-btn">
                                     <button id="btnPostcodeSearch" class="btn btn-success" type="button">Go</button>
@@ -148,7 +147,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Widget 7: Libraries area stats -->
+            <!-- Widget 8: Libraries area stats -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
@@ -164,6 +163,22 @@
                     </div>
                 </div>
             </div>
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">credits and licensing</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p><small>Library news data published by <a href="http://www.publiclibrariesnews.com" target="_blank">Public Libraries News</a> under Creative Commons</small></p>
+                        <p><small>English libraries and authorities taken from Libraries Taskforce dataset published as Open Data under the Open Government Licence.</small></p>
+                        <p><small>Twitter account details from Google spreadsheet, curated by <a href="https://twitter.com/shedsue" target="_blank">@ShedSue</a> and <a href="https://twitter.com/juliac2" target="_blank">@JuliaC2</a></small></p>
+                        <p><small>Maps include </small></p>
+                    </div>
+                </div>
+            </div>
+
+
+            
         </div>
         <footer>
             <hr />
@@ -174,10 +189,10 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="bower_components/raphael/raphael.min.js"></script>
     <script src="bower_components/shufflejs/dist/shuffle.min.js"></script>
     <script src="bower_components/papaparse/papaparse.min.js"></script>
     <script src="bower_components/leaflet-geometry/dist/leaflet.geometryutil.js"></script>
+    <script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.min.js"></script>
     <script src="bower_components/chart.js/dist/Chart.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/publiclibrariesnews.js"></script>

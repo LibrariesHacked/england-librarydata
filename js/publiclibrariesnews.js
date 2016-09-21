@@ -81,6 +81,24 @@
         });
         return depIndices;
     },
+    getAuthoritiesDataTable: function () {
+        var datatable = [];
+        $.each(this.authorities, function (i, x) {
+            datatable.push([
+                x.name, // Name
+                x.code, // Code
+                16, // Libraries
+                1, // Local authority
+                '', // Commissioned
+                '', // Community
+                '', // Independent community
+                '', // Closed
+                '', // Population
+                '' // Area
+            ])
+        });
+        return datatable;
+    },
     getAuthorityListSorted: function () {
         return $.map(this.authorities, function (i, x) { return i.name }).sort();
     },

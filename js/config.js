@@ -1,10 +1,10 @@
 ﻿var config = {
     libStyles: {
-        LAL: { type: 'Local authority', description: '', cssClass: 'success', colour: '#38B44A' },
-        CRL: { type: 'Community', description: '', cssClass: 'warning', colour: '#EFB73E' },
-        ICL: { type: 'Independent community', description: '', cssClass: 'default', colour: '#AEA79F' },
-        CL: { type: 'Commissioned', description: '', cssClass: 'info', colour: '#772953' },
-        XL: { type: 'Closed', description: '', cssClass: 'danger', colour: '#DF382C' }
+        LAL: { type: 'Local authority', description: '', cssClass: 'success', colour: '#93C54B' },
+        CL: { type: 'Commissioned', description: '', cssClass: 'info', colour: '#29ABE0' },
+        CRL: { type: 'Community', description: '', cssClass: 'warning', colour: '#F47C3C' },
+        ICL: { type: 'Independent community', description: '', cssClass: 'primary', colour: '#325D88' },
+        XL: { type: 'Closed', description: '', cssClass: 'danger', colour: '#D9534F' }
     },
     markerPoints: { radius: 4, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
     boundaryLines: {
