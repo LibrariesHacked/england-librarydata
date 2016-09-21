@@ -22,12 +22,18 @@
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
             type: 'doughnut',
             data: {
-                labels: [''],
+                labels: $.map(Object.keys(config.libStyles), function (x, y) {
+                    return config.libStyles[x].type;
+                }),
                 datasets: [
                     {
-                        data: [1],
-                        backgroundColor: [],
-                        hoverBackgroundColor: []
+                        data: [],
+                        backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                            return config.libStyles[x].colour;
+                        }),
+                        hoverBackgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                            return config.libStyles[x].colour;
+                        })
                     }
                 ]
             },
@@ -41,25 +47,10 @@
             }
         });
         var updateLibTypesDonut = function (libAuthority) {
-            var libTypes = { LAL: 0, CRL: 0, ICL: 0, CL: 0, XL: 0 };
-            var chartData = {
-                labels: [],
-                datasets: {
-                    data: [],
-                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                        return config.libStyles[x].colour;
-                    }),
-                    hoverBackgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                        return config.libStyles[x].colour;
-                    })
-                }
-            };
+            typeDonut.config.data.datasets[0].data = [];
             $.each(Object.keys(config.libStyles), function (t, c) {
-                chartData.labels.push((config.libStyles[t] ? config.libStyles[t].type : 'Unknown'));
-                chartData.datasets.data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, t));
+                typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c));
             });
-            typeDonut.config.data.datasets[0] = chartData.datasets;
-            typeDonut.config.data.labels = chartData.labels;
             typeDonut.update();
         };
 
@@ -81,9 +72,12 @@
 
         // Populate the select library control
         var updateLibraryDetailsSelect = function (authority) {
+            $('#selLibraryDetailsLibrary').attr('disabled', true);
             $('#selLibraryDetailsLibrary').empty();
+            if (!authority || authority == '') return;
             $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('Select a library'));
-            $.each(PublicLibrariesNews.getAuthorityListSorted(), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.name).text(z.name)) });
+            $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z).text(z)) });
+            $('#selLibraryDetailsLibrary').attr('disabled', false);
         };
 
         // Initially set the library select for all libraries.
@@ -96,15 +90,14 @@
 
         // Event: On selecting a library, display that library's details.
         $('#selLibraryDetailsLibrary').change(function () {
-            if ($('#selLibraryDetailsLibrary').find(":selected").val() == '') return;
             var libAuth = [$('#selLibraryDetailsLibrary').find(":selected").val(), $('#selLibraryDetailsAuthority').find(":selected").val()];
-            var library = null;
-            $.each(authLibs[libAuth[1]].libraries, function (i, x) { if (x.name == libAuth[0]) library = x; });
+            if (libAuth[0] == '') return;
+            var library = PublicLibrariesNews.getLibraryByAuthorityNameAndLibName(libAuth[1], libAuth[0]);
             $('#divLibraryDetails').empty();
             $('#divLibraryDetails').append('<h4>' + library.name + '</h4>');
             $('#divLibraryDetails').append('<small>' + (library.type ? config.libStyles[library.type].type : '') + '</small>');
             $('#divLibraryDetails').append('<p>' + (library.address ? '' : '') + '</p>');
-            $('#divLibraryDetails').append('<p>' + (library.notes ? library.notes : '') +  '</p>');
+            $('#divLibraryDetails').append('<p>' + (library.notes ? library.notes : '') + '</p>');
             shuffle.update();
         });
 
@@ -117,7 +110,7 @@
             e.preventDefault();
             var type = e.currentTarget.id.substring(0, e.currentTarget.id.indexOf('Location'));
             var item = $(e.currentTarget.parentNode.parentNode);
-            var authSt = plnData[type][$(item).data('auth')].stories;
+            var authSt = PublicLibrariesNews.getStoriesGroupedByLocation(type)[$(item).data('auth')].stories;
             var index = $(item).data('current') + 1;
             if (index == authSt.length) index = 0;
             $(item).data('current', index);
@@ -126,7 +119,7 @@
             shuffle.update();
         };
         var addLocation = function (type, index, position) {
-            var it = plnData[type][locs[type][index]];
+            var it = PublicLibrariesNews.getStoriesGroupedByLocation(type)[locs[type][index]];
             var li = '<div href="#" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '">' +
                 '<span class="badge">1/' + it.stories.length + '</span>' +
                 '<h4 class="list-group-item-heading">' + locs[type][index] + '</h4>' +
@@ -188,7 +181,7 @@
             $('#ulMapPointType li#' + type).attr('class', 'active');
             if (mapLayers[type] == '') {
                 var markerArray = [];
-                $.each(plnData[type], function (i, o) {
+                $.each(PublicLibrariesNews.getStoriesGroupedByLocation(type), function (i, o) {
                     var size = ['small', 20];
                     if (o.stories.length >= 5) size = ['medium', 30];
                     if (o.stories.length >= 10) size = ['large', 40];
@@ -217,8 +210,6 @@
         addMiniMapPoints('local');
 
 
-
-
         //////////////////////////////////////////////
         // 4. Twitter
         //////////////////////////////////////////////
@@ -236,13 +227,8 @@
         var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
             type: 'horizontalBar',
             data: {
-                labels: [''],
-                datasets: [
-                    {
-                        data: [1],
-                        backgroundColor: [],
-                        hoverBackgroundColor: []
-                    }]
+                labels: ['Multiple', 'Crime', 'Income', 'Health', 'Education'],
+                datasets: []
             },
             options: {
                 animation: {
@@ -250,45 +236,20 @@
                 }
             }
         });
-        var updateLibTypeStatsBar = function (type) {
-            var indices = {
-                multiple: { title: 'Multiple', count: 0, value: 0 },
-                income: { title: 'Income', count: 0, value: 0 },
-                education: { title: 'Education', count: 0, value: 0 },
-                health: { title: 'Health', count: 0, value: 0 },
-                crime: { title: 'Crime', count: 0, value: 0 },
-                environment: { title: 'Environment', count: 0, value: 0 }
-            };
-            var chartData = {
-                labels: [],
-                datasets: {
-                    data: [],
-                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                        return config.libStyles[x].colour;
+        var updateLibTypeStatsBar = function (authority) {
+            typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
+                var ind = PublicLibrariesNews.getDeprivationIndicesByAuthorityAndLibType(authority, x);
+                return {
+                    label: config.libStyles[x].type,
+                    data: $.map(Object.keys(ind), function (i, y) {
+                        var sum = 0;
+                        $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
+                        return Math.round(sum / ind[i].length);
                     }),
-                    hoverBackgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                        return config.libStyles[x].colour;
-                    })
-                }
-            };
-            $.each(Object.keys(authLibs).sort(), function (i, x) {
-                $.each(authLibs[x].libraries, function (y, z) {
-                    if (z.type == type || !type) {
-                        indices.multiple = { title: indices.multiple.title, count: indices.multiple.count + 1, value: indices.multiple.value + parseInt(z['imd_decile']) };
-                        indices.income = { title: indices.income.title, count: indices.income.count + 1, value: indices.income.value + parseInt(z['income_decile']) };
-                        indices.education = { title: indices.education.title, count: indices.education.count + 1, value: indices.education.value + parseInt(z['education_decile']) };
-                        indices.health = { title: indices.health.title, count: indices.health.count + 1, value: indices.health.value + parseInt(z['health_decile']) };
-                        indices.crime = { title: indices.crime.title, count: indices.crime.count + 1, value: indices.crime.value + parseInt(z['crime_decile']) };
-                        indices.environment = { title: indices.environment.title, count: indices.environment.count + 1, value: indices.environment.value + parseInt(z['environment_decile']) };
-                    }
-                });
+                    backgroundColor: config.libStyles[x].colour,
+                    hoverBackgroundColor: config.libStyles[x].colour
+                };
             });
-            $.each(Object.keys(indices), function (t, c) {
-                chartData.labels.push(indices[c].title);
-                chartData.datasets.data.push((indices[c].value / indices[c].count).toFixed(1));
-            });
-            typeBar.config.data.datasets[0] = chartData.datasets;
-            typeBar.config.data.labels = chartData.labels;
             typeBar.update();
         };
         $.each(Object.keys(config.libStyles), function (i, x) {

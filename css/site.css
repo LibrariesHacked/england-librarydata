@@ -35,15 +35,6 @@
     z-index: 2147483647 !important;
 }
 
-#divStoriesLineChart {
-    height: 200px;
-}
-
-#divLibrariesDonutChart {
-    height: 250px;
-}
-
-
 #divMiniMapContent {
     display: none;
 }

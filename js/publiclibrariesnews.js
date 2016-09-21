@@ -61,19 +61,49 @@
             callback();
         }.bind(this));
     },
+    getDeprivationIndicesByLibrary: function (authority, library) {
+        return { Multiple: 0, Crime: 0, Income: 0, Health: 0, Education: 0 };
+    },
+    getDeprivationIndicesByAuthorityAndLibType: function (authority, libType) {
+        var depIndices = { Multiple: [], Crime: [], Income: [], Health: [], Education: [] };
+        $.each(this.getAuthoritiesWithLibraries(), function (i, a) {
+            if (a.name == authority || !authority) {
+                $.each(a.libraries, function (y, l) {
+                    if (l.type == libType) {
+                        depIndices.Multiple.push(l.imd_decile);
+                        depIndices.Income.push(l.income_decile);
+                        depIndices.Crime.push(l.crime_decile);
+                        depIndices.Health.push(l.health_decile);
+                        depIndices.Education.push(l.education_decile);
+                    }
+                });
+            }
+        });
+        return depIndices;
+    },
     getAuthorityListSorted: function () {
         return $.map(this.authorities, function (i, x) { return i.name }).sort();
     },
     getLibrariesListSorted: function (authority) {
         var libraries = this.getLibrariesByAuthority();
         return $.map(this.authorities, function (i, x) {
-            if (x.name == authority || !authority) return $.map(libraries[i.name], function(y, z) { return y.name });
+            if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function(y, z) { return y.name });
         }).sort();
     },
     getCountLibrariesByAuthorityType: function (authority, type) {
-        $.each(this.libraries, function () {
-
+        var count = 0;
+        $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
+            if (i == authority || !authority) $.each(x.libraries, function (y, lib) { if (lib.type == type) count = count + 1; });
         });
+        return count;
+    },
+    getLibraryByAuthorityNameAndLibName: function (authority, lib) {
+        var libraries = this.getAuthoritiesWithLibraries();
+        var library = null;
+        $.each(libraries, function (i, a) {
+            if (a.name == authority) $.each(a.libraries, function (y, l) { if (l.name == lib) library = l; });
+        });
+        return library;
     },
     searchByPostcode: function (postcode, callback) {
         $.get('https://api.postcodes.io/postcodes/' + postcode, function (data) {
@@ -98,6 +128,7 @@
         var libraries = this.getLibrariesByAuthority();
         $.each(authorityArray, function (i, auth) {
             if (!authorities[auth['name']]) authorities[auth['name']] = { libraries: [] };
+            $.extend(authorities[auth['name']], auth);
             authorities[auth['name']].libraries = libraries[auth['authority_id']];
         }.bind(this));
         return authorities;
