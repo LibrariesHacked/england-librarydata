@@ -231,9 +231,15 @@
     getLibraryLocations: function () {
         var libArray = [];
         $.each(this.libraries, function (i, lib) {
-            if (lib.type != '' && lib.type != 'XL' && lib.lat && lib.lng && lib.lat != '' && lib.lng != '') libArray.push(L.latLng(lib.lat, lib.lng));
+            if (lib.type != '' && lib.type != 'XL' && lib.lat && lib.lng && lib.lat != '' && lib.lng != '') {
+                libArray.push({ lat: lib.lat, lng: lib.lng, name: lib.name, address: lib.address, type: lib.type });
+            }
         }.bind(this));
         return libArray;
+    },
+    getRouteToLibrary: function (fromLat, fromLng, toLat, toLng, type, callback) {
+        //$.get('')
+
     },
     getLatestAuthorityTweet: function (auth) {
         var tweet = null;

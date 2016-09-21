@@ -234,7 +234,17 @@
             var pattern = new RegExp('^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$');
             var valid = pattern.test($('#txtPostcode').val());
 
+            // create marker array
+            var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
+                var marker = L.marker([l.lat, l.lng]);
+                marker.name = l.name;
+                marker.address = l.address;
+                return marker;
+            });
+
             PublicLibrariesNews.searchByPostcode($('#txtPostcode').val(), function (data) {
+
+                // If the map hasn't been created, create it.
                 if (fmlMap == null) {
                     fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
                     L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
@@ -243,10 +253,12 @@
                 }
 
                 // Get closest
-                var closest = L.GeometryUtil.closest(fmlMap, PublicLibrariesNews.getLibraryLocations(), L.latLng(data.lat, data.lng), false);
+                var closest = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(data.lat, data.lng), false);
 
                 // Zoom to user location
                 fmlMap.flyTo(L.latLng(data.lat, data.lng), 13);
+
+                fmlMap.addLayer(closest.layer);
 
                 // Disable keyboard shortcuts when on the postcode text box.
                 var disableKeyboard = function () { fmlMap.keyboard.disable(); };
