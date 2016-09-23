@@ -7,7 +7,7 @@
     var typeDonut = null;
     var shuffle = null;
     L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
-        attribution: '&copy; <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution: ''
     }).addTo(map);
     L.control.zoom({
         position: 'topright'
@@ -169,7 +169,7 @@
         updateSwitchChevrons('local');
         updateSwitchChevrons('changes');
         for (x = 0 ; x < 1; x++) addLocation('local', x, 'last');
-        for (x = 0 ; x < 3; x++) addLocation('changes', x, 'last');
+        for (x = 0 ; x < 1; x++) addLocation('changes', x, 'last');
 
         //////////////////////////////////////////////
         // 4. Populate the mini map
@@ -236,7 +236,8 @@
 
             // create marker array
             var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
-                var marker = L.marker([l.lat, l.lng]);
+                var libraryMarker = L.AwesomeMarkers.icon({ icon: 'book', markerColor: 'green' });
+                var marker = L.marker([l.lat, l.lng], { icon: libraryMarker });
                 marker.name = l.name;
                 marker.address = l.address;
                 return marker;
@@ -246,28 +247,46 @@
 
                 // If the map hasn't been created, create it.
                 if (fmlMap == null) {
+                    $('#divFmlMap').show();
                     fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
                     L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
-                        attribution: '&copy; <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        attribution: ''
                     }).addTo(fmlMap);
                 }
 
                 // Get closest
                 var closest = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(data.lat, data.lng), false);
 
-                // Zoom to user location
-                fmlMap.flyTo(L.latLng(data.lat, data.lng), 13);
+                PublicLibrariesNews.getRouteToLibrary(data.lat, data.lng, closest.latlng.lat, closest.latlng.lng, 'Pedestrian', function (route) {
+                    
+                    // Zoom to user location
+                    fmlMap.flyToBounds([[data.lat, data.lng], [closest.latlng.lat, closest.latlng.lng]]);
+                    var homeMarker = L.AwesomeMarkers.icon({ icon: 'home', markerColor: 'red' });
+                    var home = L.marker([data.lat, data.lng], { icon: homeMarker });
 
-                fmlMap.addLayer(closest.layer);
+                    // Add the home and the library marker
+                    fmlMap.addLayer(home);
+                    fmlMap.addLayer(closest.layer);
 
-                // Disable keyboard shortcuts when on the postcode text box.
-                var disableKeyboard = function () { fmlMap.keyboard.disable(); };
-                var enableKeyboard = function () { fmlMap.keyboard.enable(); };
-                $('#txtPostcode').on('focus', disableKeyboard);
-                $('#txtPostcode').off('focus', enableKeyboard);
+                    // Draw the route line between the two.
+                    var line = L.polyline($.map(route, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['LAL'].colour, dashArray: [5, 5], weight: 2 }).addTo(fmlMap);
 
-                $('#spFmlSpinner').removeClass('fa-spinner');
-                $('#spFmlSpinner').addClass('fa-home');
+                    $('#fmlResults').empty();
+                    $('#fmlResults').append('<strong>Distance: </strong>' + closest.distance + '<br/>');
+                    $('#fmlResults').append('<strong>Walking distance: </strong>' + line.getDistance() + '<br/>');
+
+                    // Disable keyboard shortcuts when on the postcode text box.
+                    var disableKeyboard = function () { fmlMap.keyboard.disable(); };
+                    var enableKeyboard = function () { fmlMap.keyboard.enable(); };
+                    $('#txtPostcode').on('focus', disableKeyboard);
+                    $('#txtPostcode').off('focus', enableKeyboard);
+
+                    $('#spFmlSpinner').removeClass('fa-spinner');
+                    $('#spFmlSpinner').addClass('fa-home');
+
+                    shuffle.update();
+
+                });
             });
         });
 
@@ -324,4 +343,27 @@
             shuffle = new Shuffle(element, { itemSelector: '.col' });
         }, 250);
     });
+
+
+    ///////////////////////
+    // EXTENSIONS
+    // Leaflet Helper: Get distance of a line
+    //////////////////////
+    L.Polyline = L.Polyline.extend({
+        getDistance: function (system) {
+            // distance in meters
+            var mDistanse = 0,
+                length = this._latlngs.length;
+            for (var i = 1; i < length; i++) {
+                mDistanse += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
+            }
+            // optional
+            if (system === 'imperial') {
+                return mDistanse / 1609.34;
+            } else {
+                return mDistanse / 1000;
+            }
+        }
+    });
+
 });

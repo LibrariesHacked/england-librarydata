@@ -36,9 +36,32 @@
         </div>
     </nav>
     <div id="main" class="container">
-        <br />
-        <!-- Widget 1: Library types by authority -->
         <div id="divGrid" class="row">
+            <!-- Widget 7: Find My Library -->
+            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">find my library</h3>
+                    </div>
+                    <div class="panel-body" id="divFmlMap">
+
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group" id="divFmlForm">
+                            <label class="control-label">Search by postcode</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><span class="fa fa-home" id="spFmlSpinner"></span></span>
+                                <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 6AX" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
+                                <span class="input-group-btn">
+                                    <button id="btnPostcodeSearch" class="btn btn-success" type="button">Go</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="fmlResults"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Widget 1: Library types by authority -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -141,26 +164,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Widget 7: Find My Library -->
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">find my library</h3>
-                    </div>
-                    <div class="panel-body" id="divFmlMap">
-                        <div class="form-group" id="divFmlForm">
-                            <label class="control-label">Search by postcode</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><span class="fa fa-home" id="spFmlSpinner"></span></span>
-                                <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 6AX" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
-                                <span class="input-group-btn">
-                                    <button id="btnPostcodeSearch" class="btn btn-success" type="button">Go</button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <!-- Widget 8: Libraries area stats -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
                 <div class="panel panel-primary">
@@ -183,17 +186,17 @@
                         <h3 class="panel-title">credits and licensing</h3>
                     </div>
                     <div class="panel-body">
-                        <p><small>Library news data published by <a href="http://www.publiclibrariesnews.com" target="_blank">Public Libraries News</a> under Creative Commons</small></p>
-                        <p><small>English libraries and authorities taken from Libraries Taskforce dataset published as Open Data under the Open Government Licence.</small></p>
+                        <p><small>Library news data published by <a href="http://www.publiclibrariesnews.com" target="_blank">Public Libraries News</a> under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 Unported License</a></small></p>
+                        <p><small>English libraries and authorities taken from <a href="#" target="_blank">Libraries Taskforce dataset</a> published as Open Data under the <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank">Open Government Licence</a>.</small></p>
                         <p><small>Twitter account details from Google spreadsheet, curated by <a href="https://twitter.com/shedsue" target="_blank">@ShedSue</a> and <a href="https://twitter.com/juliac2" target="_blank">@JuliaC2</a></small></p>
-                        <p><small>Maps include </small></p>
+                        <p><small>Maps &copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright' target="_blank">OpenStreetMap</a></small></p>
                     </div>
                 </div>
             </div>
         </div>
         <footer>
             <hr />
-            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>.</p>
+            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open-source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>.</p>
         </footer>
     </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>

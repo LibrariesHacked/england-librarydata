@@ -83,18 +83,18 @@
     },
     getAuthoritiesDataTable: function () {
         var datatable = [];
-        $.each(this.authorities, function (i, x) {
+        $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             datatable.push([
                 x.name, // Name
                 x.code, // Code
-                16, // Libraries
-                1, // Local authority
-                '', // Commissioned
-                '', // Community
-                '', // Independent community
-                '', // Closed
-                '', // Population
-                '' // Area
+                $.map(x.libraries, function(l, y){ if (l.type != 'XL') return l.name }).length, // Libraries
+                $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length, // Local authority
+                $.map(x.libraries, function (l, y) { if (l.type == 'LCL') return l.name }).length, // Commissioned
+                $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length, // Community
+                $.map(x.libraries, function (l, y) { if (l.type == 'ICL') return l.name }).length, // Independent community
+                $.map(x.libraries, function (l, y) { if (l.type == 'XL') return l.name }).length, // Closed
+                x.population, // Population
+                x.hectares // Area
             ])
         });
         return datatable;
@@ -207,13 +207,13 @@
             return (b['LAL'] ? b['LAL'].libs.length : 0) - (a['LAL'] ? a['LAL'].libs.length : 0);
         });
         var closedLibrariesSorted = Object.keys(auth).sort(function (a, b) {
-            return authGeoData.features[auth[b].idx].properties.closedLibraryCount - authGeoData.features[auth[a].idx].properties.closedLibraryCount;
+            return authGeoData.features[auth[a].idx].properties.closedLibraryCount - authGeoData.features[auth[b].idx].properties.closedLibraryCount;
         });
         $.each(authGeoData.features, function (x, y) {
             authGeoData.features[x].properties['pcLibraries'] = librariesSorted.indexOf(y.properties.name) / Object.keys(librariesSorted).length.toFixed(1);
             authGeoData.features[x].properties['pcLibrariesPerPopulation'] = librariesPerPopulationSorted.indexOf(y.properties.name) / Object.keys(librariesPerPopulationSorted).length.toFixed(1);
             authGeoData.features[x].properties['pcLibrariesPerArea'] = librariesPerAreaSorted.indexOf(y.properties.name) / Object.keys(librariesPerAreaSorted).length.toFixed(1);
-            authGeoData.features[x].properties['pcClosedLibraries'] = closedLibrariesSorted.indexOf(y.properties.name) / Object.keys(closedLibrariesSorted).length.toFixed(1);
+            authGeoData.features[x].properties['pcClosedLibraries'] = (authGeoData.features[x].properties.closedLibraryCount == 0 ? 0 : closedLibrariesSorted.indexOf(y.properties.name) / Object.keys(closedLibrariesSorted).length.toFixed(1));
             authGeoData.features[x].properties['pcLalLibraries'] = authLALSorted.indexOf(y.properties.name) / Object.keys(authLALSorted).length.toFixed(1);
             
         }.bind(this));
@@ -237,9 +237,21 @@
         }.bind(this));
         return libArray;
     },
-    getRouteToLibrary: function (fromLat, fromLng, toLat, toLng, type, callback) {
-        //$.get('')
-
+    getRouteToLibrary: function (fromLat, fromLng, toLat, toLng, routePref, callback) {
+        var url = 'http://openls.geog.uni-heidelberg.de/route?api_key=ee0b8233adff52ce9fd6afc2a2859a28&start=[STLNG],[STLAT]&end=[ENDLNG],[ENDLAT]&via=&lang=en&distunit=KM&routepref=[ROUTEPREF]&weighting=Shortest&avoidAreas=&useTMC=false&noMotorways=false&noTollways=false&noUnpavedroads=false&noSteps=false&noFerries=false&instructions=false';
+        url = url.replace('[STLAT]', fromLat).replace('[STLNG]', fromLng).replace('[ENDLAT]', toLat).replace('[ENDLNG]', toLng).replace('[ROUTEPREF]', routePref);
+        var lineCoords = [];
+        $.ajax({
+            type:'GET',
+            url: url,
+            dataType: 'xml',
+            success: function (xml) {
+                $(xml).find("gml\\:LineString gml\\:pos").each(function () {
+                    if ($(this).text().split(' ')[1]) lineCoords.push([$(this).text().split(' ')[1], $(this).text().split(' ')[0]]);
+                });
+                callback(lineCoords);
+            }
+        });
     },
     getLatestAuthorityTweet: function (auth) {
         var tweet = null;
