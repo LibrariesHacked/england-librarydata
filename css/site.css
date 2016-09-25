@@ -3,8 +3,40 @@
     min-height: 100%;
 }
 
+#spFmlSpinning {
+    display: none;
+}
+
+div.panel-success {
+    border-top: 3px solid #6699FF;
+}
+
+div.panel-primary {
+    border-top: 3px solid #6699FF;
+}
+
+div.panel-default {
+    border-top: 3px solid #6699FF;
+}
+
+div.panel-warning {
+    border-top: 3px solid #6699FF;
+}
+
+div.panel-danger {
+    border-top: 3px solid #6699FF;
+}
+
+div.panel-info {
+    border-top: 3px solid #6699FF;
+}
+
+.panel-heading span.fa {
+    padding: 4px;
+}
+
 #main {
-    margin-top: 70px;
+    margin-top: 80px;
 }
 
 #mapContainer {
@@ -16,7 +48,7 @@
     height: 100%;
 }
 
-.page-story-list {
+.page-story-list, .page-twitter-list {
     padding: 0 !important;
     margin: 0 0 0 0 !important;
 }
@@ -32,11 +64,11 @@
     display: none;
 }
 
-#divFmlForm, #divFmlForm * {
-    z-index: 2147483647 !important;
+#divMiniMapContent {
+    display: none;
 }
 
-#divMiniMapContent {
+#divFmlContent {
     display: none;
 }
 
@@ -124,11 +156,6 @@
 #showcase {
     margin: 0 20px;
     text-align: center;
-}
-
-#range {
-    height: 10px;
-    margin: 0 auto 30px;
 }
 
 #value-span, #value-input {

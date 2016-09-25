@@ -1,23 +1,102 @@
 ﻿$(function () {
+
+    /////////////////////////////////////////////////
+    // Variables
+    // Declared variables that get set later on
+    /////////////////////////////////////////////////
+    var fmlMap = null, typeDonut = null, fmlLibraryMarker = null, fmlHomeMarker = null, fmlRoute = null;
+
     /////////////////////////////////////////////////
     // Map.  Initialise the map, set center, zoom, etc.
     /////////////////////////////////////////////////
-    var map = L.map('divMiniMap', { zoomControl: false }).setView([52.6, -2.5], 6);
-    var fmlMap = null;
-    var typeDonut = null;
-    var shuffle = null;
-    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
-        attribution: ''
-    }).addTo(map);
-    L.control.zoom({
-        position: 'topright'
-    }).addTo(map);
+    var map = L.map('divMiniMap').setView([52.6, -2.5], 6);
+    L.tileLayer(config.mapTiles).addTo(map);
 
-    // Load the initial set of data - for the dashboard start with 1 month
+    //////////////////////////////////////////////
+    // LOAD.  Load the data.
+    // 2 months worth.  No geo, Yes twitter, Yes 
+    //////////////////////////////////////////////
     PublicLibrariesNews.loadData(2, false, true, true, true, function () {
 
+        ///////////////////////////////////////////////////////////////////
+        // 1. Find My Library
+        // Provides a means to enter postcode to find the closest library.
+        // Displays this on a map, and displays configurable route.
+        ///////////////////////////////////////////////////////////////////
+
+        var setRouteData = function (type) {
+            PublicLibrariesNews.getRouteToLibrary(fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng, fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng, type, function (route) {
+                if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
+                fmlRoute = L.polyline($.map(route, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['LAL'].colour, dashArray: [5, 5], weight: 2 });
+                fmlMap.addLayer(fmlRoute);
+                $('#fmlRouteContent #' + type + ' p').text(fmlRoute.getDistance('imperial').toFixed(1) + ' miles');
+            });
+        };
+
+        // EVENT: Route type change
+        $('#divFmlContent a[data-toggle="tab"]').on('shown.bs.tab', function (e) { setRouteData($(e.target).attr("href").replace('#', '')) });
+
+        // EVENT: Postcode search
+        $('#btnPostcodeSearch').on('click', function (e) {
+
+            $('#spFmlHome').hide();
+            $('#spFmlSpinning').show();
+
+            // Some basic validation of the postcode.
+            var pattern = new RegExp('^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$');
+            var valid = pattern.test($('#txtPostcode').val());
+            if (valid == false) {
+                $('#fmlResults').empty();
+                $('#fmlResults').append('<p class="text-warning">Could not find postcode.</p>')
+                return false;
+            }
+
+            // If there are existing markers and route lines, remove them
+            if (fmlLibraryMarker != null) fmlMap.removeLayer(fmlLibraryMarker);
+            if (fmlHomeMarker != null) fmlMap.removeLayer(fmlHomeMarker);
+            if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
+
+            // create marker array
+            var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
+                var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ icon: 'book', markerColor: 'green' }) });
+                marker.name = l.name;
+                marker.address = l.address;
+                return marker;
+            });
+
+            // Trigger the search.
+            PublicLibrariesNews.searchByPostcode($('#txtPostcode').val(), function (data) {
+
+                // If the map hasn't been created, create it.
+                if (fmlMap == null) {
+                    $('#divFmlMap').show();
+                    $('#divFmlContent').show();
+                    fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
+                    L.tileLayer(config.mapTiles).addTo(fmlMap);
+                }
+
+                // Construct closest and home markers
+                fmlLibraryMarker = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(data.lat, data.lng), false).layer;
+                fmlHomeMarker = L.marker([data.lat, data.lng], { icon: L.AwesomeMarkers.icon({ icon: 'home', markerColor: 'red' }) });
+
+                $('#fmlLibrary').text(fmlLibraryMarker.name);
+                $('#fmlLibraryAddress').text(fmlLibraryMarker.address);
+
+                // Zoom to user location - this will take a liuttle time so delay other actions.
+                fmlMap.flyToBounds([[fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng], [fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng]]);
+
+                // Add the home and the library marker and the route
+                fmlMap.addLayer(fmlHomeMarker);
+                fmlMap.addLayer(fmlLibraryMarker);
+                $('#spFmlHome').show();
+                $('#spFmlSpinning').hide();
+
+                setRouteData('Pedestrian');
+            });
+        });
+
         //////////////////////////////////////////////
-        // 1. Library types by authority
+        // 2. Widget: Library types by authority
         // 
         //////////////////////////////////////////////
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
@@ -49,9 +128,13 @@
         });
         var updateLibTypesDonut = function (libAuthority) {
             typeDonut.config.data.datasets[0].data = [];
+            var total = 0;
             $.each(Object.keys(config.libStyles), function (t, c) {
-                typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c));
+                var count = PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c);
+                if (t != 'XL') total = total + count;
+                typeDonut.config.data.datasets[0].data.push(count);
             });
+            $('#hAuthorities').text(total + ' libraries');
             typeDonut.update();
         };
 
@@ -65,7 +148,7 @@
         updateLibTypesDonut();
 
         //////////////////////////////////////////////
-        // 2. Widget: Library details by authority
+        // 3. Widget: Library details by authority
         // 
         //////////////////////////////////////////////
 
@@ -100,76 +183,69 @@
             $('#divLibraryDetails').append('<small>' + (library.type ? config.libStyles[library.type].type : '') + '</small>');
             $('#divLibraryDetails').append('<p>' + (library.address ? '' : '') + '</p>');
             $('#divLibraryDetails').append('<p>' + (library.notes ? library.notes : '') + '</p>');
-            shuffle.update();
         });
 
         /////////////////////////////////////////////////////////////////
-        // 3/5. Widgets: Public Libraries News Local and changes stories
+        // 4. Widgets: Public Libraries News Local and changes stories
         // 
         /////////////////////////////////////////////////////////////////
-        var locs = { changes: PublicLibrariesNews.locationsSortedByCount('changes'), local: PublicLibrariesNews.locationsSortedByCount('local') };
-        var currentlyShowing = { changes: [0, 2], local: [0, 0] };
+        var locs = PublicLibrariesNews.locationsSortedByCount();
+        var currentlyShowing = [0, 0];
         var clickNextItem = function (e) {
             e.preventDefault();
-            var type = e.currentTarget.id.substring(0, e.currentTarget.id.indexOf('Location'));
             var item = $(e.currentTarget.parentNode.parentNode);
-            var authSt = PublicLibrariesNews.getStoriesGroupedByLocation(type)[$(item).data('auth')].stories;
+            var authSt = PublicLibrariesNews.getAllStoriesGroupedByLocation()[$(item).data('auth')].stories;
             var index = $(item).data('current') + 1;
             if (index == authSt.length) index = 0;
             $(item).data('current', index);
             $(item).find('span').text((index + 1) + '/' + authSt.length);
             $(item).find('.list-group-item-text').html(authSt[index].text.replace($(item).data('auth') + ' – ', ''));
-            shuffle.update();
         };
-        var addLocation = function (type, index, position) {
-            var it = PublicLibrariesNews.getStoriesGroupedByLocation(type)[locs[type][index]];
-            var li = '<div href="#" class="list-group-item ' + type + '-list" data-current="0" data-auth="' + locs[type][index] + '">' +
+        var addLocation = function (index, position) {
+            var it = PublicLibrariesNews.getAllStoriesGroupedByLocation()[locs[index]];
+            var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + locs[index] + '">' +
                 '<span class="badge">1/' + it.stories.length + '</span>' +
-                '<h4 class="list-group-item-heading">' + locs[type][index] + '</h4>' +
-                '<p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(locs[type][index] + ' – ', '')).text() + '</p>' +
-                (it.stories.length > 1 ? '<p class="pull-right"><a id="' + type + 'Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
+                '<h4 class="list-group-item-heading">' + locs[index] + '</h4>' +
+                '<p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(locs[index] + ' – ', '')).text() + '</p>' +
+                (it.stories.length > 1 ? '<p class="pull-right"><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
                 '<p><a href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
 
-            position == 'first' ? $('#' + type + 'Counts').prepend(li) : $('#' + type + 'Counts').append(li);
-            $('#' + type + 'Location' + index).on('click', clickNextItem);
+            position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);
+            $('#Location' + index).on('click', clickNextItem);
         };
-        var removeLocation = function (type, position) {
-            $('#' + type + 'Counts div:' + position).remove();
+        var removeLocation = function (position) {
+            $('#newsCounts div:' + position).remove();
         };
-        var updateSwitchChevrons = function (type) {
-            $('#' + type + 'Switch li').attr('class', '');
-            if (currentlyShowing[type][0] != 0) {
-                $('#' + type + 'Switch li a').first().html('&laquo; ' + locs[type][currentlyShowing[type][0] - 1]);
+        var updateSwitchChevrons = function () {
+            $('#newsSwitch li').attr('class', '');
+            if (currentlyShowing[0] != 0) {
+                $('#newsSwitch li a').first().html('&laquo; ' + locs[currentlyShowing[0] - 1]);
             } else {
-                $('#' + type + 'Switch li a').first().html('&laquo;');
-                $('#' + type + 'Switch li').first().attr('class', 'disabled');
+                $('#newsSwitch li a').first().html('&laquo;');
+                $('#newsSwitch li').first().attr('class', 'disabled');
             }
-            if (currentlyShowing[type][1] != locs.length - 1) {
-                $('#' + type + 'Switch li a').last().html(locs[type][currentlyShowing[type][1] + 1] + ' &raquo;');
+            if (currentlyShowing[1] != locs.length - 1) {
+                $('#newsSwitch li a').last().html(locs[currentlyShowing[1] + 1] + ' &raquo;');
             } else {
-                $('#' + type + 'Switch li a').last().html('&raquo;');
-                $('#' + type + 'Switch li').last().attr('class', 'disabled');
+                $('#newsSwitch li a').last().html('&raquo;');
+                $('#newsSwitch li').last().attr('class', 'disabled');
             }
         };
         var clickShiftChangeItems = function (e) {
             e.preventDefault();
             var id = e.currentTarget.parentNode.parentNode.id;
-            var type = id.substring(0, id.indexOf('Switch'));
             var incr = $(e.target).data('direction');
-            if ((currentlyShowing[type][1] == locs[type].length - 1) || (currentlyShowing[type][0] == 0 && incr == -1)) return false;
-            currentlyShowing[type][0] = currentlyShowing[type][0] + incr;
-            currentlyShowing[type][1] = currentlyShowing[type][1] + incr;
-            updateSwitchChevrons(type);
-            removeLocation(type, (incr == 1 ? 'first' : 'last'));
-            addLocation(type, incr == 1 ? currentlyShowing[type][1] : currentlyShowing[type][0], (incr == 1 ? 'last' : 'first'));
-            shuffle.update();
+            if ((currentlyShowing[1] == locs.length - 1) || (currentlyShowing[0] == 0 && incr == -1)) return false;
+            currentlyShowing[0] = currentlyShowing[0] + incr;
+            currentlyShowing[1] = currentlyShowing[1] + incr;
+            updateSwitchChevrons();
+            removeLocation((incr == 1 ? 'first' : 'last'));
+            addLocation(incr == 1 ? currentlyShowing[1] : currentlyShowing[0], (incr == 1 ? 'last' : 'first'));
         };
         $('ul.page-story-list li a').on('click', clickShiftChangeItems);
         // Initial setup: 3 items for changes, 1 for local news (generally longer)
-        updateSwitchChevrons('local');
-        updateSwitchChevrons('changes');
-        for (x = 0 ; x < 1; x++) addLocation('local', x, 'last');
-        for (x = 0 ; x < 1; x++) addLocation('changes', x, 'last');
+        updateSwitchChevrons();
+        for (x = 0 ; x < 1; x++) addLocation(x, 'last');
 
         //////////////////////////////////////////////
         // 4. Populate the mini map
@@ -216,82 +292,61 @@
         // 6. Twitter
         // 
         //////////////////////////////////////////////
+        var tweets = PublicLibrariesNews.getTweetsSortedByDate();
+        var currentlyShowingTwitter = [0, 0];
+
+        var addTweet = function (index, position) {
+            if (tweets && tweets[index]) {
+                var tweet = tweets[index]
+                var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet[4] + '">' +
+                    '<span class="badge"></span>' +
+                    '<h4 class="list-group-item-heading">' + tweet[0] + '</h4>' +
+                    '<p class="list-group-item-text">' + $('<div/>').html(tweet[4]) + '</p>' + '</div>';
+                position == 'first' ? $('#tweetCounts').prepend(li) : $('#tweetCounts').append(li);
+            }
+        };
+        var removeTweet = function (position) {
+            $('#twitterCounts div:' + position).remove();
+        };
+        var updateTwitterSwitchChevrons = function () {
+            $('#twitterSwitch li').attr('class', '');
+            if (currentlyShowingTwitter[0] != 0) {
+                $('#tweetsSwitch li a').first().html('&laquo; ' + locs[currentlyShowingTwitter[0] - 1]);
+            } else {
+                $('#tweetsSwitch li a').first().html('&laquo;');
+                $('#tweetsSwitch li').first().attr('class', 'disabled');
+            }
+            if (currentlyShowingTwitter[1] != locs.length - 1) {
+                $('#tweetsSwitch li a').last().html(locs[currentlyShowingTwitter[1] + 1] + ' &raquo;');
+            } else {
+                $('#tweetsSwitch li a').last().html('&raquo;');
+                $('#tweetsSwitch li').last().attr('class', 'disabled');
+            }
+        };
+        var clickShiftChangeTwitterItems = function (e) {
+            e.preventDefault();
+            var id = e.currentTarget.parentNode.parentNode.id;
+            var type = id.substring(0, id.indexOf('Switch'));
+            var incr = $(e.target).data('direction');
+            if ((currentlyShowingTwitter[1] == locs[type].length - 1) || (currentlyShowingTwitter[0] == 0 && incr == -1)) return false;
+            currentlyShowingTwitter[0] = currentlyShowingTwitter[0] + incr;
+            currentlyShowingTwitter[1] = currentlyShowingTwitter[1] + incr;
+            updateTwitterSwitchChevrons(type);
+            removeTweet(type, (incr == 1 ? 'first' : 'last'));
+            addLocation(type, incr == 1 ? currentlyShowingTwitter[1] : currentlyShowingTwitter[0], (incr == 1 ? 'last' : 'first'));
+        };
+        $('ul.page-twitter-list li a').on('click', clickShiftChangeTwitterItems);
+        // Initial setup: 3 items for changes, 1 for local news (generally longer)
+        updateTwitterSwitchChevrons('local');
+        updateTwitterSwitchChevrons('changes');
+        for (x = 0 ; x < 1; x++) addTweet(x, 'last');
 
 
 
 
-        /////////////////////////////////////////
-        // 7. Find My Library
-        ////////////////////////////////////////
-
-        // EVENT: Postcode search
-        $('#btnPostcodeSearch').on('click', function (e) {
-
-            // Show spinner
-            $('#spFmlSpinner').removeClass('fa-home');
-            $('#spFmlSpinner').addClass('fa-spinner');
-
-            var pattern = new RegExp('^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$');
-            var valid = pattern.test($('#txtPostcode').val());
-
-            // create marker array
-            var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
-                var libraryMarker = L.AwesomeMarkers.icon({ icon: 'book', markerColor: 'green' });
-                var marker = L.marker([l.lat, l.lng], { icon: libraryMarker });
-                marker.name = l.name;
-                marker.address = l.address;
-                return marker;
-            });
-
-            PublicLibrariesNews.searchByPostcode($('#txtPostcode').val(), function (data) {
-
-                // If the map hasn't been created, create it.
-                if (fmlMap == null) {
-                    $('#divFmlMap').show();
-                    fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
-                    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
-                        attribution: ''
-                    }).addTo(fmlMap);
-                }
-
-                // Get closest
-                var closest = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(data.lat, data.lng), false);
-
-                PublicLibrariesNews.getRouteToLibrary(data.lat, data.lng, closest.latlng.lat, closest.latlng.lng, 'Pedestrian', function (route) {
-                    
-                    // Zoom to user location
-                    fmlMap.flyToBounds([[data.lat, data.lng], [closest.latlng.lat, closest.latlng.lng]]);
-                    var homeMarker = L.AwesomeMarkers.icon({ icon: 'home', markerColor: 'red' });
-                    var home = L.marker([data.lat, data.lng], { icon: homeMarker });
-
-                    // Add the home and the library marker
-                    fmlMap.addLayer(home);
-                    fmlMap.addLayer(closest.layer);
-
-                    // Draw the route line between the two.
-                    var line = L.polyline($.map(route, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['LAL'].colour, dashArray: [5, 5], weight: 2 }).addTo(fmlMap);
-
-                    $('#fmlResults').empty();
-                    $('#fmlResults').append('<strong>Distance: </strong>' + closest.distance + '<br/>');
-                    $('#fmlResults').append('<strong>Walking distance: </strong>' + line.getDistance() + '<br/>');
-
-                    // Disable keyboard shortcuts when on the postcode text box.
-                    var disableKeyboard = function () { fmlMap.keyboard.disable(); };
-                    var enableKeyboard = function () { fmlMap.keyboard.enable(); };
-                    $('#txtPostcode').on('focus', disableKeyboard);
-                    $('#txtPostcode').off('focus', enableKeyboard);
-
-                    $('#spFmlSpinner').removeClass('fa-spinner');
-                    $('#spFmlSpinner').addClass('fa-home');
-
-                    shuffle.update();
-
-                });
-            });
-        });
 
         //////////////////////////////////////////////
-        // 8.
+        // 8. Widget: Area stats
         //  
         //////////////////////////////////////////////
         var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
@@ -330,20 +385,7 @@
             updateLibTypeStatsBar($('#selAreaStatsAuthority').find(":selected").val());
         });
         updateLibTypeStatsBar();
-
-
-
-
-        ////////////////////////////////////////////
-        // ON LOAD: SHUFFLE
-        ////////////////////////////////////////////
-        setTimeout(function () {
-            var Shuffle = window.shuffle;
-            var element = document.getElementById('divGrid');
-            shuffle = new Shuffle(element, { itemSelector: '.col' });
-        }, 250);
     });
-
 
     ///////////////////////
     // EXTENSIONS
@@ -352,16 +394,16 @@
     L.Polyline = L.Polyline.extend({
         getDistance: function (system) {
             // distance in meters
-            var mDistanse = 0,
+            var mDistance = 0,
                 length = this._latlngs.length;
             for (var i = 1; i < length; i++) {
-                mDistanse += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
+                mDistance += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
             }
             // optional
             if (system === 'imperial') {
-                return mDistanse / 1609.34;
+                return mDistance / 1609.34;
             } else {
-                return mDistanse / 1000;
+                return mDistance / 1000;
             }
         }
     });

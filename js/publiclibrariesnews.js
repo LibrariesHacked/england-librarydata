@@ -17,8 +17,7 @@
         local: {}
     },
     loadData: function (months, authGeo, auth, libraries, twitter, callback) {
-        // Need to work out which files to load.
-        // Filenames are in the form PLN_2015_11_changes
+        // Need to work out which files to load.  Filenames are in the form PLN_2015_11_changes
         var urls = [];
         if (authGeo) urls.push(['', '', 'authgeo', this.authGeoUrl]);
         if (auth) urls.push(['', '', 'authorities', this.authUrl]);
@@ -61,6 +60,9 @@
             callback();
         }.bind(this));
     },
+    getTweetsSortedByDate: function () {
+
+    },
     getDeprivationIndicesByLibrary: function (authority, library) {
         return { Multiple: 0, Crime: 0, Income: 0, Health: 0, Education: 0 };
     },
@@ -87,7 +89,7 @@
             datatable.push([
                 x.name, // Name
                 x.code, // Code
-                $.map(x.libraries, function(l, y){ if (l.type != 'XL') return l.name }).length, // Libraries
+                $.map(x.libraries, function (l, y) { if (l.type != 'XL') return l.name }).length, // Libraries
                 $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length, // Local authority
                 $.map(x.libraries, function (l, y) { if (l.type == 'LCL') return l.name }).length, // Commissioned
                 $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length, // Community
@@ -95,7 +97,7 @@
                 $.map(x.libraries, function (l, y) { if (l.type == 'XL') return l.name }).length, // Closed
                 x.population, // Population
                 x.hectares // Area
-            ])
+            ]);
         });
         return datatable;
     },
@@ -105,7 +107,7 @@
     getLibrariesListSorted: function (authority) {
         var libraries = this.getLibrariesByAuthority();
         return $.map(this.authorities, function (i, x) {
-            if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function(y, z) { return y.name });
+            if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function (y, z) { return y.name });
         }).sort();
     },
     getCountLibrariesByAuthorityType: function (authority, type) {
@@ -215,7 +217,7 @@
             authGeoData.features[x].properties['pcLibrariesPerArea'] = librariesPerAreaSorted.indexOf(y.properties.name) / Object.keys(librariesPerAreaSorted).length.toFixed(1);
             authGeoData.features[x].properties['pcClosedLibraries'] = (authGeoData.features[x].properties.closedLibraryCount == 0 ? 0 : closedLibrariesSorted.indexOf(y.properties.name) / Object.keys(closedLibrariesSorted).length.toFixed(1));
             authGeoData.features[x].properties['pcLalLibraries'] = authLALSorted.indexOf(y.properties.name) / Object.keys(authLALSorted).length.toFixed(1);
-            
+
         }.bind(this));
         return authGeoData;
     },
@@ -242,11 +244,11 @@
         url = url.replace('[STLAT]', fromLat).replace('[STLNG]', fromLng).replace('[ENDLAT]', toLat).replace('[ENDLNG]', toLng).replace('[ROUTEPREF]', routePref);
         var lineCoords = [];
         $.ajax({
-            type:'GET',
+            type: 'GET',
             url: url,
             dataType: 'xml',
             success: function (xml) {
-                $(xml).find("gml\\:LineString gml\\:pos").each(function () {
+                $(xml).find("xls\\:RouteGeometry, RouteGeometry").find("gml\\:pos, pos").each(function () {
                     if ($(this).text().split(' ')[1]) lineCoords.push([$(this).text().split(' ')[1], $(this).text().split(' ')[0]]);
                 });
                 callback(lineCoords);
@@ -266,6 +268,9 @@
             if (t[0].toLowerCase() == lib.toLowerCase()) tweet = t;
         }.bind(this));
         return tweet;
+    },
+    getAllStoriesGroupedByLocation: function () {
+        return $.extend(this.getStoriesGroupedByLocation('changes'), this.getStoriesGroupedByLocation('local'));
     },
     getStoriesGroupedByLocation: function (type) {
         var locs = {};
@@ -288,14 +293,16 @@
         }.bind(this));
         return count;
     },
-    locationsSortedByCount: function (type) {
+    locationsSortedByCount: function () {
         var locsObj = {};
         var locs = [];
-        $.each(this.stories[type], function (i, y) {
-            $.each(y, function (x, m) {
-                $.each(m, function (z, s) {
-                    if (!locsObj[s[0]]) locsObj[s[0]] = { count: 0 };
-                    locsObj[s[0]].count = locsObj[s[0]].count + 1;
+        $.each(this.stories, function (type, a) {
+            $.each(this.stories[type], function (i, y) {
+                $.each(y, function (x, m) {
+                    $.each(m, function (z, s) {
+                        if (!locsObj[s[0]]) locsObj[s[0]] = { count: 0 };
+                        locsObj[s[0]].count = locsObj[s[0]].count + 1;
+                    }.bind(this));
                 }.bind(this));
             }.bind(this));
         }.bind(this));

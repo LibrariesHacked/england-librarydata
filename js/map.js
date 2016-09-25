@@ -8,13 +8,16 @@
     var selectedAuth = '';
     var mapType = 1;
     var map = L.map('map').setView([52.55, -2.72], 7);
-    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A', {
+    L.tileLayer(config.mapTileLayer, {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors.  Contains OS data &copy; Crown copyright and database right 2016.  Contains Royal Mail data &copy; Royal Mail copyright and Database right 2016.  Contains National Statistics data &copy; Crown copyright and database right 2016.'
     }).addTo(map);
     var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
     map.addControl(sidebar);
     L.control.locate().addTo(map);
 
+    /////////////////////////////////////////////////////////
+    // Helper Function: numFormat
+    /////////////////////////////////////////////////////////
     var numFormat = function (num) {
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
         if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';

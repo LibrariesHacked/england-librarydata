@@ -1,4 +1,5 @@
 ﻿var config = {
+    mapTiles: 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A',
     libStyles: {
         LAL: { type: 'Local authority', description: '', cssClass: 'success', colour: '#93C54B' },
         CL: { type: 'Commissioned', description: '', cssClass: 'info', colour: '#29ABE0' },

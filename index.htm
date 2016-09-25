@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Libraries Hacked">
     <title>{ libraries: england } | hacked projects</title>
-    <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/bootswatch/paper/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
@@ -29,60 +29,70 @@
                 <ul class="nav navbar-nav navbar-left">
                     <li class="active"><a href="/">dashboard</a></li>
                     <li><a href="/map">map</a></li>
-                    <li><a href="/tables">data tables</a></li>
+                    <li><a href="/thedata">the data</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right"></ul>
             </div>
         </div>
     </nav>
-    <div id="main" class="container">
-        <div id="divGrid" class="row">
-            <!-- Widget 7: Find My Library -->
+    <div id="main" class="container main">
+        <div class="row">
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 1: Find My Library -->
                 <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">find my library</h3>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-home" id="spFmlHome"></span>
+                                    <span class="fa fa-spinner fa-spin" id="spFmlSpinning"></span></span>
+                                <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 6AX" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
+                                <span class="input-group-btn">
+                                    <button id="btnPostcodeSearch" class="btn btn-success btn-simple" type="button">Go</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="divFmlContent">
+                            <h5 id="fmlLibrary"></h5>
+                            <p id="fmlLibraryAddress"></p>
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#Pedestrian" data-toggle="tab">Pedestrian</a></li>
+                                <li><a href="#Bicycle" data-toggle="tab">Bicycle</a></li>
+                                <li><a href="#Car" data-toggle="tab">Car</a></li>
+                            </ul>
+                            <div class="tab-content" id="fmlRouteContent">
+                                <div class="tab-pane fade active in" id="Pedestrian">
+                                    <p></p>
+                                </div>
+                                <div class="tab-pane fade" id="Bicycle">
+                                    <p></p>
+                                </div>
+                                <div class="tab-pane fade" id="Car">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-body" id="divFmlMap">
 
                     </div>
-                    <div class="panel-body">
-                        <div class="form-group" id="divFmlForm">
-                            <label class="control-label">Search by postcode</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><span class="fa fa-home" id="spFmlSpinner"></span></span>
-                                <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 6AX" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
-                                <span class="input-group-btn">
-                                    <button id="btnPostcodeSearch" class="btn btn-success" type="button">Go</button>
-                                </span>
-                            </div>
-                        </div>
-                        <div id="fmlResults"></div>
-                    </div>
                 </div>
-            </div>
-            <!-- Widget 1: Library types by authority -->
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 2: Library types by authority -->
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">library types by authority</h3>
-                    </div>
                     <div class="panel-body">
                         <select id="selLibraryTypeAuthority" class="form-control">
                             <option value="">All authorities</option>
                         </select>
                     </div>
                     <div class="panel-body">
+                        <h5 id="hAuthorities"></h5>
                         <canvas id="divLibrariesDonutChart" height="300"></canvas>
                     </div>
                 </div>
             </div>
-            <!-- Widget 2: Library details by authority -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 3: Library details by authority -->
                 <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">libraries by authority</h3>
-                    </div>
                     <div class="panel-body">
                         <div class="form-group">
                             <select id="selLibraryDetailsAuthority" class="form-control">
@@ -97,28 +107,18 @@
                         <div id="divLibraryDetails"></div>
                     </div>
                 </div>
-            </div>
-            <!-- Widget 3: Public libraries news changes -->
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 4: Public libraries news -->
                 <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">changes</h3>
-                    </div>
-                    <div id="changesCounts" class="list-group"></div>
+                    <div id="newsCounts" class="list-group"></div>
                     <div class="panel-footer">
-                        <ul id="changesSwitch" class="pagination pagination-sm page-story-list">
+                        <ul id="newsSwitch" class="pagination pagination-sm page-story-list">
                             <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
                             <li><a data-direction="1" href="#">&raquo;</a></li>
                         </ul>
                     </div>
                 </div>
-            </div>
-            <!-- Widget 4: Public libraries news - map -->
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 5: Public libraries news - map -->
                 <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">news and changes map</h3>
-                    </div>
                     <div id="divMiniMap"></div>
                     <div id="divMiniMapContent" class="panel-body">
                         <div id="divMiniMapText"></div>
@@ -135,41 +135,19 @@
                     </div>
                 </div>
             </div>
-            <!-- Widget 5: Public libraries news - changes -->
             <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">local news</h3>
-                    </div>
-                    <div id="localCounts" class="list-group"></div>
-                    <div class="panel-footer">
-                        <ul id="localSwitch" class="pagination pagination-sm page-story-list">
-                            <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
-                            <li><a data-direction="1" href="#">&raquo;</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 6: Tweets -->
                 <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">latest tweets</h3>
-                    </div>
                     <div id="tweetsCounts" class="list-group"></div>
                     <div class="panel-footer">
-                        <ul id="tweetsSwitch" class="pagination pagination-sm page-story-list">
+                        <ul id="tweetsSwitch" class="pagination pagination-sm page-twitter-list">
                             <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
                             <li><a data-direction="1" href="#">&raquo;</a></li>
                         </ul>
                     </div>
                 </div>
-            </div>
-            <!-- Widget 8: Libraries area stats -->
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 7: Libraries area stats -->
                 <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">library area stats</h3>
-                    </div>
                     <div class="panel-body">
                         <select id="selAreaStatsAuthority" class="form-control">
                             <option value="">All authorities</option>
@@ -179,12 +157,8 @@
                         <canvas id="divLibrariesStatsBarChart" height="300"></canvas>
                     </div>
                 </div>
-            </div>
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                <!-- Widget 7: Attributions -->
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">credits and licensing</h3>
-                    </div>
                     <div class="panel-body">
                         <p><small>Library news data published by <a href="http://www.publiclibrariesnews.com" target="_blank">Public Libraries News</a> under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 Unported License</a></small></p>
                         <p><small>English libraries and authorities taken from <a href="#" target="_blank">Libraries Taskforce dataset</a> published as Open Data under the <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank">Open Government Licence</a>.</small></p>
@@ -199,15 +173,18 @@
             <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open-source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>.</p>
         </footer>
     </div>
+    <!-- Framework plugins -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/moment/moment.js"></script>
-    <script src="bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="bower_components/shufflejs/dist/shuffle.min.js"></script>
+    <!-- Data and charting plugins -->
     <script src="bower_components/papaparse/papaparse.min.js"></script>
-    <script src="bower_components/leaflet-geometry/dist/leaflet.geometryutil.js"></script>
-    <script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.min.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/chart.js/dist/Chart.min.js"></script>
+    <!-- Mapping plugins -->
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.min.js"></script>
+    <script src="bower_components/leaflet-geometry/dist/leaflet.geometryutil.js"></script>
+    <!-- Custom -->
     <script src="js/config.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
     <script src="js/dashboard.js"></script>
