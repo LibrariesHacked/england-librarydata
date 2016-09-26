@@ -37,7 +37,7 @@
     </nav>
     <div id="main" class="container main">
         <div class="row">
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+            <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 1: Find My Library -->
                 <div class="panel panel-success">
                     <div class="panel-body">
@@ -45,7 +45,8 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <span class="fa fa-home" id="spFmlHome"></span>
-                                    <span class="fa fa-spinner fa-spin" id="spFmlSpinning"></span></span>
+                                    <span class="fa fa-spinner fa-spin" id="spFmlSpinning"></span>
+                                </span>
                                 <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 6AX" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
                                 <span class="input-group-btn">
                                     <button id="btnPostcodeSearch" class="btn btn-success btn-simple" type="button">Go</button>
@@ -90,7 +91,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+            <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 3: Library details by authority -->
                 <div class="panel panel-primary">
                     <div class="panel-body">
@@ -105,16 +106,6 @@
                             </select>
                         </div>
                         <div id="divLibraryDetails"></div>
-                    </div>
-                </div>
-                <!-- Widget 4: Public libraries news -->
-                <div class="panel panel-danger">
-                    <div id="newsCounts" class="list-group"></div>
-                    <div class="panel-footer">
-                        <ul id="newsSwitch" class="pagination pagination-sm page-story-list">
-                            <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
-                            <li><a data-direction="1" href="#">&raquo;</a></li>
-                        </ul>
                     </div>
                 </div>
                 <!-- Widget 5: Public libraries news - map -->
@@ -134,8 +125,18 @@
                         </ul>
                     </div>
                 </div>
+                <!-- Widget 4: Public libraries news -->
+                <div class="panel panel-danger">
+                    <div id="newsCounts" class="list-group"></div>
+                    <div class="panel-footer">
+                        <ul id="newsSwitch" class="pagination pagination-sm page-story-list">
+                            <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
+                            <li><a data-direction="1" href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col col-lg-4 col-md-4 col-sm-4 col-xs-6">
+            <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 6: Tweets -->
                 <div class="panel panel-info">
                     <div id="tweetsCounts" class="list-group"></div>

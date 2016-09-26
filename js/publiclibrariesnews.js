@@ -61,7 +61,9 @@
         }.bind(this));
     },
     getTweetsSortedByDate: function () {
-
+        return $.map($.merge(this.authoritiesTwitter, this.librariesTwitter), function (t, i) {
+            return { name: t[0], account: t[1], type: t[2], description: t[3], website: t[4], following: t[5], favorourites: t[6], followers: t[7], tweets: t[8],  dateAccount: t[9], avatar: t[10], latest: t[11], latestDate: t[12] }
+        }).sort(function (a, b) { return moment(b[12]) - moment(a[12]) });
     },
     getDeprivationIndicesByLibrary: function (authority, library) {
         return { Multiple: 0, Crime: 0, Income: 0, Health: 0, Education: 0 };
@@ -98,6 +100,27 @@
                 x.population, // Population
                 x.hectares // Area
             ]);
+        });
+        return datatable;
+    },
+    getLibrariesDataTable: function () {
+        var datatable = [];
+        var authorities = this.getLibrariesByAuthority();
+        $.each(authorities, function (i, a) {
+            $.each(a, function (y, l) {
+                    datatable.push([
+                        l.name, // Name
+                        l.postcode,
+                        l.type,
+                        l.closed_year,
+                        l.notes,
+                        l.imd_decile,
+                        l.crime_decile,
+                        l.education_decile,
+                        l.income_decile,
+                        l.health_decile
+                ]);
+            });
         });
         return datatable;
     },

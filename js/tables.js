@@ -30,5 +30,33 @@
                 ]
             });
 
+        /////////////////////////////////////////////////
+        // Table 2: Libraries
+        /////////////////////////////////////////////////
+        var tableLibraries = $('#tblLibraries').dataTable(
+            {
+                processing: true,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'print', text: 'Print', className: 'btn-sm' },
+                    { extend: 'excelHtml5', text: 'Export Excel', className: 'btn-sm' }
+                ],
+                deferRender: true,
+                data: PublicLibrariesNews.getLibrariesDataTable(),
+                columns: [
+                    { title: "Name" },
+                    { title: "Address" },
+                    { title: "Type" },
+                    { title: "Year closed" },
+                    { title: "Notes" },
+                    { title: "IMD Decile" },
+                    { title: "Crime Decile" },
+                    { title: "Education Decile" },
+                    { title: "Income Decile" },
+                    { title: "Health Decile" }
+                ]
+            });
+
     });
 });

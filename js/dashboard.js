@@ -10,7 +10,7 @@
     // Map.  Initialise the map, set center, zoom, etc.
     /////////////////////////////////////////////////
     var map = L.map('divMiniMap').setView([52.6, -2.5], 6);
-    L.tileLayer(config.mapTiles).addTo(map);
+    L.tileLayer(config.mapTilesLight).addTo(map);
 
     //////////////////////////////////////////////
     // LOAD.  Load the data.
@@ -72,7 +72,7 @@
                     $('#divFmlMap').show();
                     $('#divFmlContent').show();
                     fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
-                    L.tileLayer(config.mapTiles).addTo(fmlMap);
+                    L.tileLayer(config.mapTilesStreets).addTo(fmlMap);
                 }
 
                 // Construct closest and home markers
@@ -298,26 +298,26 @@
         var addTweet = function (index, position) {
             if (tweets && tweets[index]) {
                 var tweet = tweets[index]
-                var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet[4] + '">' +
+                var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet.account + '">' +
                     '<span class="badge"></span>' +
-                    '<h4 class="list-group-item-heading">' + tweet[0] + '</h4>' +
-                    '<p class="list-group-item-text">' + $('<div/>').html(tweet[4]) + '</p>' + '</div>';
-                position == 'first' ? $('#tweetCounts').prepend(li) : $('#tweetCounts').append(li);
+                    '<h4 class="list-group-item-heading">' + tweet.name + '</h4>' +
+                    '<p class="list-group-item-text">' + $('<div/>').html(tweet.latest).text() + '</p>' + '</div>';
+                position == 'first' ? $('#tweetsCounts').prepend(li) : $('#tweetsCounts').append(li);
             }
         };
         var removeTweet = function (position) {
-            $('#twitterCounts div:' + position).remove();
+            $('#tweetsCounts div:' + position).remove();
         };
         var updateTwitterSwitchChevrons = function () {
             $('#twitterSwitch li').attr('class', '');
             if (currentlyShowingTwitter[0] != 0) {
-                $('#tweetsSwitch li a').first().html('&laquo; ' + locs[currentlyShowingTwitter[0] - 1]);
+                $('#tweetsSwitch li a').first().html('&laquo; ' + tweets[currentlyShowingTwitter[0] - 1].account);
             } else {
                 $('#tweetsSwitch li a').first().html('&laquo;');
                 $('#tweetsSwitch li').first().attr('class', 'disabled');
             }
-            if (currentlyShowingTwitter[1] != locs.length - 1) {
-                $('#tweetsSwitch li a').last().html(locs[currentlyShowingTwitter[1] + 1] + ' &raquo;');
+            if (currentlyShowingTwitter[1] != tweets.length - 1) {
+                $('#tweetsSwitch li a').last().html(tweets[currentlyShowingTwitter[1] + 1].account + ' &raquo;');
             } else {
                 $('#tweetsSwitch li a').last().html('&raquo;');
                 $('#tweetsSwitch li').last().attr('class', 'disabled');
@@ -326,23 +326,18 @@
         var clickShiftChangeTwitterItems = function (e) {
             e.preventDefault();
             var id = e.currentTarget.parentNode.parentNode.id;
-            var type = id.substring(0, id.indexOf('Switch'));
             var incr = $(e.target).data('direction');
-            if ((currentlyShowingTwitter[1] == locs[type].length - 1) || (currentlyShowingTwitter[0] == 0 && incr == -1)) return false;
+            if ((currentlyShowingTwitter[1] == tweets.length - 1) || (currentlyShowingTwitter[0] == 0 && incr == -1)) return false;
             currentlyShowingTwitter[0] = currentlyShowingTwitter[0] + incr;
             currentlyShowingTwitter[1] = currentlyShowingTwitter[1] + incr;
-            updateTwitterSwitchChevrons(type);
-            removeTweet(type, (incr == 1 ? 'first' : 'last'));
-            addLocation(type, incr == 1 ? currentlyShowingTwitter[1] : currentlyShowingTwitter[0], (incr == 1 ? 'last' : 'first'));
+            updateTwitterSwitchChevrons();
+            removeTweet((incr == 1 ? 'first' : 'last'));
+            addTweet(incr == 1 ? currentlyShowingTwitter[1] : currentlyShowingTwitter[0], (incr == 1 ? 'last' : 'first'));
         };
         $('ul.page-twitter-list li a').on('click', clickShiftChangeTwitterItems);
         // Initial setup: 3 items for changes, 1 for local news (generally longer)
-        updateTwitterSwitchChevrons('local');
-        updateTwitterSwitchChevrons('changes');
+        updateTwitterSwitchChevrons();
         for (x = 0 ; x < 1; x++) addTweet(x, 'last');
-
-
-
 
 
         //////////////////////////////////////////////

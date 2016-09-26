@@ -8,8 +8,8 @@
     var selectedAuth = '';
     var mapType = 1;
     var map = L.map('map').setView([52.55, -2.72], 7);
-    L.tileLayer(config.mapTileLayer, {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors.  Contains OS data &copy; Crown copyright and database right 2016.  Contains Royal Mail data &copy; Royal Mail copyright and Database right 2016.  Contains National Statistics data &copy; Crown copyright and database right 2016.'
+    L.tileLayer(config.mapTilesLight, {
+        attribution: config.mapAttribution
     }).addTo(map);
     var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
     map.addControl(sidebar);
@@ -44,6 +44,7 @@
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 45) return config.boundaryLines.gl;
             if (feature.properties['authority_id'] == selectedAuth) return config.boundaryLines.selected;
+            style.fillColor = config.fillColours[mapType];
             if (mapType == 1) style.fillOpacity = feature.properties['pcLibraries'];
             if (mapType == 2) style.fillOpacity = feature.properties['pcLibrariesPerPopulation'];
             if (mapType == 3) style.fillOpacity = feature.properties['pcLibrariesPerArea'];
@@ -133,34 +134,35 @@
             $('#sidebar-authoritycontent').empty();
 
             // Show authority details
-            $('#sidebar-authoritycontent').append('<h3>' + feature.properties.name + '</h3>');
-            $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success">' + numFormat(feature.properties.libraryCount) + ' libraries</p></div><//div>');
+            $('#sidebar-authoritycontent').append('<h4>' + feature.properties.name + '</h4>');
+            $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info strong">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning strong">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success strong">' + numFormat(feature.properties.libraryCount) + ' libraries</p></div><//div>');
 
             // Display latest tweet
             var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);
             if (tweet) {
-                $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="' + '' + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow()  + '</strong> ' + tweet[11] + '</div>');
+                $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="' + '' + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</strong> ' + tweet[11] + '</div>');
             }
 
             // Show libraries group by type
-            $('#sidebar-authoritycontent').append('<h4>Libraries</h4>');
-            $('#sidebar-authoritycontent').append('<p>Select a library to see further details.</p>');
             $.each(Object.keys(feature.properties.libraries), function (i, k) {
                 var type = $('<div>');
-                var hd = $('<h5>', {
-                    text: feature.properties.libraries[k].libs.length + ' ' + config.libStyles[k].type
+                var hd = $('<h6>', {
+                    text: config.libStyles[k].type
                 }).appendTo(type);
+                var sm = $('<small>').appendTo(type);
                 $.each(feature.properties.libraries[k].libs, function (x, l) {
+                    $(sm).append((x + 1) + '. ');
                     $('<a>', {
                         text: l.name,
                         title: l.name,
                         href: '#',
-                        'class': 'btn btn-xs btn-' + config.libStyles[l.type].cssClass + ' btn-libs',
+                        'class': 'text-' + config.libStyles[l.type].cssClass,
                         click: function () {
                             clickLibrary(l);
                             return false;
                         }
-                    }).appendTo(type);
+                    }).appendTo(sm);
+                    $(sm).append(' ');
                 });
                 $('#sidebar-authoritycontent').append(type);
             });
