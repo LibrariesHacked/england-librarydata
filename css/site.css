@@ -3,6 +3,14 @@
     min-height: 100%;
 }
 
+.sidebar-header, .sidebar-tabs > li.active, .sidebar-tabs > ul > li.active {
+    background-color: #93C54B;
+}
+
+.sidebar-content {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
 .main .row .col h5{
     text-transform: uppercase;
     text-align: right;

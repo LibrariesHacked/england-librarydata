@@ -299,7 +299,7 @@
             if (tweets && tweets[index]) {
                 var tweet = tweets[index]
                 var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet.account + '">' +
-                    '<span class="badge"></span>' +
+                    '<a href="' + tweet.account + '"><span class="fa fa-twitter pull-right text-info"></span></a>' +
                     '<h4 class="list-group-item-heading">' + tweet.name + '</h4>' +
                     '<p class="list-group-item-text">' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>' + '</div>';
                 position == 'first' ? $('#tweetsCounts').prepend(li) : $('#tweetsCounts').append(li);
@@ -338,7 +338,6 @@
         // Initial setup: 3 items for changes, 1 for local news (generally longer)
         updateTwitterSwitchChevrons();
         for (x = 0 ; x < 1; x++) addTweet(x, 'last');
-
 
         //////////////////////////////////////////////
         // 8. Widget: Area stats
