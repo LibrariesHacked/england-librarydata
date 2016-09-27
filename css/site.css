@@ -3,36 +3,18 @@
     min-height: 100%;
 }
 
+.main .row .col h5{
+    text-transform: uppercase;
+    text-align: right;
+    font-weight: 700;
+}
+
 #spFmlSpinning {
     display: none;
 }
 
 .strong {
     font-weight: 700;
-}
-
-div.panel-success {
-    border-top: 3px solid #6699FF;
-}
-
-div.panel-primary {
-    border-top: 3px solid #6699FF;
-}
-
-div.panel-default {
-    border-top: 3px solid #6699FF;
-}
-
-div.panel-warning {
-    border-top: 3px solid #6699FF;
-}
-
-div.panel-danger {
-    border-top: 3px solid #6699FF;
-}
-
-div.panel-info {
-    border-top: 3px solid #6699FF;
 }
 
 .panel-heading span.fa {

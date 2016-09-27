@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Libraries Hacked">
     <title>{ libraries: england } | hacked projects</title>
-    <link href="bower_components/bootswatch/paper/bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/bootswatch/sandstone/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
@@ -39,6 +39,7 @@
         <div class="row">
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 1: Find My Library -->
+                <h5 class="text-success">Find nearest library</h5>
                 <div class="panel panel-success">
                     <div class="panel-body">
                         <div class="form-group">
@@ -79,21 +80,27 @@
                     </div>
                 </div>
                 <!-- Widget 2: Library types by authority -->
-                <div class="panel panel-default">
+                <h5 class="text-info">Library types by authority</h5>
+                <div class="panel panel-info">
                     <div class="panel-body">
                         <select id="selLibraryTypeAuthority" class="form-control">
                             <option value="">All authorities</option>
                         </select>
                     </div>
                     <div class="panel-body">
-                        <h5 id="hAuthorities"></h5>
+                        <div class="row" id="divAuthStats">
+                            <div id="divNumLibs" class="col col-xs-4 text-success"><p class="lead text-success"></p></div>
+                            <div class="col col-xs-4"><p class="lead text-success"></p></div>
+                            <div class="col col-xs-4"><p class="lead text-success"></p></div>
+                        </div>
                         <canvas id="divLibrariesDonutChart" height="300"></canvas>
                     </div>
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 3: Library details by authority -->
-                <div class="panel panel-primary">
+                <h5 class="text-warning">Library details</h5>
+                <div class="panel panel-warning">
                     <div class="panel-body">
                         <div class="form-group">
                             <select id="selLibraryDetailsAuthority" class="form-control">
@@ -109,7 +116,8 @@
                     </div>
                 </div>
                 <!-- Widget 5: Public libraries news - map -->
-                <div class="panel panel-info">
+                <h5 class="text-danger">News and changes map</h5>
+                <div class="panel panel-danger">
                     <div id="divMiniMap"></div>
                     <div id="divMiniMapContent" class="panel-body">
                         <div id="divMiniMapText"></div>
@@ -125,6 +133,7 @@
                         </ul>
                     </div>
                 </div>
+                <h5 class="text-danger">News and changes</h5>
                 <!-- Widget 4: Public libraries news -->
                 <div class="panel panel-danger">
                     <div id="newsCounts" class="list-group"></div>
@@ -138,6 +147,7 @@
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 6: Tweets -->
+                <h5 class="text-info">Libraries on twitter</h5>
                 <div class="panel panel-info">
                     <div id="tweetsCounts" class="list-group"></div>
                     <div class="panel-footer">
@@ -148,7 +158,8 @@
                     </div>
                 </div>
                 <!-- Widget 7: Libraries area stats -->
-                <div class="panel panel-primary">
+                <h5 class="text-warning">Library area stats</h5>
+                <div class="panel panel-warning">
                     <div class="panel-body">
                         <select id="selAreaStatsAuthority" class="form-control">
                             <option value="">All authorities</option>
@@ -159,6 +170,7 @@
                     </div>
                 </div>
                 <!-- Widget 7: Attributions -->
+                <h5 class="text-muted">Respects</h5>
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <p><small>Library news data published by <a href="http://www.publiclibrariesnews.com" target="_blank">Public Libraries News</a> under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 Unported License</a></small></p>
@@ -181,6 +193,7 @@
     <script src="bower_components/papaparse/papaparse.min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/chart.js/dist/Chart.min.js"></script>
+    <script src="bower_components/twitter-text/twitter-text.js"></script>
     <!-- Mapping plugins -->
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.min.js"></script>
