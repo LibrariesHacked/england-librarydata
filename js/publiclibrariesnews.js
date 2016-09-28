@@ -124,6 +124,20 @@
         });
         return datatable;
     },
+    getNewsDataTable: function (type) {
+        var datatable = [];
+        $.each(this.getStoriesGroupedByLocation(type), function (i, a) {
+            $.each(a.stories, function (y, c) {
+                datatable.push([
+                    i,
+                    c.date,
+                    c.text,
+                    c.url
+                ]);
+            });
+        });
+        return datatable;
+    },
     getAuthorityListSorted: function () {
         return $.map(this.authorities, function (i, x) { return i.name }).sort();
     },
@@ -132,6 +146,20 @@
         return $.map(this.authorities, function (i, x) {
             if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function (y, z) { return y.name });
         }).sort();
+    },
+    getStatCountsByAuthority: function (authority) {
+        var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0 };
+        $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
+            if (i == authority || !authority) {
+                counts.area = counts.area + x.hectares;
+                counts.population = counts.population + x.population;
+                $.each(x.libraries, function (y, lib) {
+                    if (lib.type == 'XL') counts.closedLibraries = counts.closedLibraries + 1;
+                    if (lib.type != 'XL') counts.libraries = counts.libraries + 1;
+                });
+            }
+        });
+        return counts;
     },
     getCountLibrariesByAuthorityType: function (authority, type) {
         var count = 0;

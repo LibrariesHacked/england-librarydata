@@ -128,13 +128,16 @@
         });
         var updateLibTypesDonut = function (libAuthority) {
             typeDonut.config.data.datasets[0].data = [];
-            var total = 0;
             $.each(Object.keys(config.libStyles), function (t, c) {
                 var count = PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c);
-                if (t != 'XL') total = total + count;
                 typeDonut.config.data.datasets[0].data.push(count);
             });
-            $('#divAuthStats #divNumLibs p').text(total + ' libraries');
+
+            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
+            
+            $('#divAuthStats #divNumLibs p').text(stats.libraries + ' libraries');
+            $('#divAuthStats #divPopulation p').text(stats.population);
+
             typeDonut.update();
         };
 

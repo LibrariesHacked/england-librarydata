@@ -58,5 +58,50 @@
                 ]
             });
 
+        /////////////////////////////////////////////////
+        // Table 3: Local news
+        /////////////////////////////////////////////////
+        var tableLocal = $('#tblPlnLocal').dataTable(
+            {
+                processing: true,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'print', text: 'Print', className: 'btn-sm' },
+                    { extend: 'excelHtml5', text: 'Export Excel', className: 'btn-sm' }
+                ],
+                deferRender: true,
+                data: PublicLibrariesNews.getNewsDataTable('local'),
+                columns: [
+                    { title: "Location" },
+                    { title: "Date" },
+                    { title: "Text" },
+                    { title: "URL" },
+                ]
+            });
+
+        /////////////////////////////////////////////////
+        // Table 4: Changes
+        /////////////////////////////////////////////////
+        var tableChanges = $('#tblPlnChanges').dataTable(
+            {
+                processing: true,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'print', text: 'Print', className: 'btn-sm' },
+                    { extend: 'excelHtml5', text: 'Export Excel', className: 'btn-sm' }
+                ],
+                deferRender: true,
+                data: PublicLibrariesNews.getNewsDataTable('changes'),
+                columns: [
+                    { title: "Location" },
+                    { title: "Date" },
+                    { title: "Text" },
+                    { title: "URL" },
+                ]
+            });
+
+
     });
 });
