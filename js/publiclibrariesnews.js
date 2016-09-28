@@ -148,17 +148,20 @@
         }).sort();
     },
     getStatCountsByAuthority: function (authority) {
-        var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0 };
+        var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0 };
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             if (i == authority || !authority) {
-                counts.area = counts.area + x.hectares;
-                counts.population = counts.population + x.population;
+                counts.area = counts.area + parseInt(x.hectares);
+                counts.population = counts.population + parseInt(x.population);
+                
                 $.each(x.libraries, function (y, lib) {
                     if (lib.type == 'XL') counts.closedLibraries = counts.closedLibraries + 1;
                     if (lib.type != 'XL') counts.libraries = counts.libraries + 1;
                 });
             }
         });
+        counts.peoplePerLibrary = counts.population / counts.libraries;
+        counts.areaPerLibrary = counts.area / counts.libraries;
         return counts;
     },
     getCountLibrariesByAuthorityType: function (authority, type) {

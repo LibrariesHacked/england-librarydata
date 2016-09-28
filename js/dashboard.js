@@ -1,5 +1,15 @@
 ﻿$(function () {
 
+    /////////////////////////////////////////////////////////
+    // Helper Function: numFormat
+    /////////////////////////////////////////////////////////
+    var numFormat = function (num) {
+        if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+        if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        return num;
+    };
+
     /////////////////////////////////////////////////
     // Variables
     // Declared variables that get set later on
@@ -135,8 +145,13 @@
 
             var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
             
-            $('#divAuthStats #divNumLibs p').text(stats.libraries + ' libraries');
-            $('#divAuthStats #divPopulation p').text(stats.population);
+            $('#divAuthStats #divNumLibs p').text(numFormat(stats.libraries));
+            $('#divAuthStats #divArea p').text(numFormat(stats.area));
+            $('#divAuthStats #divPopulation p').text(numFormat(stats.population));
+
+            $('#divAuthStats #divClosedLibs p').text(numFormat(stats.closedLibraries));
+            $('#divAuthStats #divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
+            $('#divAuthStats #divLibsPerArea p').text(numFormat(stats.areaPerLibrary));
 
             typeDonut.update();
         };
