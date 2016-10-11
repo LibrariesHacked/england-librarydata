@@ -10,6 +10,10 @@
         return num.toFixed(0);
     };
 
+    var getMiles = function (i) {
+        return i * 0.000621371192;
+    }
+
     /////////////////////////////////////////////////
     // Variables
     // Declared variables that get set later on
@@ -34,12 +38,15 @@
         // Displays this on a map, and displays configurable route.
         ///////////////////////////////////////////////////////////////////
 
+        // FUNCTION: setRouteData
         var setRouteData = function (type) {
+            //$('#fmlRouteContent #' + type + ' div').text('');
             PublicLibrariesNews.getRouteToLibrary(fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng, fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng, type, function (route) {
                 if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
-                fmlRoute = L.polyline($.map(route, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['LAL'].colour, dashArray: [5, 5], weight: 2 });
+                fmlRoute = L.polyline($.map(route.line, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['LAL'].colour, dashArray: [5, 5], weight: 2 });
                 fmlMap.addLayer(fmlRoute);
-                $('#fmlRouteContent #' + type + ' p').text(fmlRoute.getDistance('imperial').toFixed(1) + ' miles');
+                $('#fmlRouteContent #' + type + ' #div' + type + 'Distance p').text(getMiles(route.distance).toFixed(1) + ' miles');
+                $('#fmlRouteContent #' + type + ' #div' + type + 'Time p').text(moment.duration(route.time * 1000).humanize() + ' ');
             });
         };
 
@@ -92,7 +99,7 @@
                 $('#fmlLibrary').text(fmlLibraryMarker.name);
                 $('#fmlLibraryAddress').text(fmlLibraryMarker.address);
 
-                // Zoom to user location - this will take a liuttle time so delay other actions.
+                // Zoom to user location - this will take a little time so delay other actions.
                 fmlMap.flyToBounds([[fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng], [fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng]]);
 
                 // Add the home and the library marker and the route
@@ -101,7 +108,7 @@
                 $('#spFmlHome').show();
                 $('#spFmlSpinning').hide();
 
-                setRouteData('Pedestrian');
+                setRouteData('Walking');
             });
         });
 

@@ -10,8 +10,8 @@ authority_id,name,type,code,hectares,population
 16,Bristol,Unitary Authority,E06000023,23533.937,449328
 51,Haringey,London Borough,E09000014,2959.837,272864
 122,Stockton on Tees,Unitary Authority,E06000004,20973.097,194803
-103,Rochdale,Metropolitan District,E08000005,15812.803,214195
 26,City of London,London Borough,E09000001,314.942,8760
+103,Rochdale,Metropolitan District,E08000005,15812.803,214195
 137,Waltham Forest,London Borough,E09000031,3880.793,271170
 21,Cambridgeshire,County,E10000003,305400.769,647238
 48,Halton,Unitary Authority,E06000006,9032.148,126528
@@ -44,8 +44,8 @@ authority_id,name,type,code,hectares,population
 31,Darlington,Unitary Authority,E06000005,19747.56,105389
 34,Devon,County,E10000008,663609.856,773077
 7,Birmingham,Metropolitan District,E08000025,26779.121,1111307
-20,Calderdale,Metropolitan District,E08000033,36396.104,208402
 49,Hammersmith and Fulham,London Borough,E09000013,1715.409,179410
+20,Calderdale,Metropolitan District,E08000033,36396.104,208402
 127,Sutton,London Borough,E09000029,4384.698,200145
 64,Kingston upon Thames,London Borough,E09000021,3726.117,173525
 68,Lancashire,County,E10000017,308300.799,1191691
@@ -70,15 +70,15 @@ authority_id,name,type,code,hectares,population
 139,Warrington,Unitary Authority,E06000007,18238.376,207695
 3,Barnsley,Metropolitan District,E08000016,32907.763,239319
 11,Bournemouth,Unitary Authority,E06000028,4716.808,194516
-90,Northumberland,Unitary Authority,E06000057,507818.004,315263
-151,York,Unitary Authority,E06000014,27201.473,206856
 149,Wolverhampton,Metropolitan District,E08000031,6943.665,254406
+151,York,Unitary Authority,E06000014,27201.473,206856
+90,Northumberland,Unitary Authority,E06000057,507818.004,315263
 113,Somerset,County,E10000027,351392.025,545390
 17,Bromley,London Borough,E09000006,15013.487,324857
 75,Luton,Unitary Authority,E06000032,4335.251,214710
 99,Reading,Unitary Authority,E06000038,4039.798,161739
-70,Leicester City,Unitary Authority,E06000016,7334.215,342627
 12,Bracknell Forest,Unitary Authority,E06000036,10938.421,118982
+70,Leicester City,Unitary Authority,E06000016,7334.215,342627
 140,Warwickshire,County,E10000031,197752.257,554002
 50,Hampshire,County,E10000014,373790.599,1353043
 116,Southampton,Unitary Authority,E06000045,5638.515,249537
@@ -94,21 +94,21 @@ authority_id,name,type,code,hectares,population
 8,Blackburn with Darwen,Unitary Authority,E06000008,13702.199,146846
 81,Newcastle upon Tyne,Metropolitan District,E08000021,11511.782,292883
 120,Staffordshire,County,E10000028,262331.444,862562
-25,Cheshire West and Chester,Unitary Authority,E06000050,94120.736,333917
 28,Coventry,Metropolitan District,E08000026,9863.907,345385
+25,Cheshire West and Chester,Unitary Authority,E06000050,94120.736,333917
 2,Barnet,London Borough,E09000003,8674.837,379691
 146,Windsor and Maidenhead,Unitary Authority,E06000040,19842.706,147708
 14,Brent,London Borough,E09000005,4323.27,324012
 74,Liverpool,Metropolitan District,E08000012,13353.38,478580
 117,Southend on Sea,Unitary Authority,E06000033,6790.098,178702
-84,North East Lincolnshire,Unitary Authority,E06000012,20355.412,159570
 52,Harrow,London Borough,E09000015,5046.33,247130
+84,North East Lincolnshire,Unitary Authority,E06000012,20355.412,159570
 130,Telford and Wrekin,Unitary Authority,E06000020,29031.346,171159
 22,Camden,London Borough,E09000007,2178.932,241059
 59,Isle of Wight,Unitary Authority,E06000046,39492.895,139395
 118,Southwark,London Borough,E09000028,2991.34,308901
-136,Walsall,Metropolitan District,E08000030,10397.35,276095
 29,Croydon,London Borough,E09000008,8649.441,379031
+136,Walsall,Metropolitan District,E08000030,10397.35,276095
 80,Milton Keynes,Unitary Authority,E06000042,30862.673,261762
 73,Lincolnshire,County,E10000019,610276.872,736665
 58,Hounslow,London Borough,E09000018,5658.541,268770
@@ -125,8 +125,8 @@ authority_id,name,type,code,hectares,population
 62,Kent,County,E10000016,363955.258,1524719
 114,South Gloucestershire,Unitary Authority,E06000025,53664.531,274661
 101,Redcar and Cleveland,Unitary Authority,E06000003,25389.087,135275
-91,Nottingham,Unitary Authority,E06000018,7461.352,318901
 57,Hillingdon,London Borough,E09000017,11570.063,297735
+91,Nottingham,Unitary Authority,E06000018,7461.352,318901
 102,Richmond upon Thames,London Borough,E09000027,5876.111,194730
 27,Cornwall,Unitary Authority,E06000052,361335.741,549404
 18,Buckinghamshire,County,E10000002,156494.916,528400

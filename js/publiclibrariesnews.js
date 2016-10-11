@@ -44,7 +44,7 @@
         for (i = 0; i < urls.length; i++) {
             requests.push($.ajax(urls[i][3]));
         }
-        $.when.apply($, requests).done(function () {
+        $.when.apply($, requests).then(function () {
             $.each(arguments, function (i, data) {
                 var month = urls[i][0];
                 var year = urls[i][1];
@@ -58,11 +58,13 @@
                 if (type == 'libtwitter') this.librariesTwitter = data[0];
             }.bind(this));
             callback();
-        }.bind(this));
+        }.bind(this), function (error) {
+            console.log(error);
+        });
     },
     getTweetsSortedByDate: function () {
         return $.map($.merge(this.authoritiesTwitter, this.librariesTwitter), function (t, i) {
-            return { name: t[0], account: t[1], type: t[2], description: t[3], website: t[4], following: t[5], favorourites: t[6], followers: t[7], tweets: t[8],  dateAccount: t[9], avatar: t[10], latest: t[11], latestDate: t[12] }
+            return { name: t[0], account: t[1], type: t[2], description: t[3], website: t[4], following: t[5], favorourites: t[6], followers: t[7], tweets: t[8], dateAccount: t[9], avatar: t[10], latest: t[11], latestDate: t[12] }
         }).sort(function (a, b) { return moment(b[12]) - moment(a[12]) });
     },
     getDeprivationIndicesByLibrary: function (authority, library) {
@@ -108,17 +110,17 @@
         var authorities = this.getLibrariesByAuthority();
         $.each(authorities, function (i, a) {
             $.each(a, function (y, l) {
-                    datatable.push([
-                        l.name, // Name
-                        l.postcode,
-                        l.type,
-                        l.closed_year,
-                        l.notes,
-                        l.imd_decile,
-                        l.crime_decile,
-                        l.education_decile,
-                        l.income_decile,
-                        l.health_decile
+                datatable.push([
+                    l.name, // Name
+                    l.postcode,
+                    l.type,
+                    l.closed_year,
+                    l.notes,
+                    l.imd_decile,
+                    l.crime_decile,
+                    l.education_decile,
+                    l.income_decile,
+                    l.health_decile
                 ]);
             });
         });
@@ -153,7 +155,7 @@
             if (i == authority || !authority) {
                 counts.area = counts.area + parseInt(x.hectares);
                 counts.population = counts.population + parseInt(x.population);
-                
+
                 $.each(x.libraries, function (y, lib) {
                     if (lib.type == 'XL') counts.closedLibraries = counts.closedLibraries + 1;
                     if (lib.type != 'XL') counts.libraries = counts.libraries + 1;
@@ -294,18 +296,14 @@
         return libArray;
     },
     getRouteToLibrary: function (fromLat, fromLng, toLat, toLng, routePref, callback) {
-        var url = 'http://openls.geog.uni-heidelberg.de/route?api_key=ee0b8233adff52ce9fd6afc2a2859a28&start=[STLNG],[STLAT]&end=[ENDLNG],[ENDLAT]&via=&lang=en&distunit=KM&routepref=[ROUTEPREF]&weighting=Shortest&avoidAreas=&useTMC=false&noMotorways=false&noTollways=false&noUnpavedroads=false&noSteps=false&noFerries=false&instructions=false';
-        url = url.replace('[STLAT]', fromLat).replace('[STLNG]', fromLng).replace('[ENDLAT]', toLat).replace('[ENDLNG]', toLng).replace('[ROUTEPREF]', routePref);
+        var url = 'https://api.mapbox.com/directions/v5/mapbox/' + routePref.toLowerCase() + '/' + fromLng + ',' + fromLat + ';' + toLng + ',' + toLat + '?overview=full&steps=true&access_token=' + config.mapBoxToken ;
         var lineCoords = [];
         $.ajax({
             type: 'GET',
             url: url,
-            dataType: 'xml',
-            success: function (xml) {
-                $(xml).find("xls\\:RouteGeometry, RouteGeometry").find("gml\\:pos, pos").each(function () {
-                    if ($(this).text().split(' ')[1]) lineCoords.push([$(this).text().split(' ')[1], $(this).text().split(' ')[0]]);
-                });
-                callback(lineCoords);
+            dataType: 'json',
+            success: function (json) {
+                callback({ distance: json.routes[0].distance, time: json.routes[0].duration, line: polyline.decode(json.routes[0].geometry) });
             }
         });
     },

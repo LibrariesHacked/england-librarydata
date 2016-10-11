@@ -45,12 +45,12 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <span class="fa fa-home" id="spFmlHome"></span>
-                                    <span class="fa fa-spinner fa-spin" id="spFmlSpinning"></span>
+                                    <span class="text-success fa fa-home" id="spFmlHome"></span>
+                                    <span class="text-success fa fa-spinner fa-spin" id="spFmlSpinning"></span>
                                 </span>
-                                <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 6AX" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
+                                <input id="txtPostcode" class="form-control" type="text" placeholder="e.g. BA1 7JH" pattern="(GIR 0AA)|((([A-Z-[QVX]][0-9][0-9]?)|(([A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVX]][0-9][A-HJKPSTUW])|([A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY])))) [0-9][A-Z-[CIKMOV]]{2})">
                                 <span class="input-group-btn">
-                                    <button id="btnPostcodeSearch" class="btn btn-success btn-simple" type="button">Go</button>
+                                    <button id="btnPostcodeSearch" class="btn btn-success" type="button">Go</button>
                                 </span>
                             </div>
                         </div>
@@ -58,19 +58,28 @@
                             <h5 id="fmlLibrary"></h5>
                             <p id="fmlLibraryAddress"></p>
                             <ul class="nav nav-tabs">
-                                <li class="active"><a href="#Pedestrian" data-toggle="tab">Pedestrian</a></li>
-                                <li><a href="#Bicycle" data-toggle="tab">Bicycle</a></li>
-                                <li><a href="#Car" data-toggle="tab">Car</a></li>
+                                <li class="active"><a href="#Walking" data-toggle="tab">Walking</a></li>
+                                <li><a href="#Cycling" data-toggle="tab">Cycling</a></li>
+                                <li><a href="#Driving" data-toggle="tab">Driving</a></li>
                             </ul>
                             <div class="tab-content" id="fmlRouteContent">
-                                <div class="tab-pane fade active in" id="Pedestrian">
-                                    <p></p>
+                                <div class="tab-pane fade active in" id="Walking">
+                                    <div class="row">
+                                        <div id="divWalkingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
+                                        <div id="divWalkingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
+                                    </div>
                                 </div>
-                                <div class="tab-pane fade" id="Bicycle">
-                                    <p></p>
+                                <div class="tab-pane fade" id="Cycling">
+                                    <div class="row">
+                                        <div id="divCyclingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
+                                        <div id="divCyclingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
+                                    </div>
                                 </div>
-                                <div class="tab-pane fade" id="Car">
-                                    <p></p>
+                                <div class="tab-pane fade" id="Driving">
+                                    <div class="row">
+                                        <div id="divDrivingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
+                                        <div id="divDrivingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -87,14 +96,14 @@
                     </div>
                     <div class="panel-body">
                         <div class="row" id="divAuthStats">
-                            <div id="divPopulation" class="stats col col-xs-4 text-info"><small>population</small><p class="lead text-info strong"></p></div>
-                            <div id="divArea" class="stats col col-xs-4 text-warning"><small>area</small><p class="lead text-warning strong"></p></div>
-                            <div id="divNumLibs" class="stats col col-xs-4 text-success"><small>libraries</small><p class="lead text-success strong"></p></div>
+                            <div id="divPopulation" class="stats col col-xs-4"><small class="text-muted">population</small><p class="lead text-info strong"></p></div>
+                            <div id="divArea" class="stats col col-xs-4"><small class="text-muted">area (ha)</small><p class="lead text-warning strong"></p></div>
+                            <div id="divNumLibs" class="stats col col-xs-4"><small class="text-muted">libraries</small><p class="lead text-success strong"></p></div>
                         </div>
                         <div class="row" id="divAuthStats">
-                            <div id="divClosedLibs" class="stats col col-xs-4 text-danger"><small>closed libraries</small><p class="lead text-danger strong"></p></div>
-                            <div id="divLibsPerPopulation" class="stats col col-xs-4 text-primary"><small>people per library</small><p class="lead text-primary strong"></p></div>
-                            <div id="divLibsPerArea" class="stats col col-xs-4 text-muted"><small>area per library (ha)</small><p class="lead text-muted strong"></p></div>
+                            <div id="divClosedLibs" class="stats col col-xs-4"><small class="text-muted">closed libraries</small><p class="lead text-danger strong"></p></div>
+                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted">people per library</small><p class="lead text-primary strong"></p></div>
+                            <div id="divLibsPerArea" class="stats col col-xs-4"><small class="text-muted">area per library (ha)</small><p class="lead text-info strong"></p></div>
                         </div>
                         <canvas id="divLibrariesDonutChart" height="300"></canvas>
                     </div>
@@ -201,6 +210,7 @@
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.min.js"></script>
     <script src="bower_components/leaflet-geometry/dist/leaflet.geometryutil.js"></script>
+    <script src="bower_components/polyline/src/polyline.js"></script>
     <!-- Custom -->
     <script src="js/config.js"></script>
     <script src="js/publiclibrariesnews.js"></script>
