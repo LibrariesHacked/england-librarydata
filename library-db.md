@@ -336,22 +336,21 @@ create table librarylocations
 )
 ```
 
-
 ```
-copy librarylocations from 'librarylocations.csv' delimiter ',' csv;
+copy librarylocations from 'C:\Development\LibrariesHacked\public-libraries-news\data\librarylocations.csv' delimiter ',' csv;
 ```
 
+Update the libraries table with the lat/lng values.
 
 ```
 update libraries l
-set l.lat = ll.lat,
-	l.lg = ll.lng
+set lat = ll.lat,
+lng = ll.lng
 from librarylocations ll
 where ll.libraryid = l.id
 ```
 
-
-
+Finally, export the libraries data.
 
 ```
 copy (
@@ -359,34 +358,42 @@ copy (
 		a.id "authority_id",
 		l.address,
 		l.postcode,
-		ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), 4326)) "lng", 
-		ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), 4326)) "lat",
-		l.closed,
+		case when ST_Within(
+				ST_Transform(ST_SetSRID(ST_MakePoint(l.lng, l.lat), 4326), 27700), 
+				(select ST_SetSRID(geom, 27700) from (select code, geom from county_region union select code, geom from district_borough_unitary_region) ab where ab.code = a.code)
+			) then '' else '' end,
+		l.postcodelat,
+		l.postcodelng,
+		l.lat,
+		l.lng,
+		--ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), 4326)) "lng", 
+		--ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), 4326)) "lat",
+		--l.closed,
 		l.statutory2010,
 		l.statutory2016,
 		type, 
 		closed_year,
 		opened_year,
 		replacement,
-		notes,
+		notes
 		-- Add the LSOA data
-		ls.lsoa11nm "lsoa_name",
-		ls.lsoa11cd "lsoa_code",
+		--ls.lsoa11nm "lsoa_name",
+		--ls.lsoa11cd "lsoa_code",
 		-- Add the deprivation data
-		i.imd_decile,
-		i.income_decile,
-		i.education_decile,
-		i.health_decile,
-		i.crime_decile,
-		i.housing_decile,
-		i.environment_decile
+		--i.imd_decile,
+		--i.income_decile,
+		--i.education_decile,
+		--i.health_decile,
+		--i.crime_decile,
+		--i.housing_decile,
+		--i.environment_decile
 	from libraries l
 	join authorities a
 	on a.id = l.authority_id
-	join lsoa_boundaries ls
-	on ST_Within(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), ST_SetSRID(ls.geom, 27700))
-	join imd i
-	on i.lsoa_code = ls.lsoa11cd
+	--join lsoa_boundaries ls
+	--on ST_Within(ST_SetSRID(ST_MakePoint(eastings, northings), 27700), ST_SetSRID(ls.geom, 27700))
+	--join imd i
+	--on i.lsoa_code = ls.lsoa11cd
 ) to 'libraries.csv' delimiter ','csv header;
 ```
 
