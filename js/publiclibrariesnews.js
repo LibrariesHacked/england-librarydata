@@ -153,7 +153,7 @@
         var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0 };
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             if (i == authority || !authority) {
-                counts.area = counts.area + parseInt(x.hectares);
+                counts.area = counts.area + parseFloat(x.hectares);
                 counts.population = counts.population + parseInt(x.population);
 
                 $.each(x.libraries, function (y, lib) {

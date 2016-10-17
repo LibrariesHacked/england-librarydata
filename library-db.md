@@ -1,4 +1,4 @@
-# Libraries open data PostgreSQL setup
+# Libraries database setup
 
 These are instructions to set up a spatial database using the Libraries Taskforce open dataset.
 
@@ -259,6 +259,7 @@ create table libraries
   lat numeric,
   lng numeric,
   type character varying(4),
+  closed boolean,
   closed_year integer,
   statutory2010 boolean,
   statutory2016 boolean,
@@ -277,12 +278,13 @@ Then take data from lots of tables and put it into the libraries table.
 
 ```
 insert into libraries(
-	name, authority_id, address, postcode, postcodelat, postcodelng, type, closed_year, statutory2010, 
+	name, authority_id, address, postcode, postcodelat, postcodelng, type, closed, closed_year, statutory2010, 
 	statutory2016, opened_year, replacement, notes, hours, staffhours, email, url)
 select	r.library, a.id, r.address, p.postcode, 
 	ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(p.eastings, p.northings),27700), 4326)),
 	ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(p.eastings, p.northings),27700), 4326)),
-	case when r.libtype is null then 'XL' else r.libtype end,  
+	case when r.closed is null then false else true end,
+	r.libtype,
 	cast(r.yearclosed as integer),
 	case when r.statutoryapril2010 = 'yes' then true else false end,
 	case when r.statutoryjuly2016 = 'yes' then true else false end,
@@ -373,45 +375,7 @@ lng = l.postcodelng
 where l.lat is null and l.lng is null
 ```
 
-There will still be some with no data, go round again.
-
-```
-copy (
-	select 	l.id, l.name || ',' || coalesce(l.address, '') || ',' || a.name "address" 
-	from libraries l join authorities a on a.id = l.authority_id where l.lat is null and l.lng is null
-) to 'datalibrariesgeo2.csv' delimiter ',' csv header;
-```
-
-```
-truncate librarylocations
-```
-
-```
-copy librarylocations from 'librarylocations2.csv' delimiter ',' csv;
-```
-
-```
-update libraries u
-set 	lat = ll.lat,
-	lng = ll.lng
-from librarylocations ll
-join libraries l
-on l.id = ll.libraryid
-join authorities a
-on a.id = l.authority_id
-where ST_Within(
-	ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700), 
-	(select ST_SetSRID(geom, 27700) 
-		from (	select code, geom 
-			from county_region 
-			union 
-			select code, geom 
-			from district_borough_unitary_region ) ab 
-		where ab.code = a.code))
-and u.id = ll.libraryid
-```
-
-About 25 left! Go round again.  Finally, export the libraries data.
+Finally, export the libraries data.
 
 ```
 copy (
@@ -424,10 +388,15 @@ copy (
 		l.statutory2010,
 		l.statutory2016,
 		l.type, 
+		l.closed,
 		l.closed_year,
 		l.opened_year,
 		l.replacement,
 		l.notes,
+		l.hours,
+		l.staffhours,
+		l.url,
+		l.email,
 		-- Add the LSOA data
 		ls.lsoa11nm "lsoa_name",
 		ls.lsoa11cd "lsoa_code",
@@ -442,10 +411,9 @@ copy (
 	from libraries l
 	join authorities a
 	on a.id = l.authority_id
-	join lsoa_boundaries ls
-	on ST_Within(ST_SetSRID(ST_MakePoint(l.lng, l.lat), 4326), ST_Transform(ST_SetSRID(ls.geom, 27700), 4326))
-	join imd i
+	left outer join lsoa_boundaries ls
+	on ST_Within(ST_Transform(ST_SetSRID(ST_MakePoint(l.lng, l.lat), 4326), 27700), ST_SetSRID(ls.geom, 27700))
+	left outer join imd i
 	on i.lsoa_code = ls.lsoa11cd
 ) to 'libraries.csv' delimiter ','csv header;
 ```
-
