@@ -9,10 +9,9 @@
         if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
         return num.toFixed(0);
     };
-
     var getMiles = function (i) {
         return i * 0.000621371192;
-    }
+    };
 
     /////////////////////////////////////////////////
     // Variables
@@ -20,11 +19,6 @@
     /////////////////////////////////////////////////
     var fmlMap = null, typeDonut = null, fmlLibraryMarker = null, fmlHomeMarker = null, fmlRoute = null;
 
-    /////////////////////////////////////////////////
-    // Map.  Initialise the map, set center, zoom, etc.
-    /////////////////////////////////////////////////
-    var map = L.map('divMiniMap').setView([52.6, -2.5], 6);
-    L.tileLayer(config.mapTilesLight).addTo(map);
 
     //////////////////////////////////////////////
     // LOAD.  Load the data.
@@ -49,41 +43,29 @@
                 $('#fmlRouteContent #' + type + ' #div' + type + 'Time p').text(moment.duration(route.time * 1000).humanize() + ' ');
             });
         };
-
         // EVENT: Route type change
         $('#divFmlContent a[data-toggle="tab"]').on('shown.bs.tab', function (e) { setRouteData($(e.target).attr("href").replace('#', '')) });
+        // EVENT: Address autocomplete
+        $('#txtAddress').autocomplete({
+            lookup: function (query, done) {
+                PublicLibrariesNews.getAddressCoordinates(query, function (data) { done({ suggestions: data }) });
+            },
+            onSelect: function (suggestion) {
+                $('#spFmlHome').hide();
+                $('#spFmlSpinning').show();
 
-        // EVENT: Postcode search
-        $('#btnPostcodeSearch').on('click', function (e) {
+                // If there are existing markers and route lines, remove them
+                if (fmlLibraryMarker != null) fmlMap.removeLayer(fmlLibraryMarker);
+                if (fmlHomeMarker != null) fmlMap.removeLayer(fmlHomeMarker);
+                if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
 
-            $('#spFmlHome').hide();
-            $('#spFmlSpinning').show();
-
-            // Some basic validation of the postcode.
-            var pattern = new RegExp('^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$');
-            var valid = pattern.test($('#txtPostcode').val());
-            if (valid == false) {
-                $('#fmlResults').empty();
-                $('#fmlResults').append('<p class="text-warning">Could not find postcode.</p>')
-                return false;
-            }
-
-            // If there are existing markers and route lines, remove them
-            if (fmlLibraryMarker != null) fmlMap.removeLayer(fmlLibraryMarker);
-            if (fmlHomeMarker != null) fmlMap.removeLayer(fmlHomeMarker);
-            if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
-
-            // create marker array
-            var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
-                var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ icon: 'book', markerColor: 'green' }) });
-                marker.name = l.name;
-                marker.address = l.address;
-                return marker;
-            });
-
-            // Trigger the search.
-            PublicLibrariesNews.searchByPostcode($('#txtPostcode').val(), function (data) {
-
+                // create marker array
+                var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
+                    var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ icon: 'book', markerColor: 'green' }) });
+                    marker.name = l.name;
+                    marker.address = l.address;
+                    return marker;
+                });
                 // If the map hasn't been created, create it.
                 if (fmlMap == null) {
                     $('#divFmlMap').show();
@@ -93,8 +75,8 @@
                 }
 
                 // Construct closest and home markers
-                fmlLibraryMarker = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(data.lat, data.lng), false).layer;
-                fmlHomeMarker = L.marker([data.lat, data.lng], { icon: L.AwesomeMarkers.icon({ icon: 'home', markerColor: 'red' }) });
+                fmlLibraryMarker = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(suggestion.data[1], suggestion.data[0]), false).layer;
+                fmlHomeMarker = L.marker([suggestion.data[1], suggestion.data[0]], { icon: L.AwesomeMarkers.icon({ icon: 'home', markerColor: 'red' }) });
 
                 $('#fmlLibrary').text(fmlLibraryMarker.name);
                 $('#fmlLibraryAddress').text(fmlLibraryMarker.address);
@@ -109,76 +91,54 @@
                 $('#spFmlSpinning').hide();
 
                 setRouteData('Walking');
-            });
+            }
         });
 
         //////////////////////////////////////////////
         // 2. Widget: Library types by authority
-        // 
         //////////////////////////////////////////////
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
-            type: 'doughnut',
             data: {
+                datasets: [{
+                    data: [11, 16, 7, 3, 14],
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                        return config.libStyles[x].colour;
+                    }),
+                    label: 'My dataset' // for legend
+                }],
                 labels: $.map(Object.keys(config.libStyles), function (x, y) {
                     return config.libStyles[x].type;
-                }),
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                            return config.libStyles[x].colour;
-                        }),
-                        hoverBackgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                            return config.libStyles[x].colour;
-                        })
-                    }
-                ]
+                })
             },
+            type: "polarArea",
             options: {
-                animation: {
-                    animateScale: true
-                },
-                legend: {
-                    position: 'bottom'
+                elements: {
+                    arc: {
+                        borderColor: "#000000"
+                    }
                 }
             }
         });
         var updateLibTypesDonut = function (libAuthority) {
             typeDonut.config.data.datasets[0].data = [];
             $.each(Object.keys(config.libStyles), function (t, c) {
-                var count = PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c);
-                typeDonut.config.data.datasets[0].data.push(count);
+                typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c));
             });
-
             var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
-            
-            $('#divAuthStats #divNumLibs p').text(numFormat(stats.libraries));
-            $('#divAuthStats #divArea p').text(numFormat(stats.area));
-            $('#divAuthStats #divPopulation p').text(numFormat(stats.population));
-
-            $('#divAuthStats #divClosedLibs p').text(numFormat(stats.closedLibraries));
-            $('#divAuthStats #divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
-            $('#divAuthStats #divLibsPerArea p').text(numFormat(stats.areaPerLibrary));
-
+            $('#divAuthStats1 #divNumLibs p').text(numFormat(stats.libraries));
+            $('#divAuthStats1 #divArea p').text(numFormat(stats.area));
+            $('#divAuthStats1 #divPopulation p').text(numFormat(stats.population));
+            $('#divAuthStats2 #divClosedLibs p').text(numFormat(stats.closedLibraries));
+            $('#divAuthStats2 #divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
+            $('#divAuthStats2 #divLibsPerArea p').text(numFormat(stats.areaPerLibrary));
             typeDonut.update();
         };
-
-        // Initially populate the library authorities select control.
-        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selLibraryTypeAuthority').append($("<option></option>").attr("value", x).text(x)); });
-
-        // Event: On changing the library authority, update the donut chart.
-        $('#selLibraryTypeAuthority').change(function () { updateLibTypesDonut($('#selLibraryTypeAuthority').find(":selected").val()); });
-
         // Initially set the library types donut chart.
         updateLibTypesDonut();
 
         //////////////////////////////////////////////
         // 3. Widget: Library details by authority
-        // 
         //////////////////////////////////////////////
-
-        // Populate the authority control
-        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selLibraryDetailsAuthority').append($("<option></option>").attr("value", x).text(x)); });
 
         // Populate the select library control
         var updateLibraryDetailsSelect = function (authority) {
@@ -189,18 +149,12 @@
             $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z).text(z)) });
             $('#selLibraryDetailsLibrary').attr('disabled', false);
         };
-
         // Initially set the library select for all libraries.
         updateLibraryDetailsSelect();
 
-        // Event: On changing the library authority, update the library select chart.
-        $('#selLibraryDetailsAuthority').change(function () {
-            updateLibraryDetailsSelect($('#selLibraryDetailsAuthority').find(":selected").val());
-        });
-
         // Event: On selecting a library, display that library's details.
         $('#selLibraryDetailsLibrary').change(function () {
-            var libAuth = [$('#selLibraryDetailsLibrary').find(":selected").val(), $('#selLibraryDetailsAuthority').find(":selected").val()];
+            var libAuth = [$('#selLibraryDetailsLibrary').find(":selected").val(), $('#selAuthority').find(":selected").val()];
             if (libAuth[0] == '') return;
             var library = PublicLibrariesNews.getLibraryByAuthorityNameAndLibName(libAuth[1], libAuth[0]);
             $('#divLibraryDetails').empty();
@@ -271,46 +225,6 @@
         // Initial setup: 3 items for changes, 1 for local news (generally longer)
         updateSwitchChevrons();
         for (x = 0 ; x < 1; x++) addLocation(x, 'last');
-
-        //////////////////////////////////////////////
-        // 4. Populate the mini map
-        // 
-        //////////////////////////////////////////////
-        var miniMapCurrent = 'local';
-        var mapLayers = { 'local': '', 'changes': '' };
-        var currentLayer = '';
-        var addMiniMapPoints = function (type) {
-            if (currentLayer != '') map.removeLayer(currentLayer);
-            miniMapCurrent = type;
-            $('#ulMapPointType li').attr('class', '');
-            $('#ulMapPointType li#' + type).attr('class', 'active');
-            if (mapLayers[type] == '') {
-                var markerArray = [];
-                $.each(PublicLibrariesNews.getStoriesGroupedByLocation(type), function (i, o) {
-                    var size = ['small', 20];
-                    if (o.stories.length >= 5) size = ['medium', 30];
-                    if (o.stories.length >= 10) size = ['large', 40];
-                    var newsIcon = L.divIcon({ html: '<div><span>' + o.stories.length + '</span></div>', className: "marker-cluster marker-cluster-" + size[0], iconSize: new L.Point(size[1], size[1]) });
-
-                    var popup = L.popup({ maxWidth: 160, maxHeight: 140, closeButton: false })
-                        .setContent('<h5>' + i + '</h5>' + $.map(o.stories, function (s, i) { return s.text.replace(i + ' – ', '') }).join('<hr>'));
-                    var marker = L.marker([o.lat, o.lng], { icon: newsIcon }).bindPopup(popup);
-                    markerArray.push(marker);
-                });
-                mapLayers[type] = L.layerGroup(markerArray);
-            }
-            currentLayer = mapLayers[type];
-            currentLayer.addTo(map);
-        };
-        $('#ulMapPointType li span').first().text(PublicLibrariesNews.storyCount('local'));
-        $('#ulMapPointType li span').last().text(PublicLibrariesNews.storyCount('changes'));
-        $('#ulMapPointType li a').click(function (e) {
-            e.preventDefault();
-            var type = $(e.target).closest('li').attr('id');
-            if (miniMapCurrent == type) return false;
-            addMiniMapPoints(type);
-        });
-        addMiniMapPoints('local');
 
 
         //////////////////////////////////////////////
@@ -384,26 +298,84 @@
             }
         });
         var updateLibTypeStatsBar = function (authority) {
+            var authDepStats = PublicLibrariesNews.getDeprivationIndicesAveragesByAuthority(authority);
+            $('#divIMD p').text((authDepStats.Multiple.sum() / authDepStats.Multiple.length).toFixed(0));
+            $('#divCrime p').text((authDepStats.Crime.sum() / authDepStats.Crime.length).toFixed(0));
+            $('#divIncome p').text((authDepStats.Income.sum() / authDepStats.Income.length).toFixed(0));
+            $('#divHealth p').text((authDepStats.Health.sum() / authDepStats.Health.length).toFixed(0));
+            $('#divEducation p').text((authDepStats.Education.sum() / authDepStats.Education.length).toFixed(0));
+            $('#divHousing p').text((authDepStats.Housing.sum() / authDepStats.Housing.length).toFixed(0));
             typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
                 var ind = PublicLibrariesNews.getDeprivationIndicesByAuthorityAndLibType(authority, x);
-                return {
-                    label: config.libStyles[x].type,
-                    data: $.map(Object.keys(ind), function (i, y) {
-                        var sum = 0;
-                        $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
-                        return ind[i] == 0 ? '' : (sum / ind[i].length).toFixed(1);
-                    }),
-                    backgroundColor: config.libStyles[x].colour,
-                    hoverBackgroundColor: config.libStyles[x].colour
-                };
+                if (ind.Multiple.length > 0) {
+                    return {
+                        label: config.libStyles[x].type,
+                        data: $.map(Object.keys(ind), function (i, y) {
+                            var sum = 0;
+                            $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
+                            return ind[i] == 0 ? '' : (sum / ind[i].length).toFixed(1);
+                        }),
+                        backgroundColor: config.libStyles[x].colour,
+                        hoverBackgroundColor: config.libStyles[x].colour
+                    };
+                }
             });
             typeBar.update();
         };
-        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAreaStatsAuthority').append($("<option></option>").attr("value", x).text(x)); });
-        $('#selAreaStatsAuthority').change(function () {
-            updateLibTypeStatsBar($('#selAreaStatsAuthority').find(":selected").val());
-        });
         updateLibTypeStatsBar();
+
+        //////////////////////////////////////////////
+        // 9. Widget: Distance stats
+        //////////////////////////////////////////////
+        var distanceLine = new Chart($('#divLibrariesDistancesLineChart'), {
+            type: 'line',
+            data: {
+                labels: [0, 1, 2, 3, 4, 5, 6],
+                datasets: [
+                    {
+                        //label: "My First dataset",
+                        //fill: false,
+                        //lineTension: 0.1,
+                        //backgroundColor: "rgba(75,192,192,0.4)",
+                        //borderColor: "rgba(75,192,192,1)",
+                        //borderCapStyle: 'butt',
+                        //borderDash: [],
+                        //borderDashOffset: 0.0,
+                        //borderJoinStyle: 'miter',
+                        //pointBorderColor: "rgba(75,192,192,1)",
+                        //pointBackgroundColor: "#fff",
+                        //pointBorderWidth: 1,
+                        //pointHoverRadius: 5,
+                        //pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        //pointHoverBorderColor: "rgba(220,220,220,1)",
+                        //pointHoverBorderWidth: 2,
+                        //pointRadius: 1,
+                        //pointHitRadius: 10,
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        spanGaps: false
+                    }
+                ]
+            },
+            options: {
+                animation: { animateScale: true }
+            }
+        });
+        var updateLibDistancesLine = function (authority) {
+            var distances = PublicLibrariesNews.getDistancesByAuthority(authority);
+            distanceLine.config.data.labels = $.map(distances, function (x, y) { if (y != 'undefined') return y; });
+            distanceLine.config.data.datasets[0].data = $.map(distances, function (x, y) { return x; });
+            distanceLine.update();
+        };
+        updateLibDistancesLine();
+        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAuthority').append($("<option></option>").attr("value", x).text(x)); });
+        // EVENT: Change authority
+        $('#selAuthority').change(function () {
+            var auth = $('#selAuthority').find(":selected").val();
+            updateLibraryDetailsSelect(auth);
+            updateLibTypesDonut(auth);
+            updateLibTypeStatsBar(auth);
+            updateLibDistancesLine(auth);
+        });
     });
 
     ///////////////////////
@@ -426,5 +398,11 @@
             }
         }
     });
-
+    Array.prototype.sum = function () {
+        var total = 0;
+        for (var i = 0; i < this.length; i++) {
+            total += parseFloat(this[i]);
+        }
+        return total;
+    };
 });

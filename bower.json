@@ -33,7 +33,8 @@
     "datatables.net-responsive-bs": "^2.1.0",
     "drmonty-leaflet-awesome-markers": "^2.0.2",
     "bootswatch": "^3.3.7",
-    "twitter-text": "npm:twitter-text#^1.14.0"
+    "twitter-text": "npm:twitter-text#^1.14.0",
+    "devbridge-autocomplete": "v1.2.26"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",
