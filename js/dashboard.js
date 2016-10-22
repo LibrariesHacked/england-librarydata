@@ -19,7 +19,6 @@
     /////////////////////////////////////////////////
     var fmlMap = null, typeDonut = null, fmlLibraryMarker = null, fmlHomeMarker = null, fmlRoute = null;
 
-
     //////////////////////////////////////////////
     // LOAD.  Load the data.
     // 2 months worth.  No geo, Yes twitter, Yes 
@@ -315,8 +314,7 @@
                             $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
                             return ind[i] == 0 ? '' : (sum / ind[i].length).toFixed(1);
                         }),
-                        backgroundColor: config.libStyles[x].colour,
-                        hoverBackgroundColor: config.libStyles[x].colour
+                        backgroundColor: config.libStyles[x].colour
                     };
                 }
             });
@@ -334,7 +332,12 @@
                 datasets: [
                     {
                         data: [65, 59, 80, 81, 56, 55, 40],
-                        spanGaps: false
+                        spanGaps: false,
+                        backgroundColor: config.libStyles['CL'].colour,
+                        borderColor: '#000',
+                        pointRadius: 2,
+                        pointHoverRadius: 4,
+                        borderWidth: 2
                     }
                 ]
             },
@@ -360,9 +363,10 @@
             var totalDistance = 0, population = 0;
             $.each(distances, function (i, x) {
                 totalDistance = (totalDistance + (i * x));
-                population = population + x
+                population = population + x;
             })
             $('#divDistanceAverage p').text((totalDistance / population).toFixed(1) + ' miles');
+            $('#divDistanceLongest p').text(Object.keys(distances).sort((function(a, b){return parseInt(b)-parseInt(a)}))[0] + ' miles');
         };
         updateLibDistancesLine();
         $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAuthority').append($("<option></option>").attr("value", x).text(x)); });
@@ -380,8 +384,8 @@
 
     ///////////////////////
     // EXTENSIONS
-    // Leaflet Helper: Get distance of a line
     //////////////////////
+    // Leaflet Helper: Get distance of a line
     L.Polyline = L.Polyline.extend({
         getDistance: function (system) {
             // distance in meters
@@ -398,6 +402,7 @@
             }
         }
     });
+    // Array: Get sum of values in an array
     Array.prototype.sum = function () {
         var total = 0;
         for (var i = 0; i < this.length; i++) {

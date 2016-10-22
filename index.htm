@@ -38,17 +38,18 @@
     <div id="main" class="container main">
         <div class="row">
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <h5 class="text-warning">Settings</h5>
+                <!-- Widget 1: Settings -->
                 <div class="panel panel-warning">
+                    <div class="panel-heading">Settings</div>
                     <div class="panel-body">
                         <select id="selAuthority" class="form-control">
                             <option value="">All authorities</option>
                         </select>
                     </div>
                 </div>
-                <!-- Widget 1: Find My Library -->
-                <h5 class="text-success">Find nearest library</h5>
+                <!-- Widget 2: Find My Library -->
                 <div class="panel panel-success">
+                    <div class="panel-heading">Find nearest library</div>
                     <div class="panel-body">
                         <div class="form-group">
                             <div class="input-group">
@@ -91,9 +92,9 @@
                     </div>
                     <div class="panel-body" id="divFmlMap"></div>
                 </div>
-                <!-- Widget 9: Libraries distance stats -->
-                <h5 class="text-warning">Library distance stats</h5>
+                <!-- Widget 3: Libraries distance stats -->
                 <div class="panel panel-warning">
+                    <div class="panel-heading">Library distance stats</div>
                     <div class="panel-body">
                         <div class="row" id="divAuthDistanceStats">
                             <div id="divDistanceAverage" class="stats col col-xs-6"><small class="text-muted">average distance</small><p class="lead text-info strong"></p></div>
@@ -104,9 +105,9 @@
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <!-- Widget 3: Library details by authority -->
-                <h5 class="text-warning">Library details</h5>
+                <!-- Widget 4: Library details by authority -->
                 <div class="panel panel-warning">
+                    <div class="panel-heading">Library details</div>
                     <div class="panel-body">
                         <div class="form-group">
                             <select id="selLibraryDetailsLibrary" class="form-control">
@@ -116,9 +117,9 @@
                         <div id="divLibraryDetails"></div>
                     </div>
                 </div>
-                <!-- Widget 2: Library types by authority -->
-                <h5 class="text-info">Library types by authority</h5>
+                <!-- Widget 5: Library types by authority -->
                 <div class="panel panel-info">
+                    <div class="panel-heading">Library types by authority</div>
                     <div class="panel-body">
                         <div class="row" id="divAuthStats1">
                             <div id="divPopulation" class="stats col col-xs-4"><small class="text-muted">population</small><p class="lead text-info strong"></p></div>
@@ -133,9 +134,9 @@
                         <canvas id="divLibrariesDonutChart" height="300"></canvas>
                     </div>
                 </div>
-                <h5 class="text-danger">News and changes</h5>
-                <!-- Widget 4: Public libraries news -->
+                <!-- Widget 6: Public libraries news -->
                 <div class="panel panel-danger">
+                    <div class="panel-heading">News and changes</div>
                     <div id="newsCounts" class="list-group"></div>
                     <div class="panel-footer">
                         <ul id="newsSwitch" class="pagination pagination-sm page-story-list">
@@ -146,9 +147,9 @@
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <!-- Widget 6: Tweets -->
-                <h5 class="text-info">Libraries on Twitter</h5>
+                <!-- Widget 7: Tweets -->
                 <div class="panel panel-info">
+                    <div class="panel-heading">Libraries on Twitter</div>
                     <div id="tweetsCounts" class="list-group"></div>
                     <div class="panel-footer">
                         <ul id="tweetsSwitch" class="pagination pagination-sm page-twitter-list">
@@ -157,9 +158,9 @@
                         </ul>
                     </div>
                 </div>
-                <!-- Widget 7: Libraries area stats -->
-                <h5 class="text-warning">Area deprivation stats</h5>
+                <!-- Widget 8: Libraries area stats -->
                 <div class="panel panel-warning">
+                    <div class="panel-heading">Area deprivation stats</div>
                     <div class="panel-body">
                         <div class="row" id="divAuthDepStats1">
                             <div id="divIMD" class="stats col col-xs-4"><small class="text-muted">multiple</small><p class="lead text-info strong"></p></div>
@@ -175,8 +176,8 @@
                     </div>
                 </div>
                 <!-- Widget 9: Attributions -->
-                <h5 class="text-muted">Respects</h5>
                 <div class="panel panel-default">
+                    <div class="panel-heading">Respects</div>
                     <div class="panel-body">
                         <p><small>Library news data published by <a href="http://www.publiclibrariesnews.com" target="_blank">Public Libraries News</a> under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 Unported License</a></small></p>
                         <p><small>English libraries and authorities taken from <a href="#" target="_blank">Libraries Taskforce dataset</a> published as Open Data under the <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank">Open Government Licence</a>.</small></p>
