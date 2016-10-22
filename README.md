@@ -4,6 +4,8 @@ Project to display English libraries data in a data dashboard.
 
 ## What is it?
 
+The Libraries Taskforce have been working on an English libraries dataset to bring together information of all libraries and library authorities in England.  This includes tracking closures, changes of library type, number of libraries, locations of libraries, and contact details.
+
 Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK leading source for libraries news.  This includes regular updates about changes, local news by authority, ideas, national news, and international news.
 
 ## Supporting technology
@@ -12,6 +14,34 @@ Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK
 | ---------- | ----------- |
 | Web | The site is coded using front end web technologies: HTML/CSS/JavaScript |
 | Google apps scripts | Data is refreshed from PLN by using Google apps scripts. |
+| PostGIS database | A PostGIS database was used for the majority of the geospatial analysis data. |
+
+## File descriptions
+
+A summary of some of the key files in this repository.
+
+| Folder | File | Description | 
+| / | LICENSE |  |
+| / | create-db.md |  |
+| / | bower |  |
+| / | index.html |  |
+| / | map.html |  |
+| / | data.html |  |
+| /css/ | site.js |  |
+| /js/ | dashboard.js |  |
+| /js/ | map.js |  |
+| /js/ | map.js |  |
+| /data/ |  |  |
+
+## Build
+
+The project uses bower package manager.  
+
+bower install
+
+## Deploy
+
+Once the project is built it should be able to be hosted on any web hosting environment.
 
 ## Third party licences
 
