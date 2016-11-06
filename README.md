@@ -16,6 +16,32 @@ Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK
 | Google apps scripts | Data is refreshed from PLN by using Google apps scripts. |
 | PostGIS database | A PostGIS database was used for the majority of the geospatial analysis data. |
 
+## Functionality
+
+### Data dashboard
+
+#### Settings
+
+#### Find nearest library
+
+#### Library distance stats
+
+#### News and changes
+
+#### Library details
+
+#### Library types by authority
+
+#### Libraries on Twitter
+
+
+### Map
+
+
+### The Data
+
+
+
 ## File descriptions
 
 A summary of some of the key files in this repository.

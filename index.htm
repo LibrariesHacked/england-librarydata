@@ -11,6 +11,7 @@
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
+    <link href="bower_components/jquery-shorten-js/dist/css/shorten.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -40,7 +41,10 @@
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 1: Settings -->
                 <div class="panel panel-warning">
-                    <div class="panel-heading">Settings</div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Settings</h3>
+                        <p>Filter the map to the library authority you are interested in.</p>
+                    </div>
                     <div class="panel-body">
                         <select id="selAuthority" class="form-control">
                             <option value="">All authorities</option>
@@ -49,7 +53,10 @@
                 </div>
                 <!-- Widget 2: Find My Library -->
                 <div class="panel panel-success">
-                    <div class="panel-heading">Find nearest library</div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Find nearest library</h3>
+                        <p>Enter a location to see the nearest library and how to get there.</p>
+                    </div>
                     <div class="panel-body">
                         <div class="form-group">
                             <div class="input-group">
@@ -74,18 +81,21 @@
                                         <div id="divWalkingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
                                         <div id="divWalkingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
                                     </div>
+                                    <div id="divWalkingInstructions"></div>
                                 </div>
                                 <div class="tab-pane fade" id="Cycling">
                                     <div class="row">
                                         <div id="divCyclingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
                                         <div id="divCyclingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
                                     </div>
+                                    <div id="divCyclingInstructions"></div>
                                 </div>
                                 <div class="tab-pane fade" id="Driving">
                                     <div class="row">
                                         <div id="divDrivingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
                                         <div id="divDrivingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
                                     </div>
+                                    <div id="divDrivingInstructions"></div>
                                 </div>
                             </div>
                         </div>
@@ -94,20 +104,41 @@
                 </div>
                 <!-- Widget 3: Libraries distance stats -->
                 <div class="panel panel-warning">
-                    <div class="panel-heading">Library distance stats</div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Library distance stats</h3>
+                        <p>How many miles do people travel to their nearest library?</p>
+                    </div>
                     <div class="panel-body">
                         <div class="row" id="divAuthDistanceStats">
-                            <div id="divDistanceAverage" class="stats col col-xs-6"><small class="text-muted">average distance</small><p class="lead text-info strong"></p></div>
-                            <div id="divDistanceLongest" class="stats col col-xs-6"><small class="text-muted">longest</small><p class="lead text-success strong"></p></div>
+                            <div id="divDistanceAverage" class="stats col col-xs-4"><small class="text-muted">average</small><p class="lead text-info strong"></p></div>
+                            <div id="divDistanceLongest" class="stats col col-xs-4"><small class="text-muted">longest</small><p class="lead text-warning strong"></p></div>
+                            <div id="divDistancePopOverOne" class="stats col col-xs-4"><small class="text-muted">Over 1 mile</small><p class="lead text-success strong"></p></div>
                         </div>
                         <canvas id="divLibrariesDistancesLineChart" height="300"></canvas>
                     </div>
                 </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <!-- Widget 6: Public libraries news -->
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">News and changes</h3>
+                        <p>What's going on?  3 months of public libraries news.</p>
+                    </div>
+                    <div id="newsCounts" class="list-group"></div>
+                    <div class="panel-footer">
+                        <ul id="newsSwitch" class="pagination pagination-sm page-story-list">
+                            <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
+                            <li><a data-direction="1" href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <!-- Widget 4: Library details by authority -->
                 <div class="panel panel-warning">
-                    <div class="panel-heading">Library details</div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Library details</h3>
+                        <p>See details of a particular library.</p>
+                    </div>
                     <div class="panel-body">
                         <div class="form-group">
                             <select id="selLibraryDetailsLibrary" class="form-control">
@@ -119,7 +150,10 @@
                 </div>
                 <!-- Widget 5: Library types by authority -->
                 <div class="panel panel-info">
-                    <div class="panel-heading">Library types by authority</div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Library types by authority</h3>
+                        <p>what are the different types of library? how many are there?</p>
+                    </div>
                     <div class="panel-body">
                         <div class="row" id="divAuthStats1">
                             <div id="divPopulation" class="stats col col-xs-4"><small class="text-muted">population</small><p class="lead text-info strong"></p></div>
@@ -134,22 +168,14 @@
                         <canvas id="divLibrariesDonutChart" height="300"></canvas>
                     </div>
                 </div>
-                <!-- Widget 6: Public libraries news -->
-                <div class="panel panel-danger">
-                    <div class="panel-heading">News and changes</div>
-                    <div id="newsCounts" class="list-group"></div>
-                    <div class="panel-footer">
-                        <ul id="newsSwitch" class="pagination pagination-sm page-story-list">
-                            <li class="disabled"><a data-direction="-1" href="#">&laquo;</a></li>
-                            <li><a data-direction="1" href="#">&raquo;</a></li>
-                        </ul>
-                    </div>
-                </div>
             </div>
             <div class="col col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <!-- Widget 7: Tweets -->
                 <div class="panel panel-info">
-                    <div class="panel-heading">Libraries on Twitter</div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Libraries on Twitter</h3>
+                        <p>What are they saying?  Read the latest tweets from libraries.</p>
+                    </div>
                     <div id="tweetsCounts" class="list-group"></div>
                     <div class="panel-footer">
                         <ul id="tweetsSwitch" class="pagination pagination-sm page-twitter-list">
@@ -160,7 +186,10 @@
                 </div>
                 <!-- Widget 8: Libraries area stats -->
                 <div class="panel panel-warning">
-                    <div class="panel-heading">Area deprivation stats</div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Area deprivation stats</h3>
+                        <p>authority deprivation stats, and deprivation in library locations, by library type.  1 is most deprived, 10 is least deprived.</p>
+                    </div>
                     <div class="panel-body">
                         <div class="row" id="divAuthDepStats1">
                             <div id="divIMD" class="stats col col-xs-4"><small class="text-muted">multiple</small><p class="lead text-info strong"></p></div>
@@ -201,6 +230,7 @@
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/chart.js/dist/Chart.min.js"></script>
     <script src="bower_components/twitter-text/twitter-text.js"></script>
+    <script src="bower_components/jquery-shorten-js/dist/jquery-shorten.min.js"></script>
     <!-- Mapping plugins -->
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.min.js"></script>

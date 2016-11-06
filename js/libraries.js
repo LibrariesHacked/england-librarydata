@@ -41,31 +41,36 @@
         }
         if (Object.keys(this.locations).length == 0) urls.push(['', '', 'locations', this.locationsUrl]);
         var requests = [];
+        var getUrlFailSafe = function (url) {
+            var dfd = jQuery.Deferred();
+            $.ajax(url).always(function (res) {
+                dfd.resolve(res);
+            });
+            return dfd.promise();
+        };
         for (i = 0; i < urls.length; i++) {
-            requests.push($.ajax(urls[i][3]));
+            requests.push(getUrlFailSafe(urls[i][3]));
         }
-        $.when.apply($, requests).then(function () {
+        $.when.apply($, requests).always(function () {
             $.each(arguments, function (i, data) {
                 var month = urls[i][0];
                 var year = urls[i][1];
                 var type = urls[i][2];
-                if (type == 'changes' || type == 'local') this.stories[type][year][month] = data[0];
-                if (type == 'locations') this.locations = data[0];
-                if (type == 'libraries') this.libraries = Papa.parse(data[0], { header: true }).data;
-                if (type == 'authgeo') this.authoritiesGeo = data[0];
-                if (type == 'authorities') this.authorities = Papa.parse(data[0], { header: true }).data;
-                if (type == 'distances') this.distances = Papa.parse(data[0], { header: true }).data;
-                if (type == 'authtwitter') this.authoritiesTwitter = data[0];
-                if (type == 'libtwitter') this.librariesTwitter = data[0];
+                if ((type == 'changes' || type == 'local') && !data.status) this.stories[type][year][month] = data;
+                if (type == 'locations') this.locations = data;
+                if (type == 'libraries') this.libraries = Papa.parse(data, { header: true }).data;
+                if (type == 'authgeo') this.authoritiesGeo = data;
+                if (type == 'authorities') this.authorities = Papa.parse(data, { header: true }).data;
+                if (type == 'distances') this.distances = Papa.parse(data, { header: true }).data;
+                if (type == 'authtwitter') this.authoritiesTwitter = data;
+                if (type == 'libtwitter') this.librariesTwitter = data;
             }.bind(this));
             callback();
-        }.bind(this), function (error) {
-            console.log(error);
-        });
+        }.bind(this));
     },
     getTweetsSortedByDate: function () {
         return $.map($.merge(this.authoritiesTwitter, this.librariesTwitter), function (t, i) {
-            return { name: t[0], account: t[1], type: t[2], description: t[3], website: t[4], following: t[5], favorourites: t[6], followers: t[7], tweets: t[8], dateAccount: t[9], avatar: t[10], latest: t[11], latestDate: t[12] }
+            if (t[3]) return { name: t[0], account: t[1], type: t[2], description: t[3], website: t[4], following: t[6], favourites: t[8], followers: t[5], tweets: t[7], dateAccount: t[9], avatar: t[10], latest: t[11], latestDate: t[12] }
         }).sort(function (a, b) { return moment(b[12]) - moment(a[12]) });
     },
     getDistancesByAuthority: function (authority) {
@@ -216,11 +221,10 @@
         });
         return count;
     },
-    getLibraryByAuthorityNameAndLibName: function (authority, lib) {
-        var libraries = this.getAuthoritiesWithLibraries();
-        var library = null;
-        $.each(libraries, function (i, a) {
-            if (a.name == authority) $.each(a.libraries, function (y, l) { if (l.name == lib) library = l; });
+    getLibraryByName: function (lib) {
+        var library = {};
+        $.each(this.libraries, function (i, a) {
+            if (a.name == lib) library = a;
         });
         return library;
     },
@@ -244,6 +248,15 @@
             if (local[y.name]) authorities[x]['local'] = local[y.name];
         }.bind(this));
         return authorities;
+    },
+    getAuthoritiesWithStories: function () {
+        var changes = this.getStoriesGroupedByLocation('changes');
+        var local = this.getStoriesGroupedByLocation('local');
+        var authStories = {};
+        $.each(this.authorities, function (x, y) {
+            if (changes[y.name] || local[y.name]) authStories[y.name] = { stories: (changes[y.name] ? changes[y.name].stories : []).concat((local[y.name] ? local[y.name].stories : [])) };
+        }.bind(this));
+        return authStories;
     },
     getAuthoritiesWithLibraries: function () {
         var authorities = {};
@@ -362,14 +375,14 @@
             url: url,
             dataType: 'json',
             success: function (json) {
-                callback({ distance: json.routes[0].distance, time: json.routes[0].duration, line: polyline.decode(json.routes[0].geometry) });
+                callback({ steps: json.routes[0].legs[0].steps, distance: json.routes[0].distance, time: json.routes[0].duration, line: polyline.decode(json.routes[0].geometry) });
             }
         });
     },
     getLatestAuthorityTweet: function (auth) {
         var tweet = null;
         $.each(this.authoritiesTwitter, function (i, t) {
-            if (t[0].toLowerCase().replace('county council', '').trim() == auth.toLowerCase().replace('county council', '').trim()) tweet = t;
+            if (t[4] && t[0].toLowerCase().replace('county council', '').trim() == auth.toLowerCase().replace('county council', '').trim()) tweet = t;
         }.bind(this));
         return tweet;
     },
@@ -388,7 +401,7 @@
         $.each(this.stories[type], function (i, y) {
             $.each(y, function (x, m) {
                 $.each(m, function (z, s) {
-                    if (!locs[s[0]]) locs[s[0]] = { lat: this.locations[s[0]][0], lng: this.locations[s[0]][1], stories: [] };
+                    if (!locs[s[0]]) locs[s[0]] = { lat: this.locations[s[0]] ? this.locations[s[0]][0] : 0, lng: this.locations[s[0]] ? this.locations[s[0]][1] : 0, stories: [] };
                     locs[s[0]].stories.push({ date: s[1], text: s[2], url: s[3] });
                 }.bind(this));
             }.bind(this));
