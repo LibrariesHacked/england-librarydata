@@ -239,22 +239,23 @@
         var authorities = this.authorities;
         return authorities;
     },
-    getAuthoritiesWithStories: function () {
-        var authorities = this.authorities;
-        var changes = this.getStoriesGroupedByLocation('changes');
-        var local = this.getStoriesGroupedByLocation('local');
-        $.each(authorities, function (x, y) {
-            if (changes[y.name]) authorities[x]['changes'] = changes[y.name];
-            if (local[y.name]) authorities[x]['local'] = local[y.name];
-        }.bind(this));
-        return authorities;
-    },
+    //getAuthoritiesWithStories: function () {
+    //    var authorities = this.authorities;
+    //    var changes = this.getStoriesGroupedByLocation('changes');
+    //    var local = this.getStoriesGroupedByLocation('local');
+    //    $.each(authorities, function (x, y) {
+    //        if (changes[y.name]) authorities[x]['changes'] = changes[y.name];
+    //        if (local[y.name]) authorities[x]['local'] = local[y.name];
+    //    }.bind(this));
+    //    return authorities;
+    //},
     getAuthoritiesWithStories: function () {
         var changes = this.getStoriesGroupedByLocation('changes');
         var local = this.getStoriesGroupedByLocation('local');
         var authStories = {};
         $.each(this.authorities, function (x, y) {
             if (changes[y.name] || local[y.name]) authStories[y.name] = { stories: (changes[y.name] ? changes[y.name].stories : []).concat((local[y.name] ? local[y.name].stories : [])) };
+            if (authStories[y.name]) authStories[y.name].stories = authStories[y.name].stories.sort(function (a, b) { return moment(b.date) - moment(a.date) })
         }.bind(this));
         return authStories;
     },
@@ -311,18 +312,16 @@
             auth[authGeoData.features[x].properties.name] = { idx: x };
         }.bind(this));
         var librariesSorted = Object.keys(auth).sort(function (a, b) {
-            return authGeoData.features[auth[b].idx].properties.lalLibraryCount - authGeoData.features[auth[a].idx].properties.lalLibraryCount;
+            return authGeoData.features[auth[a].idx].properties.libraryCount - authGeoData.features[auth[b].idx].properties.libraryCount;
         });
         var librariesPerPopulationSorted = Object.keys(auth).sort(function (a, b) {
-            return authGeoData.features[auth[b].idx].properties.libraryCountPerPopulation - authGeoData.features[auth[a].idx].properties.libraryCountPerPopulation;
+            return authGeoData.features[auth[a].idx].properties.libraryCountPerPopulation - authGeoData.features[auth[b].idx].properties.libraryCountPerPopulation;
         });
         var librariesPerAreaSorted = Object.keys(auth).sort(function (a, b) {
             return authGeoData.features[auth[b].idx].properties.libraryCountPerArea - authGeoData.features[auth[a].idx].properties.libraryCountPerArea;
         });
         var authLALSorted = Object.keys(auth).sort(function (a, b) {
-            var a = authGeoData.features[auth[a].idx].properties.libraries;
-            var b = authGeoData.features[auth[b].idx].properties.libraries;
-            return (b['LAL'] ? b['LAL'].libs.length : 0) - (a['LAL'] ? a['LAL'].libs.length : 0);
+            return authGeoData.features[auth[a].idx].properties.lalLibraryCount - authGeoData.features[auth[b].idx].properties.lalLibraryCount;
         });
         var closedLibrariesSorted = Object.keys(auth).sort(function (a, b) {
             return authGeoData.features[auth[a].idx].properties.closedLibraryCount - authGeoData.features[auth[b].idx].properties.closedLibraryCount;

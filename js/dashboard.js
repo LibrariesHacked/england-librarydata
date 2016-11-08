@@ -184,7 +184,7 @@
                 '<div class="col col-xs-3"><small class="text-muted">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
                 '<div class="col col-xs-3"><small class="text-muted">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
                 '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' + 
-                '<p><small class="text-muted">figures represent deprivation deciles for the area the library is located.  1 would be within the most deprived in england, 10 the least deprived, for different measures (e.g. health or income).</small></p>');
+                '<p><small class="text-muted">figures represent deprivation deciles for the area the library is located.  1 would be within the 10th most deprived in england, 10 the least deprived.</small></p>');
         });
 
         /////////////////////////////////////////////////////////////////
@@ -204,19 +204,22 @@
                 for (x = 0 ; x < 1; x++) addLocation(id + x, 'last');
             }
         };
-        var setNewsItemDetails = function (item) {
-            var index = $(item).data('current') + 1;
+        var setItemDetails = function (item, index) {
             var authSt = stories[$(item).data('auth')].stories;
             if (index == authSt.length) index = 0;
             $(item).find('span').text((index + 1) + '/' + authSt.length);
             $('.list-group-item-text').shorten('destroy');
             $(item).find('.list-group-item-text').html(authSt[index].text.replace($(item).data('auth') + ' – ', ''));
+            $(item).find('.btn-pln-link').html('<span class="fa fa-external-link"></span>  ' + moment(authSt[index].date).fromNow());
+            $(item).find('.btn-pln-link').attr('href', 'http://www.publiclibrariesnews.com/' + authSt[index].url);
             $('.list-group-item-text').shorten();
+            $(item).data('current', index);
         };
         var clickNextItem = function (e) {
             e.preventDefault();
             var item = $(e.currentTarget.parentNode.parentNode);
-            setNewsItemDetails(item);
+            var index = $(item).data('current') + 1;
+            setItemDetails(item, index);
         };
         var addLocation = function (index, position) {
             var it = stories[storiesOrdered[index]];
@@ -225,7 +228,7 @@
                 '<h4 class="list-group-item-heading">' + storiesOrdered[index] + '</h4>' +
                 '<p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
                 (it.stories.length > 1 ? '<p class="pull-right"><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
-                '<p><a href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
+                '<p><a class="btn btn-danger btn-xs btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
             position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);
             $('.list-group-item-text').shorten();
             $('#Location' + index).on('click', clickNextItem);
@@ -369,7 +372,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Deprivation in library areas'
+                    text: 'Deprivation in library locations'
                 }
             }
         });

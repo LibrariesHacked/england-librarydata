@@ -45,13 +45,13 @@
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 45) return config.boundaryLines.gl;
             if (feature.properties['authority_id'] == selectedAuth) return config.boundaryLines.selected;
             style.fillColor = config.fillColours[mapType];
-            if (mapType == 1) style.fillOpacity = feature.properties['pcLibraries'];
-            if (mapType == 2) style.fillOpacity = feature.properties['pcLibrariesPerPopulation'];
-            if (mapType == 3) style.fillOpacity = feature.properties['pcLibrariesPerArea'];
-            if (mapType == 4) style.fillOpacity = feature.properties['pcLalLibraries'];
-            if (mapType == 5) style.fillOpacity = feature.properties['pcClosedLibraries'];
-            if (mapType == 6) style.fillOpacity = feature.properties['pcLocalNews'];
-            if (mapType == 7) style.fillOpacity = feature.properties['pcChanges'];
+            if (mapType == 1) style.fillOpacity = feature.properties['pcLibraries'].toFixed(1);
+            if (mapType == 2) style.fillOpacity = feature.properties['pcLibrariesPerPopulation'].toFixed(1);
+            if (mapType == 3) style.fillOpacity = feature.properties['pcLibrariesPerArea'].toFixed(1);
+            if (mapType == 4) style.fillOpacity = feature.properties['pcLalLibraries'].toFixed(1);
+            if (mapType == 5) style.fillOpacity = feature.properties['pcClosedLibraries'].toFixed(1);
+            if (mapType == 6) style.fillOpacity = feature.properties['pcLocalNews'].toFixed(1);
+            if (mapType == 7) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
             return style;
         });
     };
@@ -199,6 +199,27 @@
             authBoundaries.addData(data);
         });
         setMapStyles();
+
+        sidebar.open('home');
+
+        /////////////////////////////////////////////////////////////
+        // EVENT: Home
+        // Go to home page
+        /////////////////////////////////////////////////////////////
+        $('#liHome').on('click', function (e) {
+            e.preventDefault();
+            window.location.href = '/';
+        });
+
+        /////////////////////////////////////////////////////////////
+        // EVENT: Reset map
+        // Reset the map
+        /////////////////////////////////////////////////////////////
+        $('#liReset').on('click', function (e) {
+            e.preventDefault();
+            $('#style-changer li a:first').trigger('click');
+            sidebar.open('home');
+        });
 
         /////////////////////////////////////////////////////////////
         // EVENT: Zoom out

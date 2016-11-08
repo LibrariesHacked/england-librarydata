@@ -20,12 +20,15 @@
         <div id="sidebar" class="sidebar collapsed">
             <div class="sidebar-tabs">
                 <ul role="tablist">
-                    <li><a href="#home" role="tab"><i class="fa fa-info-circle"></i></a></li>
-                    <li class="disabled" id="liAuthority"><a href="#authority" role="tab"><i class="fa fa-list"></i></a></li>
-                    <li class="disabled" id="liLibrary"><a href="#library" role="tab"><i class="fa fa-building"></i></a></li>
-                    <li class="disabled" id="liNews"><a href="#news" role="tab"><i class="fa fa-newspaper-o"></i></a></li>
+                    <li><a href="#home" role="tab" title="Libraries map information"><i class="fa fa-info-circle"></i></a></li>
+                    <li class="disabled" id="liAuthority" title="Selected authority details"><a href="#authority" role="tab"><i class="fa fa-list"></i></a></li>
+                    <li class="disabled" id="liLibrary"><a href="#library" role="tab" title="Selected library details"><i class="fa fa-building"></i></a></li>
+                    <li class="disabled" id="liNews"><a href="#news" role="tab" title="Library news stories"><i class="fa fa-newspaper-o"></i></a></li>
                 </ul>
-                <ul role="tablist"></ul>
+                <ul role="tablist">
+                    <li><a href="#reset" role="tab" id="liReset"><i class="fa fa-undo" title="Reset map view"></i></a></li>
+                    <li><a href="/" role="tab" id="liHome"><i class="fa fa-home" title="Return to home page"></i></a></li>
+                </ul>
             </div>
             <div class="sidebar-content">
                 <div class="sidebar-pane" id="home">
@@ -34,7 +37,7 @@
                     </h1>
                     <div id="sidebar-maincontent">
                         <h4>English libraries map</h4>
-                        <p>The shading of the authority regions represents concentration of different aspects of the data, for each authority.  Select an option below</p>
+                        <p>The shading of the map regions represents concentration of different aspects of the data, for each authority.  Select an option below.</p>
                         <ul id="style-changer" class="nav nav-pills nav-stacked">
                             <li class="active"><a href="#" data-style="1">Libraries</a></li>
                             <li><a href="#" data-style="2">Libraries per population</a></li>
