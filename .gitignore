@@ -218,3 +218,4 @@ pip-log.txt
 /bower_components/
 data/Postcodes.csv
 data/File_7_ID_2015_All_ranks__deciles_and_scores_for_the_Indices_of_Deprivation__and_population_denominators.csv
+data/librariesraw.csv

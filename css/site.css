@@ -1,41 +1,11 @@
 ﻿html, body, #mapContainer {
     height: 100%;
     min-height: 100%;
+    background-color: #F2F4F8;
 }
 
-.panel-heading {
-    background-color: #FFF !important;
-    border-bottom: none !important;
-}
-
-.panel-heading h3 {
-    font-weight: 700 !important;
-}
-
-.panel-heading p {
-    text-transform: lowercase !important;
-    margin-bottom: 0px !important;
-    color: #98978B !important
-}
-
-.panel-success .panel-heading h3 {
-    color: #93C54B !important;
-}
-
-.panel-warning .panel-heading h3 {
-    color: #F47C3C !important;
-}
-
-.panel-info .panel-heading h3 {
-    color: #29ABE0 !important;
-}
-
-.panel-danger .panel-heading h3 {
-    color: #D9534F !important;
-}
-
-.panel-primary .panel-heading h3 {
-    color: #325D88 !important;
+.card-title {
+    font-weight: 700;
 }
 
 .sidebar-header, .sidebar-tabs > li.active, .sidebar-tabs > ul > li.active {
@@ -46,11 +16,11 @@
     background-color: rgba(255, 255, 255, 0.85) !important;
 }
 
-.stats small {
-    font-weight: 700;
+#spFmlSpinning {
+    display: none;
 }
 
-#spFmlSpinning {
+#divNewsStories, #divTwitter {
     display: none;
 }
 
@@ -58,16 +28,18 @@
     font-weight: 700;
 }
 
-.panel-heading span.fa {
-    padding: 4px;
-}
-
 .tweet-account-link {
     font-size: 1.5em;
 }
 
+.card-heading {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1em;
+}
+
 #main {
-    margin-top: 80px;
+    padding-top: 70px;
 }
 
 #mapContainer {
@@ -94,6 +66,17 @@
     height: 250px;
     display: none;
 }
+
+.checkbox-inline {
+    display: inline-block;
+}
+
+#divAuthMap {
+    width: 100%;
+    height: 200px;
+    display: none;
+}
+
 
 #divMiniMapContent {
     display: none;

@@ -4,11 +4,29 @@ These are instructions to set up a spatial database using the Libraries Taskforc
 
 ## Pre-requisites
 
-- A [postGIS](http://postgis.net/install/) database setup.
+- A [PostGIS](http://postgis.net/install/) database setup.
+
+## Database setup
+
+Create a new database
+
+```
+create database uklibs
+```
+
+We want this to be a spatial database so on the database run the command to add PostGIS extensions.
+
+```
+create extension postgis
+```
 
 ## Dataset: OS Code-point Open
 
-The Ordnance Survey have an open data product listing all postcodes in the UK, complete with geo-cordinates (the centre of the postcode) and various codes specifying the authorities that postcode falls within.  This data is provided as a series of CSV files.  There are many ways to combine CSV files into one depending on operating system.  
+The Ordnance Survey have an open data product listing all postcodes in the UK, complete with geo-cordinates (the centre of the postcode), and various codes specifying the authorities each postcode falls within.  
+
+- Download code-point open from [OS Open Data](https://www.ordnancesurvey.co.uk/opendatadownload/products.html).
+
+This data is provided as a series of CSV files for each postcode area.  It would be a lot simpler to import the data as a single CSV file.  There are many ways to combine CSV files into one, depending on operating system.  
 
 - For a simple Windows PC, run the following command using the cmd.exe tool.
 
@@ -16,9 +34,9 @@ The Ordnance Survey have an open data product listing all postcodes in the UK, c
 copy *.csv postcodes.csv
 ```
 
-Once the data is in a single CSV file it can be imported into a database. 
+Once the data is in a single CSV file it can be imported into a database.  A copy of the [postcodes.csv](/data/postcodes.csv) file is in the data directory of this project.
 
-- Create the table:
+- Create the table.
 
 ```
 create table postcodes
@@ -45,27 +63,17 @@ copy postcodes FROM 'postcodes.csv' delimiter ',' csv;
 
 ## Dataset: OS boundaries
 
-- Download [Boundary Lines](https://www.ordnancesurvey.co.uk/opendatadownload/products.html) from the OS Open Data products.
+- Download [Boundary Lines](https://www.ordnancesurvey.co.uk/opendatadownload/products.html) from the OS Open Data products.  Alternatively, copies of the relevant boundary line files are included in the data directory of this project.
 - From a command line, run the following commands (requires **shp2pgsql** which should be available with PostGIS).  This will automatically create the relevant tables.
 
 ```
-shp2pgsql "county_electoral_division_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "county_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "district_borough_unitary_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "district_borough_unitary_ward_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "european_region_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "greater_london_const_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "high_water_polyline.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "parish_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "scotland_and_wales_const_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "scotland_and_wales_region_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "unitary_electoral_division_region.shp" | psql -d uklibraries -U "postgres"
-shp2pgsql "westminster_const_region.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "county_region.shp" | psql -d uklibs -U "postgres"
+shp2pgsql "district_borough_unitary_region.shp" | psql -d uklibs -U "postgres"
 ```
 
 ## Dataset: ONS Population estimates mid-2015
 
-- Download from [ONS mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
+- Download from [ONS mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland).  A copy of the data is included in the data directory of this project.
 - Create a basic table with 3 columns to store the counts.
 
 ```
@@ -84,18 +92,27 @@ create table population
 copy population FROM 'ukpopulation.csv' delimiter ',' csv;
 ```
 
+## Dataset: Lower layer super output areas
 
-## Dataset: Lower super output areas
-
-- Download from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
-- Select Lower Super Output Areas (December 2001) Full Clipped Boundaries in England and Wales
+- Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
+- Select Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales
 - From a command line run:
 
 ```
-shp2pgsql "LSOA_2001_EW_BFC_V2.shp" | psql -d uklibraries -U "postgres"
+shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boundaries_in_England_and_Wales.shp" | psql -d uklibraries -U "postgres"
 ```
 
-## Dataset: LSOA population estimates
+## Dataset: Lower layer super output areas population weighted centroids
+
+- Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
+- Select Lower Layer Super Output Areas (December 2011) Population Weighted Centroids
+- 
+
+```
+shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Population_Weighted_Centroids.shp" | psql -d uklibraries -U "postgres"
+```
+
+## Dataset: Lower layer super output areas population estimates mid-2015 
 
 - Download from [ONS LSOA Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/lowersuperoutputareamidyearpopulationestimates)
 - Create a table to store the data.
@@ -123,7 +140,7 @@ create table lsoa_population
 - Import the data
 
 ```
-copy lsoa_population FROM 'lsoa-2014-population.csv' delimiter ',' csv header;
+copy lsoa_population FROM 'lsoa-2015-population.csv' delimiter ',' csv header;
 ```
 
 ## Dataset: Indices of deprivation
@@ -199,7 +216,7 @@ create table imd
 - Copy the data from the CSV into the table.
 
 ```
-copy imd from 'File_7_ID_2015_All_ranks_deciles_and_scores_for_the_Indices_of_Deprivation__and_population_denominators.csv' delimiter ',' csv header;
+copy imd from 'File_7_ID_2015_All_ranks__deciles_and_scores_for_the_Indices_of_Deprivation__and_population_denominators.csv' delimiter ',' csv header;
 ```
 
 ## Convert source data
@@ -271,7 +288,7 @@ Then to have a dataset that we can reliably merge from data elsewhere we're goin
 update authorities a
 set code = (
 	select code from district_borough_unitary_region r 
-	where replace(replace(replace(replace(r.name, ' City',''), ' London Boro',''), ' (B)',''), ' District','') = a.name)
+	where replace(replace(replace(replace(replace(r.name, ' City',''), ' London Boro',''), ' (B)',''), ' District',''), 'City of ', '') = a.name)
 where code is null
 ```
 
@@ -285,7 +302,7 @@ set code = (
 where code is null
 ```
 
-That will still leave around 20 with no matching code.  The likely reason for this will be counties that are named irregularly (e.g. Bath and NE Somerset instead of Bath and North East Somerset).
+That will still leave around 10 with no matching code.  The likely reason for this will be counties that are named irregularly (e.g. Bath and NE Somerset instead of Bath and North East Somerset).
 
 Edit the table manually to fill in the missing values.
 
@@ -293,7 +310,7 @@ Edit the table manually to fill in the missing values.
 
 ```
 copy (
-	select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, p.population as Population, avg(i.imd_decile), avg(i.income_decile), avg(i.education_decile), avg(i.health_decile), avg(i.crime_decile), avg(i.housing_decile), avg(i.environment_decile)
+	select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, p.population as Population, round(avg(i.imd_decile),2), round(avg(i.income_decile),2), round(avg(i.education_decile),2), round(avg(i.health_decile),2), round(avg(i.crime_decile),2), round(avg(i.housing_decile),2), round(avg(i.environment_decile),2)
 	from authorities a
 	join county_region c
 	on a.code = c.code
@@ -305,7 +322,7 @@ copy (
 	on i.lsoa_code = ls.lsoa11cd
 	group by a.id, a.name, c.descriptio, c.code, c.hectares, p.population
 	union
-	select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, p.population as Population, avg(i.imd_decile), avg(i.income_decile), avg(i.education_decile), avg(i.health_decile), avg(i.crime_decile), avg(i.housing_decile), avg(i.environment_decile)
+	select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, p.population as Population, round(avg(i.imd_decile),2), round(avg(i.income_decile),2), round(avg(i.education_decile),2), round(avg(i.health_decile),2), round(avg(i.crime_decile),2), round(avg(i.housing_decile),2), round(avg(i.environment_decile),2)
 	from authorities b
 	join district_borough_unitary_region d
 	on d.code = b.code
@@ -363,15 +380,15 @@ create table libraries
   lat numeric,
   lng numeric,
   type character varying(4),
-  closed boolean,
-  closed_year integer,
+  closed character varying(4),
+  closed_year text,
   statutory2010 boolean,
   statutory2016 boolean,
-  opened_year integer,
+  opened_year text,
   replacement boolean,
   notes text,
-  hours numeric,
-  staffhours numeric,
+  hours text,
+  staffhours text,
   email text, 
   url text,
   constraint pk_library primary key (id)
@@ -387,19 +404,19 @@ insert into libraries(
 select	r.library, a.id, r.address, p.postcode, 
 	ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(p.eastings, p.northings),27700), 4326)),
 	ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(p.eastings, p.northings),27700), 4326)),
-	case when r.closed is null then false else true end,
 	r.libtype,
-	cast(r.yearclosed as integer),
-	case when r.statutoryapril2010 = 'yes' then true else false end,
-	case when r.statutoryjuly2016 = 'yes' then true else false end,
-	cast(r.new as integer),
+	r.closed,
+	r.yearclosed,
+	case when lower(r.statutoryapril2010) = 'yes' then true else false end,
+	case when lower(r.statutoryjuly2016) = 'yes' then true else false end,
+	r.new,
 	case when lower(r.replacement) = 'yes' then true else false end,
-	r.notes, cast(r.hours as numeric), cast(r.staffhours as numeric), r.email, r.url
+	r.notes, r.hours, r.staffhours, r.email, r.url
 from raw r
 join authorities a
 on a.name = r.authority
 left outer join postcodes p
-on r.postcode = p.postcode
+on replace(r.postcode, ' ', '') = replace(p.postcode, ' ', '')
 order by r.authority, r.library
 ```
 
@@ -428,7 +445,7 @@ Or, more simply:
 ```
 copy (
 	select 	id, name || ',' || coalesce(address, '') || ',' || coalesce(postcode, '') "address" 
-	from libraries
+	from libraries where postcodelat is null and lat is null
 ) to 'librariesgeo.csv' delimiter ',' csv header;
 ```
 
@@ -450,8 +467,7 @@ Update the libraries table with the lat/lng values.  This checks that the  geoco
 
 ```
 update libraries u
-set 	lat = ll.lat,
-	lng = ll.lng
+set lat = ll.lat, lng = ll.lng
 from librarylocations ll
 join libraries l
 on l.id = ll.libraryid
@@ -521,7 +537,9 @@ copy (
 ) to 'libraries.csv' delimiter ','csv header;
 ```
 
-It'd also be good to do some distance analysis.  The following should produce an output that uses the LSOA populations, library locations, and LSOA boundaries to produce a summary of the distance to libraries per authority.
+It'd also be good to do some distance analysis.  This is where the population weighted LSOA cenrtroids come in.
+
+The following should produce an output that uses the LSOA populations, library locations, and LSOA boundaries to produce a summary of the distance to libraries per authority.
 
 ```
 copy ( select 

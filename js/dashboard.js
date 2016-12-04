@@ -18,7 +18,7 @@
     // Variables
     // Declared variables that get set later on
     /////////////////////////////////////////////////
-    var fmlMap = null, typeDonut = null, fmlLibraryMarker = null, fmlHomeMarker = null, fmlRoute = null;
+    var fmlMap = null, authMap = null, authBoundary = null, typeDonut = null, fmlLibraryMarker = null, fmlHomeMarker = null, fmlRoute = null;
 
     // Global Chart options
     Chart.defaults.global.defaultFontColor = '#98978B';
@@ -52,7 +52,7 @@
                     stepsHtml += '. ';
                 });
                 $('#div' + type + 'Instructions').append('<p><small>' + stepsHtml + '</small></p>');
-                $('#div' + type + 'Instructions p small').shorten();
+                $('#div' + type + 'Instructions p small').shorten({ chars: 30 });
             });
         };
         // EVENT: Route type change
@@ -66,6 +66,10 @@
                 $('#spFmlHome').hide();
                 $('#spFmlSpinning').show();
 
+                // get the library types
+                var libTypes = [];
+                $.each($('.chb-libtype:checked'), function (i, x) { libTypes.push($(x).val()) });
+
                 // If there are existing markers and route lines, remove them
                 if (fmlLibraryMarker != null) fmlMap.removeLayer(fmlLibraryMarker);
                 if (fmlHomeMarker != null) fmlMap.removeLayer(fmlHomeMarker);
@@ -73,10 +77,12 @@
 
                 // create marker array
                 var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
-                    var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ icon: 'book', markerColor: 'green' }) });
-                    marker.name = l.name;
-                    marker.address = l.address;
-                    return marker;
+                    if (libTypes.indexOf(l.type) != -1) {
+                        var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ icon: 'book', markerColor: 'green' }) });
+                        marker.name = l.name;
+                        marker.address = l.address;
+                        return marker;
+                    }
                 });
                 // If the map hasn't been created, create it.
                 if (fmlMap == null) {
@@ -90,8 +96,7 @@
                 fmlLibraryMarker = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(suggestion.data[1], suggestion.data[0]), false).layer;
                 fmlHomeMarker = L.marker([suggestion.data[1], suggestion.data[0]], { icon: L.AwesomeMarkers.icon({ icon: 'home', markerColor: 'red' }) });
 
-                $('#fmlLibrary').text(fmlLibraryMarker.name);
-                $('#fmlLibraryAddress').text(fmlLibraryMarker.address);
+                $('#fmlLibrary').text(fmlLibraryMarker.name + ' ' + fmlLibraryMarker.address);
 
                 // Zoom to user location - this will take a little time so delay other actions.
                 var displayRouteDetails = function () {
@@ -184,7 +189,7 @@
                 '<div class="col col-xs-3"><small class="text-muted">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
                 '<div class="col col-xs-3"><small class="text-muted">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
                 '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' + 
-                '<p><small class="text-muted">figures represent deprivation deciles for the area the library is located.  1 would be within the 10th most deprived in england, 10 the least deprived.</small></p>');
+                '<p><small class="text-muted">numbers represent deprivation deciles (1-10) for the area the library is located.  1 would be within the 10th most deprived in england, 10 the least deprived.</small></p>');
         });
 
         /////////////////////////////////////////////////////////////////
@@ -195,7 +200,9 @@
         var currentlyShowing = [0, 0];
         var skipStoriesToAuthority = function (authority) {
             var id = storiesOrdered.indexOf(authority);
+            $('#divNewsStories').hide();
             if (id != -1) {
+                $('#divNewsStories').show();
                 if ((currentlyShowing[1] == id) || (currentlyShowing[0] == id)) return false;
                 currentlyShowing[0] = id;
                 currentlyShowing[1] = id;
@@ -296,7 +303,9 @@
         var skipTwitterToAuthority = function (authority) {
             var id = -1;
             $.each(tweets, function (i, t) { if (t.name.indexOf(authority) != -1) id = i; });
+            $('#divTwitter').hide();
             if (id != -1) {
+                $('#divTwitter').hide();
                 if ((currentlyShowingTwitter[1] == id) || (currentlyShowingTwitter[0] == id)) return false;
                 currentlyShowingTwitter[0] = id;
                 currentlyShowingTwitter[1] = id;
@@ -461,9 +470,16 @@
             $('#divDistancePopOverOne p').text(Math.round((($.map(Object.keys(distances), function (x, i) { if (parseInt(x) > 1) return distances[x]; })).sum() / population) * 100) + '%');
         };
         updateLibDistancesLine();
+
+        var updateAuthBoundary = function (authority) {
+            if (authBoundary != null) authMap.removeLayer(authBoundary);
+            authBoundary = L.polyline($.map(route.line, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['ICL'].colour, dashArray: [5, 5], weight: 2 });
+            authMap.addLayer(fmlRoute);
+        };
+
+        authmap = L.map('divAuthMap', { zoomControl: false }).setView([52.6, -2.5], 7);
+        L.tileLayer(config.mapTilesLight).addTo(authmap);
         $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAuthority').append($("<option></option>").attr("value", x).text(x)); });
-
-
         // EVENT: Change authority
         $('#selAuthority').change(function () {
             var auth = $('#selAuthority').find(":selected").val();

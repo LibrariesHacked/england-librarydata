@@ -15,11 +15,9 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "^3.3.6",
     "font-awesome": "fontawesome#^4.6.3",
     "moment": "^2.14.1",
     "sidebar-v2": "^0.3.0",
-    "awesome-bootstrap-checkbox": "^0.3.7",
     "nouislider": "^8.5.1",
     "papaparse": "^4.1.2",
     "leaflet.locatecontrol": "^0.52.0",
@@ -32,10 +30,11 @@
     "datatables.net-responsive": "^2.1.0",
     "datatables.net-responsive-bs": "^2.1.0",
     "drmonty-leaflet-awesome-markers": "^2.0.2",
-    "bootswatch": "^3.3.7",
     "twitter-text": "npm:twitter-text#^1.14.0",
     "devbridge-autocomplete": "v1.2.26",
-    "jquery-shorten-js": "^0.3.1"
+    "jquery-shorten-js": "^0.3.1",
+    "bootstrap": "v4.0.0-alpha.5",
+    "awesome-bootstrap-checkbox": "^0.3.7"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",
