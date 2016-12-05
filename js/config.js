@@ -9,7 +9,8 @@
         CL: { type: 'Commissioned', description: '', cssClass: 'info', colour: '#29ABE0' },
         CRL: { type: 'Community', description: '', cssClass: 'warning', colour: '#F47C3C' },
         ICL: { type: 'Independent community', description: '', cssClass: 'primary', colour: '#325D88' },
-        XL: { type: 'Closed', description: '', cssClass: 'danger', colour: '#D9534F' }
+        XL: { type: 'Closed', description: '', cssClass: 'danger', colour: '#D9534F' },
+        XLR: { type: 'Replaced', description: '', cssClass: 'warning', colour: '#CCC' }
     },
     markerPoints: { radius: 4, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
     boundaryLines: {

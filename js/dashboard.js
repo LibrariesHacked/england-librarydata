@@ -119,7 +119,7 @@
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
             data: {
                 datasets: [{
-                    data: [11, 16, 7, 3, 14],
+                    data: [11, 16, 7, 3, 14, 11],
                     backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
                         return config.libStyles[x].colour;
                     })
@@ -131,9 +131,7 @@
             type: "polarArea",
             options: {
                 elements: {
-                    arc: {
-                        borderColor: "#98978B"
-                    }
+                    arc: { borderColor: "#98978B" }
                 },
                 legend: {
                     position: 'bottom'
@@ -179,17 +177,20 @@
             if (lib == '') return;
             var library = PublicLibrariesNews.getLibraryByName(lib);
             $('#divLibraryDetails').empty();
-            $('#divLibraryDetails').append('<h4>' + library.name + '</h4>');
-            $('#divLibraryDetails').append('<p>' + (library.type ? ('<small class="text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</small> ') : '') +
-                (library.address ? (' <small>' + library.address + '.</small> ') : '') +
-                (library.notes ? (' <small>' + library.notes + '</small> ') : '') + '</p>');
-            if (library.email) $('#divLibraryDetails').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-xs btn-info"><span class="fa fa-envelope"></span> Email</a>  ');
-            if (library.url) $('#divLibraryDetails').append('<a href="' + library.url + '" target="_blank" class="btn btn-xs btn-info"><span class="fa fa-external-link"></span> Website</a>');
-            $('#divLibraryDetails').append('<h5>Deprivation</h5><div class="row"><div class="col col-xs-3"><small class="text-muted">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' + 
-                '<p><small class="text-muted">numbers represent deprivation deciles (1-10) for the area the library is located.  1 would be within the 10th most deprived in england, 10 the least deprived.</small></p>');
+            $('#divLibraryDeprivationDetails').empty();
+            $('#divLibraryDetails').append('<p>' + (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
+                (library.address ? (' ' + library.address + '. ') : '') +
+                (library.notes ? (' ' + library.notes + '. ') : '') +
+                (library.closed ? ('Closed in ' + library.closed_year + '. ') : '') + '</p>');
+            if (library.email) $('#divLibraryDetails').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span> Email</a> ');
+            if (library.url) $('#divLibraryDetails').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span> Website</a>');
+            // Populate the deprivation details.
+            $('#divLibraryDeprivationDetails').append('<div class="row">' +
+                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' + 
+                '<p><small class="text-muted">These are deprivation deciles (1-10) for the library location.  Lower represents greater deprivation.</small></p>');
         });
 
         /////////////////////////////////////////////////////////////////
@@ -231,11 +232,11 @@
         var addLocation = function (index, position) {
             var it = stories[storiesOrdered[index]];
             var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + storiesOrdered[index] + '">' +
-                '<span class="badge">1/' + it.stories.length + '</span>' +
-                '<h4 class="list-group-item-heading">' + storiesOrdered[index] + '</h4>' +
-                '<p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
-                (it.stories.length > 1 ? '<p class="pull-right"><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
-                '<p><a class="btn btn-danger btn-xs btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
+                '<span class="tag tag-danger tag-pill float-xs-right">1/' + it.stories.length + '</span>' +
+                '<h5 class="list-group-item-heading">' + storiesOrdered[index] + '</h5>' +
+                '<div><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p></div>' +
+                (it.stories.length > 1 ? '<p><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') + 
+                '<p><a class="btn btn-sm btn-outline-danger btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
             position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);
             $('.list-group-item-text').shorten();
             $('#Location' + index).on('click', clickNextItem);
@@ -287,11 +288,11 @@
                 var tweet = tweets[index]
                 var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet.account + '">' +
                     '<a href="https://twitter.com/' + tweet.account + '" target="_blank" title="twitter account link for ' + tweet.account + '"><span class="fa fa-twitter pull-right text-info tweet-account-link"></span></a>' +
-                    '<h4 class="list-group-item-heading">' + tweet.name + '</h4>' +
+                    '<h5 class="list-group-item-heading">' + tweet.name + '</h5>' +
                     '<div class="row">' +
-                    '<div class="stats col col-xs-4"><small class="text-muted">tweets</small><p class="lead text-info strong">' + tweet.tweets + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted">followers</small><p class="lead text-warning strong">' + tweet.followers + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted">following</small><p class="lead text-success strong">' + tweet.following + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted strong">tweets</small><p class="lead text-info strong">' + tweet.tweets + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted strong">followers</small><p class="lead text-warning strong">' + tweet.followers + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted strong">following</small><p class="lead text-success strong">' + tweet.following + '</p></div>' +
                     '</div>' +
                     '<p class="list-group-item-text">' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>' + '</div>';
                 position == 'first' ? $('#tweetsCounts').prepend(li) : $('#tweetsCounts').append(li);
@@ -305,7 +306,7 @@
             $.each(tweets, function (i, t) { if (t.name.indexOf(authority) != -1) id = i; });
             $('#divTwitter').hide();
             if (id != -1) {
-                $('#divTwitter').hide();
+                $('#divTwitter').show();
                 if ((currentlyShowingTwitter[1] == id) || (currentlyShowingTwitter[0] == id)) return false;
                 currentlyShowingTwitter[0] = id;
                 currentlyShowingTwitter[1] = id;
@@ -381,7 +382,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Deprivation in library locations'
+                    text: 'Library locations deprivation by library type'
                 }
             }
         });

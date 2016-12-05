@@ -34,7 +34,7 @@
     "devbridge-autocomplete": "v1.2.26",
     "jquery-shorten-js": "^0.3.1",
     "bootstrap": "v4.0.0-alpha.5",
-    "awesome-bootstrap-checkbox": "^0.3.7"
+    "awesome-bootstrap-checkbox": "v1.0.0-alpha.4"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",

@@ -13,7 +13,8 @@
     }).addTo(map);
     var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
     map.addControl(sidebar);
-    L.control.locate().addTo(map);
+    var legend = null;
+    // L.control.locate().addTo(map);
 
     /////////////////////////////////////////////////////////
     // Helper Function: numFormat
@@ -37,7 +38,6 @@
     // 6. Changes (PLN)
     /////////////////////////////////////////////////////////
     var setMapStyles = function () {
-        if (selectedAuth == '') map.flyToBounds(authBoundaries.getBounds(), { paddingTopLeft: L.point(-350, 0) });
         authBoundaries.setStyle(function (feature) {
             var style = config.boundaryLines.normal;
             if (selectedAuth != '' && feature.properties['authority_id'] != selectedAuth) return config.boundaryLines.nonselected;
@@ -54,6 +54,22 @@
             if (mapType == 7) style.fillOpacity = feature.properties['pcChanges'].toFixed(1);
             return style;
         });
+
+        if (legend != null) legend.remove();
+        if (selectedAuth == '') {
+            map.flyToBounds(authBoundaries.getBounds(), { paddingTopLeft: L.point(-350, 0) });
+            legend = L.control({ position: 'bottomleft' });
+            legend.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'info legend');
+                // loop through our density intervals and generate a label with a colored square for each interval
+                div.innerHTML += '<h5>' + $('#style-changer li a[data-style=' + mapType + ']').text() + '<h5>';
+                for (var i = 0; i <= 1; i = i + 0.2) {
+                    div.innerHTML += '<i style="background: rgba(147,197,75,' + i + ')"></i>' + (i == 0 ? 'None' : '') + (i == 1 ? 'Lots' : '') + '<br/>';
+                }
+                return div;
+            };
+            legend.addTo(map);
+        }
     };
 
     /////////////////////////////////////////////////////////
@@ -109,9 +125,7 @@
 
             // Display latest tweet
             var tweet = PublicLibrariesNews.getLatestLibraryTweet(lib.name);
-            if (tweet) {
-                $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + twitter[11] + '</div>');
-            }
+            if (tweet) $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
 
             $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
             if (lib.closed == 't') $('#sidebar-librarycontent').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
@@ -134,7 +148,7 @@
             $('#sidebar-authoritycontent').empty();
 
             // Show authority details
-            $('#sidebar-authoritycontent').append('<h4>' + feature.properties.name + '</h4>');
+            $('#authority .sidebar-title').text(feature.properties.name);
             $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info strong">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning strong">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success strong">' + numFormat(feature.properties.libraryCount) + ' libraries</p></div><//div>');
 
             // Display latest tweet
@@ -241,8 +255,8 @@
         /////////////////////////////////////////////////////////////
         $('#style-changer li a').on('click', function (e) {
             selectedAuth = '';
-            $('#style-changer li').removeClass('active');
-            $(e.target.parentElement).addClass('active')
+            $('#style-changer li a').removeClass('active');
+            $(e.target).addClass('active')
             e.preventDefault();
             mapType = e.target.dataset.style;
             setMapStyles();

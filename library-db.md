@@ -310,7 +310,7 @@ Edit the table manually to fill in the missing values.
 
 ```
 copy (
-	select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, p.population as Population, round(avg(i.imd_decile),2), round(avg(i.income_decile),2), round(avg(i.education_decile),2), round(avg(i.health_decile),2), round(avg(i.crime_decile),2), round(avg(i.housing_decile),2), round(avg(i.environment_decile),2)
+	select a.id as authority_id, a.name as Name, c.descriptio as Type, c.code as Code, c.hectares as Hectares, p.population as Population, round(avg(i.imd_decile), 3) as imd, round(avg(i.income_decile), 3) as income, round(avg(i.education_decile), 3) as education, round(avg(i.health_decile), 3) as health, round(avg(i.crime_decile), 3) as crime, round(avg(i.housing_decile), 3) as housing, round(avg(i.environment_decile), 3) as environment
 	from authorities a
 	join county_region c
 	on a.code = c.code
@@ -322,7 +322,7 @@ copy (
 	on i.lsoa_code = ls.lsoa11cd
 	group by a.id, a.name, c.descriptio, c.code, c.hectares, p.population
 	union
-	select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, p.population as Population, round(avg(i.imd_decile),2), round(avg(i.income_decile),2), round(avg(i.education_decile),2), round(avg(i.health_decile),2), round(avg(i.crime_decile),2), round(avg(i.housing_decile),2), round(avg(i.environment_decile),2)
+	select b.id as authority_id, b.name as Name, d.descriptio as Type, d.code as Code, d.hectares as Hectares, p.population as Population, round(avg(i.imd_decile), 3) as imd, round(avg(i.income_decile), 3) as income, round(avg(i.education_decile), 3) as education, round(avg(i.health_decile), 3) as health, round(avg(i.crime_decile), 3) as crime, round(avg(i.housing_decile), 3) as housing, round(avg(i.environment_decile), 3) as environment
 	from authorities b
 	join district_borough_unitary_region d
 	on d.code = b.code

@@ -18,7 +18,7 @@
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-fixed-top navbar-dark bg-primary">
+    <nav class="navbar navbar-fixed-top navbar-dark bg-success">
         <div class="container">
             <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
             <div class="collapse navbar-toggleable-md" id="navbarResponsive">
@@ -26,14 +26,13 @@
                 <ul class="nav navbar-nav">
                     <li class="nav-item active"><a class="nav-link" href="/">dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/about">about</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <div id="main" class="container main">
         <div class="row">
-            <div class="col-sm-4 col-xs-12">
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <!-- Widget 1: Settings -->
                 <div class="card">
                     <div class="card-block">
@@ -51,7 +50,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-success">nearest library</h4>
-                        <h6 class="card-subtitle text-muted">enter a location to see the nearest library and how to get there.</h6>
+                        <h6 class="card-subtitle text-muted">search to see the nearest library and how to get there.</h6>
                     </div>
                     <div class="card-block">
                         <div class="form-group">
@@ -63,21 +62,21 @@
                                 <input id="txtAddress" class="form-control" type="text" placeholder="e.g. BA1 7JH">
                             </div>
                         </div>
-                        <div class="checkbox checkbox-inline">
-                            <input class="chb-libtype styled form-check-input" type="checkbox" id="chbLAL" value="LAL" checked="checked">
-                            <label class="form-check-inline" for="chbLAL">Local authority</label>
+                        <div class="checkbox abc-checkbox abc-checkbox-success">
+                            <input class="chb-libtype" type="checkbox" id="chbLAL" value="LAL" checked="checked">
+                            <label for="chbLAL">Local authority</label>
                         </div>
-                        <div class="checkbox checkbox-inline">
-                            <input class="chb-libtype styled form-check-input" type="checkbox" id="chbCL" value="CL" checked="checked">
-                            <label class="form-check-inline" for="chbCL">Commissioned</label>
+                        <div class="checkbox abc-checkbox abc-checkbox-info">
+                            <input class="chb-libtype" type="checkbox" id="chbCL" value="CL" checked="checked">
+                            <label for="chbCL">Commissioned</label>
                         </div>
-                        <div class="checkbox checkbox-inline">
-                            <input class="chb-libtype styled form-check-input" type="checkbox" id="chbCRL" value="CRL" checked="checked">
-                            <label class="form-check-inline" for="chbCRL">Community</label>
+                        <div class="checkbox abc-checkbox abc-checkbox-warning">
+                            <input class="chb-libtype" type="checkbox" id="chbCRL" value="CRL" checked="checked">
+                            <label for="chbCRL">Community</label>
                         </div>
-                        <div class="checkbox checkbox-inline">
-                            <input class="chb-libtype styled form-check-input" type="checkbox" id="chbICL" value="ICL" checked="checked">
-                            <label class="form-check-inline" for="chbICL">Independent community</label>
+                        <div class="checkbox abc-checkbox abc-checkbox-primary">
+                            <input class="chb-libtype" type="checkbox" id="chbICL" value="ICL" checked="checked">
+                            <label for="chbICL">Independent community</label>
                         </div>
                     </div>
                     <div class="card-block">
@@ -119,7 +118,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-info">distance stats</h4>
-                        <h6 class="card-subtitle text-muted">how far do people travel to their nearest library?</h6>
+                        <h6 class="card-subtitle text-muted">how far to the nearest library?</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDistanceStats">
@@ -133,7 +132,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4 col-xs-12">
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <!-- Widget 4: Library details by authority -->
                 <div class="card">
                     <div class="card-block">
@@ -147,6 +146,9 @@
                             </select>
                         </div>
                         <div id="divLibraryDetails"></div>
+                    </div>
+                    <div class="card-block" id="divLibraryDeprivationDetails">
+
                     </div>
                 </div>
                 <!-- Widget 5: Library types by authority -->
@@ -174,9 +176,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4 col-xs-12">
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <!-- Widget 6: Public libraries news -->
                 <div id="divNewsStories" class="card">
+                    <div class="card-block">
+                        <h4 class="card-title text-danger">public libraries news</h4>
+                        <h6 class="card-subtitle text-muted">latest news stories.</h6>
+                    </div>
                     <div id="newsCounts" class="list-group list-group-flush"></div>
                     <div class="card-footer" style="display: none">
                         <a href="#" class="disabled card-link" data-direction="-1">&laquo;</a>
@@ -185,6 +191,10 @@
                 </div>
                 <!-- Widget 7: Tweets -->
                 <div id="divTwitter" class="card">
+                    <div class="card-block">
+                        <h4 class="card-title text-info">twitter</h4>
+                        <h6 class="card-subtitle text-muted">what they're saying.</h6>
+                    </div>
                     <div id="tweetsCounts" class="list-group list-group-flush"></div>
                     <div class="card-footer" id="tweetsSwitch" style="display: none">
                         <a data-direction="-1" href="#">&laquo;</a>
@@ -195,18 +205,18 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-danger">deprivation stats</h4>
-                        <h6 class="card-subtitle text-muted">see local authority average deprivation stats, and the deprivation in library locations.  1 is most deprived, 10 is least deprived.</h6>
+                        <h6 class="card-subtitle text-muted">see authority average deprivation stats in library locations.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDepStats1">
-                            <div id="divIMD" class="stats col-xs-4"><small class="text-muted">multiple</small><p class="lead text-info strong"></p></div>
-                            <div id="divCrime" class="stats col-xs-4"><small class="text-muted">crime</small><p class="lead text-warning strong"></p></div>
-                            <div id="divIncome" class="stats col-xs-4"><small class="text-muted">income</small><p class="lead text-success strong"></p></div>
+                            <div id="divIMD" class="stats col-xs-4"><small class="text-muted strong">multiple</small><p class="lead text-info strong"></p></div>
+                            <div id="divCrime" class="stats col-xs-4"><small class="text-muted strong">crime</small><p class="lead text-warning strong"></p></div>
+                            <div id="divIncome" class="stats col-xs-4"><small class="text-muted strong">income</small><p class="lead text-success strong"></p></div>
                         </div>
                         <div class="row" id="divAuthDepStats2">
-                            <div id="divHealth" class="stats col-xs-4"><small class="text-muted">health</small><p class="lead text-danger strong"></p></div>
-                            <div id="divEducation" class="stats col-xs-4"><small class="text-muted">education</small><p class="lead text-primary strong"></p></div>
-                            <div id="divHousing" class="stats col-xs-4"><small class="text-muted">housing</small><p class="lead text-info strong"></p></div>
+                            <div id="divHealth" class="stats col-xs-4"><small class="text-muted strong">health</small><p class="lead text-danger strong"></p></div>
+                            <div id="divEducation" class="stats col-xs-4"><small class="text-muted strong">education</small><p class="lead text-primary strong"></p></div>
+                            <div id="divHousing" class="stats col-xs-4"><small class="text-muted strong">housing</small><p class="lead text-info strong"></p></div>
                         </div>
                     </div>
                     <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="300"></canvas></div></div>

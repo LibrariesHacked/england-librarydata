@@ -124,7 +124,7 @@
     getDeprivationIndicesAveragesByAuthority: function (authority) {
         var depIndices = { Multiple: [], Crime: [], Income: [], Health: [], Education: [], Housing: [] };
         $.each(this.getAuthorities(), function (i, a) {
-            if (a.name == authority || !authority) {
+            if (a.name && (a.name == authority || !authority)) {
                 depIndices.Multiple.push(a.imd);
                 depIndices.Income.push(a.income);
                 depIndices.Crime.push(a.crime);
@@ -141,7 +141,7 @@
             datatable.push([
                 x.name, // Name
                 x.code, // Code
-                $.map(x.libraries, function (l, y) { if (l.type != 'XL') return l.name }).length, // Libraries
+                $.map(x.libraries, function (l, y) { if (l.type != 'XL' && l.type != 'XLR') return l.name }).length, // Libraries
                 $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length, // Local authority
                 $.map(x.libraries, function (l, y) { if (l.type == 'LCL') return l.name }).length, // Commissioned
                 $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length, // Community
@@ -200,13 +200,12 @@
     getStatCountsByAuthority: function (authority) {
         var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0 };
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
-            if (i == authority || !authority) {
+            if (i != '' && (i == authority || !authority)) {
                 counts.area = counts.area + parseFloat(x.hectares);
                 counts.population = counts.population + parseInt(x.population);
-
                 $.each(x.libraries, function (y, lib) {
-                    if (lib.type == 'XL') counts.closedLibraries = counts.closedLibraries + 1;
-                    if (lib.type != 'XL') counts.libraries = counts.libraries + 1;
+                    if (lib.type == 'XL' || lib.type == 'XLR') counts.closedLibraries = counts.closedLibraries + 1;
+                    if (lib.type != 'XL' && lib.type != 'XLR') counts.libraries = counts.libraries + 1;
                 });
             }
         });
@@ -298,10 +297,10 @@
             var localAuthorityCount = 0;
             authGeoData.features[x].properties.libraries = {};
             $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
-                if (!authGeoData.features[x].properties.libraries[l.type]) authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
+                if (!authGeoData.features[x].properties.libraries[l.type] && l.type != '') authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
                 if ((l.type != '' && l.closed == '') || l.lat != '') authGeoData.features[x].properties.libraries[l.type].libs.push(l);
-                if (l.type != 'XL') nonClosedCount = nonClosedCount + 1;
-                if (l.type == 'XL') closedCount = closedCount + 1;
+                if (l.type != 'XL' && l.type != 'XLR') nonClosedCount = nonClosedCount + 1;
+                if (l.type == 'XL' || l.type == 'XLR') closedCount = closedCount + 1;
                 if (l.type == 'LAL') localAuthorityCount = localAuthorityCount + 1;
             });
             authGeoData.features[x].properties['libraryCount'] = nonClosedCount;
@@ -340,15 +339,16 @@
         var authLibraries = {};
         $.each(this.libraries, function (i, lib) {
             if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
-            if (lib.type == '') lib.type = 'XL';
-            authLibraries[lib['authority_id']].push(lib);
+            if (lib.type == '') lib.type = lib.closed;
+            // Library must have a type or be closed.
+            if (lib.type != '') authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;
     },
     getLibraryLocations: function () {
         var libArray = [];
         $.each(this.libraries, function (i, lib) {
-            if (lib.type != '' && lib.type != 'XL' && lib.lat && lib.lng && lib.lat != '' && lib.lng != '') {
+            if (lib.type != '' && lib.type != 'XL' && lib.type != 'XLR' && lib.lat && lib.lng && lib.lat != '' && lib.lng != '') {
                 libArray.push({ lat: lib.lat, lng: lib.lng, name: lib.name, address: lib.address, type: lib.type });
             }
         }.bind(this));
