@@ -25,6 +25,14 @@
         if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
         return num;
     };
+    var hexToRgb = function (hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
 
     /////////////////////////////////////////////////////////
     // Function setMapStyles
@@ -57,14 +65,15 @@
 
         if (legend != null) legend.remove();
         if (selectedAuth == '') {
-            map.flyToBounds(authBoundaries.getBounds(), { paddingTopLeft: L.point(-350, 0) });
+            map.flyToBounds(authBoundaries.getBounds(), { paddingTopLeft: L.point(-150, 0) });
             legend = L.control({ position: 'bottomleft' });
             legend.onAdd = function (map) {
+                var c = hexToRgb(config.fillColours[mapType]);
                 var div = L.DomUtil.create('div', 'info legend');
                 // loop through our density intervals and generate a label with a colored square for each interval
-                div.innerHTML += '<h5>' + $('#style-changer li a[data-style=' + mapType + ']').text() + '<h5>';
+                div.innerHTML += '<p class="text-muted strong">' + $('#style-changer li a[data-style=' + mapType + ']').text() + '</p>';
                 for (var i = 0; i <= 1; i = i + 0.2) {
-                    div.innerHTML += '<i style="background: rgba(147,197,75,' + i + ')"></i>' + (i == 0 ? 'None' : '') + (i == 1 ? 'Lots' : '') + '<br/>';
+                    div.innerHTML += '<i style="background: rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + i + ')"></i>' + (i == 0 ? 'Few' : '') + (i == 1 ? 'Lots' : '') + '<br/>';
                 }
                 return div;
             };
@@ -127,7 +136,11 @@
             var tweet = PublicLibrariesNews.getLatestLibraryTweet(lib.name);
             if (tweet) $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
 
-            $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '<br/>Address' + lib.postcode + '<br/></p>');
+            $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '.  ' + lib.address + '</p>');
+            $('#sidebar-librarycontent').append('<p>' + lib.notes + '</p>');
+            $('#sidebar-librarycontent').append('<p>' +
+                (lib.email ? ('<a href="mailto:' + lib.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span> Email</a> ') : '') +
+                (lib.url ? ('<a href="' + (lib.url.indexOf('http') == -1 ? 'http://' + lib.url : lib.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span> Website</a>') : '') + '</p>');
             if (lib.closed == 't') $('#sidebar-librarycontent').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
 
             sidebar.open('library');
@@ -154,16 +167,17 @@
             // Display latest tweet
             var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);
             if (tweet) {
-                $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="' + '' + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</strong> ' + tweet[11] + '</div>');
+                $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="https://twitter.com/' + tweet[1] + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</strong> ' + tweet[11] + '</div>');
             }
 
             // Show libraries group by type
             $.each(Object.keys(feature.properties.libraries), function (i, k) {
                 var type = $('<div>');
-                var hd = $('<h6>', {
+                var hd = $('<h5>', {
                     text: config.libStyles[k].type
                 }).appendTo(type);
-                var sm = $('<small>').appendTo(type);
+                var pa = $('<p>').appendTo(type);
+                var sm = $('<small>').appendTo(pa);
                 $.each(feature.properties.libraries[k].libs, function (x, l) {
                     $(sm).append((x + 1) + '. ');
                     $('<a>', {
@@ -190,7 +204,7 @@
         };
 
         map.on('moveend', displayAuthority);
-        map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(-350, 0) });
+        map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(-150, 0) });
     };
 
     /////////////////////////////////////////////////////////////
@@ -208,7 +222,9 @@
         authBoundaries = new L.geoJson(null, {
             onEachFeature: onEachFeature
         });
-        authBoundaries.addTo(map);
+        authBoundaries.bindTooltip(function (layer) {
+            return layer.feature.properties.name;
+        }).addTo(map);
         $(authGeo.features).each(function (key, data) {
             authBoundaries.addData(data);
         });
