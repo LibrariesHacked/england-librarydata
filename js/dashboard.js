@@ -146,11 +146,12 @@
             });
             var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
             $('#divAuthStats1 #divNumLibs p').text(numFormat(stats.libraries));
-            $('#divAuthStats1 #divArea p').text(numFormat(stats.area));
             $('#divAuthStats1 #divPopulation p').text(numFormat(stats.population));
+            $('#divAuthStats1 #divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
             $('#divAuthStats2 #divClosedLibs p').text(numFormat(stats.closedLibraries));
-            $('#divAuthStats2 #divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
-            $('#divAuthStats2 #divLibsPerArea p').text(numFormat(stats.areaPerLibrary));
+            $('#divAuthStats2 #divNewLibs p').text(numFormat(stats.newLibs));
+            $('#divAuthStats2 #divLibsChange p').text(numFormat(stats.libsChange));
+            
             typeDonut.update();
         };
         // Initially set the library types donut chart.

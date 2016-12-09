@@ -198,7 +198,7 @@
         }).sort();
     },
     getStatCountsByAuthority: function (authority) {
-        var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0 };
+        var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0, newLibs: 0, libsChange: 0 };
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             if (i != '' && (i == authority || !authority)) {
                 counts.area = counts.area + parseFloat(x.hectares);
@@ -206,7 +206,9 @@
                 $.each(x.libraries, function (y, lib) {
                     if (lib.type == 'XL' || lib.type == 'XLR') counts.closedLibraries = counts.closedLibraries + 1;
                     if (lib.type != 'XL' && lib.type != 'XLR') counts.libraries = counts.libraries + 1;
+                    if (lib.type == 'XLR') counts.newLibs = counts.newLibs + 1;
                 });
+                counts.libsChange = counts.newLibs - counts.closedLibraries;
             }
         });
         counts.peoplePerLibrary = counts.population / counts.libraries;

@@ -21,7 +21,7 @@
         <div class="container">
             <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
             <div class="collapse navbar-toggleable-md" id="navbarResponsive">
-                <a class="navbar-brand" href="#">{ libraries: england }</a>
+                <a class="navbar-brand" href="/">{ libraries: england }</a>
                 <ul class="nav navbar-nav">
                     <li class="nav-item active"><a class="nav-link" href="/">dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
@@ -32,6 +32,13 @@
     <div id="main" class="container main">
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <!-- Beta -->
+                <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>in development!</strong> this is a work in progress based on the libraries taskforce core data set.  please see the <a href="/about" target="_blank" title="about this site">about page</a> for more information.
+                </div>
                 <!-- Widget 1: Settings -->
                 <div class="card">
                     <div class="card-block">
@@ -154,18 +161,19 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-primary">library types</h4>
-                        <h6 class="card-subtitle text-muted">what are the different types of library? how many are there?</h6>
+                        <h6 class="card-subtitle text-muted">what are the different types of library? how many are there? closures counted from 2010.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthStats1">
                             <div id="divPopulation" class="stats col-xs-4"><small class="text-muted strong">population</small><p class="lead text-info strong"></p></div>
-                            <div id="divArea" class="stats col-xs-4"><small class="text-muted strong">area (ha)</small><p class="lead text-warning strong"></p></div>
                             <div id="divNumLibs" class="stats col-xs-4"><small class="text-muted strong">libraries</small><p class="lead text-success strong"></p></div>
+                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted strong">people per library</small><p class="lead text-primary strong"></p></div>
                         </div>
                         <div class="row" id="divAuthStats2">
-                            <div id="divClosedLibs" class="stats col col-xs-4"><small class="text-muted strong">closed libraries</small><p class="lead text-danger strong"></p></div>
-                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted strong">people per library</small><p class="lead text-primary strong"></p></div>
-                            <div id="divLibsPerArea" class="stats col col-xs-4"><small class="text-muted strong">area per library (ha)</small><p class="lead text-info strong"></p></div>
+                            <div id="divClosedLibs" class="stats col col-xs-4"><small class="text-muted strong">closed</small><p class="lead text-danger strong"></p></div>
+                            <div id="divNewLibs" class="stats col col-xs-4"><small class="text-muted strong">replacements</small><p class="lead text-success strong"></p></div>
+                            <div id="divLibsChange" class="stats col col-xs-4"><small class="text-muted strong">change</small><p class="lead text-muted strong"></p></div>
+
                         </div>
                     </div>
                     <div class="card-block">
