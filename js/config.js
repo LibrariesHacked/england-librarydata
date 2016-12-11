@@ -5,12 +5,12 @@
     mapTilesStreets: 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A',
     mapAttribution: '&copy; <a href="http://osm.org/copyright">OSM</a> contributors.  contains OS data &copy; Crown copyright and database right 2016, Royal Mail data &copy; Royal Mail copyright and Database right 2016, National Statistics data &copy; Crown copyright and database right 2016.',
     libStyles: {
-        LAL: { type: 'local authority', description: '', cssClass: 'success', colour: '#93C54B' },
-        CL: { type: 'commissioned', description: '', cssClass: 'info', colour: '#29ABE0' },
-        CRL: { type: 'community', description: '', cssClass: 'warning', colour: '#F47C3C' },
-        ICL: { type: 'independent community', description: '', cssClass: 'primary', colour: '#325D88' },
-        XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#D9534F' },
-        XLR: { type: 'replaced', description: '', cssClass: 'warning', colour: '#CCC' }
+        LAL: { type: 'local authority', description: '', cssClass: 'success', colour: '#5cb85c' },
+        CL: { type: 'commissioned', description: '', cssClass: 'info', colour: '#5bc0de' },
+        CRL: { type: 'community', description: '', cssClass: 'warning', colour: '#f0ad4e' },
+        ICL: { type: 'independent community', description: '', cssClass: 'primary', colour: '#0275d8' },
+        XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#d9534f' },
+        XLR: { type: 'replaced', description: '', cssClass: 'muted', colour: '#818a91' }
     },
     markerPoints: { radius: 4, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
     boundaryLines: {

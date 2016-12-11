@@ -104,17 +104,15 @@
         return depIndices;
     },
     getDeprivationIndicesByAuthorityAndLibType: function (authority, libType) {
-        var depIndices = { Multiple: [], Crime: [], Income: [], Health: [], Education: [] };
+        var depIndices = { Multiple: [], Income: [], Education: [], Health: []};
         $.each(this.getAuthoritiesWithLibraries(), function (i, a) {
             if (a.name == authority || !authority) {
                 $.each(a.libraries, function (y, l) {
                     if (l.type == libType) {
                         depIndices.Multiple.push(l.imd_decile);
                         depIndices.Income.push(l.income_decile);
-                        depIndices.Crime.push(l.crime_decile);
-                        depIndices.Health.push(l.health_decile);
                         depIndices.Education.push(l.education_decile);
-                        //depIndices.Housing.push(l.housing_decile);
+                        depIndices.Health.push(l.health_decile);
                     }
                 });
             }
@@ -198,17 +196,20 @@
         }).sort();
     },
     getStatCountsByAuthority: function (authority) {
-        var counts = { libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0, newLibs: 0, libsChange: 0 };
+        var counts = { statutory2010: 0, statutory2016: 0, libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0, newLibs: 0, libsChange: 0 };
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             if (i != '' && (i == authority || !authority)) {
                 counts.area = counts.area + parseFloat(x.hectares);
                 counts.population = counts.population + parseInt(x.population);
                 $.each(x.libraries, function (y, lib) {
+                    if (lib.statutory2010 == 't') counts.statutory2010 = counts.statutory2010 + 1;
+                    if (lib.statutory2016 == 't') counts.statutory2016 = counts.statutory2016 + 1;
                     if (lib.type == 'XL' || lib.type == 'XLR') counts.closedLibraries = counts.closedLibraries + 1;
                     if (lib.type != 'XL' && lib.type != 'XLR') counts.libraries = counts.libraries + 1;
                     if (lib.type == 'XLR') counts.newLibs = counts.newLibs + 1;
                 });
                 counts.libsChange = counts.newLibs - counts.closedLibraries;
+                counts.statutoryChange = counts.statutory2016 - counts.statutory2010;
             }
         });
         counts.peoplePerLibrary = counts.population / counts.libraries;

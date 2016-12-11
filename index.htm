@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="Data dashboard for Libraries Taskforce English libraries open dataset">
     <meta name="author" content="Libraries Hacked">
-    <title>{ libraries: england } | hacked projects</title>
+    <title>England.LibraryData</title>
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/tether/dist/css/tether.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
@@ -17,11 +17,11 @@
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-fixed-top navbar-dark bg-success">
+    <nav class="navbar navbar-fixed-top navbar-light bg-faded">
         <div class="container">
             <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
             <div class="collapse navbar-toggleable-md" id="navbarResponsive">
-                <a class="navbar-brand" href="/">{ libraries: england }</a>
+                <a class="navbar-brand" href="/"><span class="fa fa-cube"></span> <span class="text-danger">england</span>.librarydata</a>
                 <ul class="nav navbar-nav">
                     <li class="nav-item active"><a class="nav-link" href="/">dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
@@ -33,113 +33,33 @@
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <!-- Beta -->
-                <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                <div class="alert alert-danger alert-dismissible fade in" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>in development!</strong> this is a work in progress based on the libraries taskforce core data set.  please see the <a href="/about" target="_blank" title="about this site">about page</a> for more information.
+                    <strong>in development!</strong> this is a work in progress using the libraries taskforce dataset.  see the <a href="/about" title="about this site">about page</a> for more info.
                 </div>
                 <!-- Widget 1: Settings -->
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-primary">settings</h4>
-                        <h6 class="card-subtitle text-muted">filter to the authority you are interested in.</h6>
+                        <h6 class="card-subtitle text-muted">select the area you are interested in.</h6>
                     </div>
                     <div class="card-block" id="divAuthMap"></div>
                     <div class="card-block">
                         <select id="selAuthority" class="form-control">
-                            <option value="">All authorities</option>
+                            <option value="">all areas</option>
                         </select>
                     </div>
-                </div>
-                <!-- Widget 2: Find My Library -->
-                <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-success">nearest library</h4>
-                        <h6 class="card-subtitle text-muted">search to see the nearest library and how to get there.</h6>
-                    </div>
-                    <div class="card-block">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <span class="fa fa-home" id="spFmlHome"></span>
-                                    <span class="fa fa-spinner fa-spin" id="spFmlSpinning"></span>
-                                </span>
-                                <input id="txtAddress" class="form-control" type="text" placeholder="e.g. BA1 7JH">
-                            </div>
+                        <div class="row" id="divAuthStats1">
+                            <div id="divPopulation" class="stats col-xs-4"><small class="text-muted strong">population</small><p class="lead text-info strong"></p></div>
+                            <div id="divNumLibs" class="stats col-xs-4"><small class="text-muted strong">libraries</small><p class="lead text-success strong"></p></div>
+                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted strong"><abbr title="people">ppl</abbr> per lib</small><p class="lead text-primary strong"></p></div>
                         </div>
-                        <div class="checkbox abc-checkbox abc-checkbox-success">
-                            <input class="chb-libtype" type="checkbox" id="chbLAL" value="LAL" checked="checked">
-                            <label for="chbLAL">Local authority</label>
-                        </div>
-                        <div class="checkbox abc-checkbox abc-checkbox-info">
-                            <input class="chb-libtype" type="checkbox" id="chbCL" value="CL" checked="checked">
-                            <label for="chbCL">Commissioned</label>
-                        </div>
-                        <div class="checkbox abc-checkbox abc-checkbox-warning">
-                            <input class="chb-libtype" type="checkbox" id="chbCRL" value="CRL" checked="checked">
-                            <label for="chbCRL">Community</label>
-                        </div>
-                        <div class="checkbox abc-checkbox abc-checkbox-primary">
-                            <input class="chb-libtype" type="checkbox" id="chbICL" value="ICL" checked="checked">
-                            <label for="chbICL">Independent community</label>
-                        </div>
-                    </div>
-                    <div class="card-block">
-                        <div id="divFmlContent">
-                            <h5 id="fmlLibrary"></h5>
-                            <ul class="nav nav-tabs">
-                                <li class="nav-item"><a class="nav-link active" href="#Walking" data-toggle="tab">Walking</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#Cycling" data-toggle="tab">Cycling</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#Driving" data-toggle="tab">Driving</a></li>
-                            </ul>
-                            <div class="tab-content" id="fmlRouteContent">
-                                <div class="tab-pane fade active in" id="Walking">
-                                    <div class="row">
-                                        <div id="divWalkingDistance" class="col col-sm-6"><p class="lead text-info strong"></p></div>
-                                        <div id="divWalkingTime" class="col col-sm-6"><p class="lead text-warning strong"></p></div>
-                                    </div>
-                                    <div id="divWalkingInstructions"></div>
-                                </div>
-                                <div class="tab-pane fade" id="Cycling">
-                                    <div class="row">
-                                        <div id="divCyclingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
-                                        <div id="divCyclingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
-                                    </div>
-                                    <div id="divCyclingInstructions"></div>
-                                </div>
-                                <div class="tab-pane fade" id="Driving">
-                                    <div class="row">
-                                        <div id="divDrivingDistance" class="col col-sm-6"><small class="text-muted">distance</small><p class="lead text-info strong"></p></div>
-                                        <div id="divDrivingTime" class="col col-sm-6"><small class="text-muted">time</small><p class="lead text-warning strong"></p></div>
-                                    </div>
-                                    <div id="divDrivingInstructions"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-block" id="divFmlMap"></div>
-                </div>
-                <!-- Widget 3: Libraries distance stats -->
-                <div class="card">
-                    <div class="card-block">
-                        <h4 class="card-title text-info">distance stats</h4>
-                        <h6 class="card-subtitle text-muted">how far to the nearest library?</h6>
-                    </div>
-                    <div class="card-block">
-                        <div class="row" id="divAuthDistanceStats">
-                            <div id="divDistanceAverage" class="col-xs-4"><small class="text-muted strong">average</small><p class="lead text-info strong"></p></div>
-                            <div id="divDistanceLongest" class="col-xs-4"><small class="text-muted strong">longest</small><p class="lead text-warning strong"></p></div>
-                            <div id="divDistancePopOverOne" class="col-xs-4"><small class="text-muted strong">Over 1 mile</small><p class="lead text-success strong"></p></div>
-                        </div>
-                    </div>
-                    <div class="card-block">
-                        <div><canvas id="divLibrariesDistancesLineChart" height="300"></canvas></div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                <!-- Widget 4: Library details by authority -->
+                <!-- Widget 2: Library details by authority -->
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-info">library details</h4>
@@ -157,23 +77,110 @@
 
                     </div>
                 </div>
+
+                <!-- Widget 3: Libraries distance stats -->
+                <div class="card">
+                    <div class="card-block">
+                        <h4 class="card-title text-warning">distances: <span class="sel-auth-name"></span></h4>
+                        <h6 class="card-subtitle text-muted">how far to the nearest library?</h6>
+                    </div>
+                    <div class="card-block">
+                        <div class="row" id="divAuthDistanceStats">
+                            <div id="divDistanceAverage" class="col-xs-4"><small class="text-muted strong">average</small><p class="lead text-info strong"></p></div>
+                            <div id="divDistanceLongest" class="col-xs-4"><small class="text-muted strong">furthest</small><p class="lead text-warning strong"></p></div>
+                            <div id="divDistancePopOverOne" class="col-xs-4"><small class="text-muted strong">Over 1 mile</small><p class="lead text-success strong"></p></div>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <div><canvas id="divLibrariesDistancesLineChart" height="300"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <!-- Widget 4: Find My Library -->
+                <div class="card">
+                    <div class="card-block">
+                        <h4 class="card-title text-success">nearest library</h4>
+                        <h6 class="card-subtitle text-muted">find the nearest library to a location.</h6>
+                    </div>
+                    <div class="card-block">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-home" id="spFmlHome"></span>
+                                    <span class="fa fa-spinner fa-spin" id="spFmlSpinning"></span>
+                                </span>
+                                <input id="txtAddress" class="form-control" type="text" placeholder="enter a location e.g. BA1 7JH">
+                            </div>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="checkbox abc-checkbox abc-checkbox-success checkbox-inline">
+                                <input class="chb-libtype form-check-input" type="checkbox" id="chbLAL" value="LAL" checked="checked">
+                                <label class="form-check-inline" for="chbLAL">local authority</label>
+                            </div>
+                            <div class="checkbox abc-checkbox abc-checkbox-info checkbox-inline">
+                                <input class="chb-libtype form-check-input" type="checkbox" id="chbCL" value="CL" checked="checked">
+                                <label class="form-check-inline" for="chbCL">commissioned</label>
+                            </div>
+                            <div class="checkbox abc-checkbox abc-checkbox-warning checkbox-inline">
+                                <input class="chb-libtype form-check-input" type="checkbox" id="chbCRL" value="CRL" checked="checked">
+                                <label class="form-check-inline" for="chbCRL">community</label>
+                            </div>
+                            <div class="checkbox abc-checkbox abc-checkbox-primary checkbox-inline">
+                                <input class="chb-libtype form-check-input" type="checkbox" id="chbICL" value="ICL" checked="checked">
+                                <label class="form-check-inline" for="chbICL">independent</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-block" id="divFmlContent">
+                        <p class="lead" id="fmlLibrary"></p>
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item"><a class="nav-link active" href="#Walking" data-toggle="tab">walking</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#Cycling" data-toggle="tab">cycling</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#Driving" data-toggle="tab">driving</a></li>
+                        </ul>
+                        <div class="tab-content" id="fmlRouteContent">
+                            <div class="tab-pane fade active in" id="Walking">
+                                <div class="row">
+                                    <div id="divWalkingDistance" class="col col-sm-6"><small class="text-muted strong">distance</small><p class="lead text-info strong"></p></div>
+                                    <div id="divWalkingTime" class="col col-sm-6"><small class="text-muted strong">time</small><p class="lead text-warning strong"></p></div>
+                                </div>
+                                <div id="divWalkingInstructions"></div>
+                            </div>
+                            <div class="tab-pane fade" id="Cycling">
+                                <div class="row">
+                                    <div id="divCyclingDistance" class="col col-sm-6"><small class="text-muted strong">distance</small><p class="lead text-info strong"></p></div>
+                                    <div id="divCyclingTime" class="col col-sm-6"><small class="text-muted strong">time</small><p class="lead text-warning strong"></p></div>
+                                </div>
+                                <div id="divCyclingInstructions"></div>
+                            </div>
+                            <div class="tab-pane fade" id="Driving">
+                                <div class="row">
+                                    <div id="divDrivingDistance" class="col col-sm-6"><small class="text-muted strong">distance</small><p class="lead text-info strong"></p></div>
+                                    <div id="divDrivingTime" class="col col-sm-6"><small class="text-muted strong">time</small><p class="lead text-warning strong"></p></div>
+                                </div>
+                                <div id="divDrivingInstructions"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-block" id="divFmlMap"></div>
+                </div>
                 <!-- Widget 5: Library types by authority -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-primary">library types</h4>
-                        <h6 class="card-subtitle text-muted">what are the different types of library? how many are there? closures counted from 2010.</h6>
+                        <h4 class="card-title text-primary">library types: <span class="sel-auth-name"></span></h4>
+                        <h6 class="card-subtitle text-muted">what are the different types of library? how many are there? from 2010 - 2016.</h6>
                     </div>
                     <div class="card-block">
-                        <div class="row" id="divAuthStats1">
-                            <div id="divPopulation" class="stats col-xs-4"><small class="text-muted strong">population</small><p class="lead text-info strong"></p></div>
-                            <div id="divNumLibs" class="stats col-xs-4"><small class="text-muted strong">libraries</small><p class="lead text-success strong"></p></div>
-                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted strong">people per library</small><p class="lead text-primary strong"></p></div>
+                        <div class="row">
+                            <div id="divStatutory2010" class="stats col col-xs-4"><small class="text-muted strong">statutory 2010</small><p class="lead text-danger strong"></p></div>
+                            <div id="divStatutory2016" class="stats col col-xs-4"><small class="text-muted strong">statutory 2016</small><p class="lead text-success strong"></p></div>
+                            <div id="divStatutoryChange" class="stats col col-xs-4"><small class="text-muted strong">statutory change</small><p class="lead text-muted strong"></p></div>
                         </div>
-                        <div class="row" id="divAuthStats2">
+                        <div class="row">
                             <div id="divClosedLibs" class="stats col col-xs-4"><small class="text-muted strong">closed</small><p class="lead text-danger strong"></p></div>
                             <div id="divNewLibs" class="stats col col-xs-4"><small class="text-muted strong">replacements</small><p class="lead text-success strong"></p></div>
                             <div id="divLibsChange" class="stats col col-xs-4"><small class="text-muted strong">change</small><p class="lead text-muted strong"></p></div>
-
                         </div>
                     </div>
                     <div class="card-block">
@@ -187,11 +194,11 @@
                 <!-- Widget 6: Public libraries news -->
                 <div id="divNewsStories" class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-danger">public libraries news</h4>
-                        <h6 class="card-subtitle text-muted">latest news stories.</h6>
+                        <h4 id="hdrNews" class="card-title text-danger"><span class="sel-auth-name"></span> news</h4>
+                        <h6 class="card-subtitle text-muted">stories taken from public libraries news.</h6>
                     </div>
                     <div id="newsCounts" class="list-group list-group-flush"></div>
-                    <div class="card-footer" style="display: none">
+                    <div class="card-footer">
                         <a href="#" class="disabled card-link" data-direction="-1">&laquo;</a>
                         <a href="#" class="card-link" data-direction="1">&raquo;</a>
                     </div>
@@ -199,11 +206,11 @@
                 <!-- Widget 7: Tweets -->
                 <div id="divTwitter" class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-info">twitter</h4>
+                        <h4 id="hdrTwitter" class="card-title text-info"><span class="sel-auth-name"></span> on twitter</h4>
                         <h6 class="card-subtitle text-muted">what they're saying.</h6>
                     </div>
                     <div id="tweetsCounts" class="list-group list-group-flush"></div>
-                    <div class="card-footer" id="tweetsSwitch" style="display: none">
+                    <div class="card-footer" id="tweetsSwitch">
                         <a data-direction="-1" href="#">&laquo;</a>
                         <a data-direction="1" href="#">&raquo;</a>
                     </div>
@@ -211,19 +218,15 @@
                 <!-- Widget 8: Libraries area stats -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-danger">deprivation stats</h4>
-                        <h6 class="card-subtitle text-muted">see authority average deprivation stats in library locations.</h6>
+                        <h4 class="card-title text-danger">deprivation:  <span class="sel-auth-name"></span></h4>
+                        <h6 class="card-subtitle text-muted">see authority average deprivation stats.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDepStats1">
-                            <div id="divIMD" class="stats col-xs-4"><small class="text-muted strong">multiple</small><p class="lead text-info strong"></p></div>
-                            <div id="divCrime" class="stats col-xs-4"><small class="text-muted strong">crime</small><p class="lead text-warning strong"></p></div>
-                            <div id="divIncome" class="stats col-xs-4"><small class="text-muted strong">income</small><p class="lead text-success strong"></p></div>
-                        </div>
-                        <div class="row" id="divAuthDepStats2">
-                            <div id="divHealth" class="stats col-xs-4"><small class="text-muted strong">health</small><p class="lead text-danger strong"></p></div>
-                            <div id="divEducation" class="stats col-xs-4"><small class="text-muted strong">education</small><p class="lead text-primary strong"></p></div>
-                            <div id="divHousing" class="stats col-xs-4"><small class="text-muted strong">housing</small><p class="lead text-info strong"></p></div>
+                            <div id="divIMD" class="stats col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong"></p></div>
+                            <div id="divIncome" class="stats col-xs-3"><small class="text-muted strong">income</small><p class="lead text-warning strong"></p></div>
+                            <div id="divEducation" class="stats col-xs-3"><small class="text-muted strong">education</small><p class="lead text-success strong"></p></div>
+                            <div id="divHealth" class="stats col-xs-3"><small class="text-muted strong">health</small><p class="lead text-danger strong"></p></div>
                         </div>
                     </div>
                     <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="300"></canvas></div></div>

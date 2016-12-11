@@ -53,6 +53,10 @@
     height: 100%;
 }
 
+.checkbox-inline {
+    display: inline-block !important;
+}
+
 .page-story-list, .page-twitter-list {
     padding: 0 !important;
     margin: 0 0 0 0 !important;
@@ -81,6 +85,10 @@
 }
 
 #divFmlContent {
+    display: none;
+}
+
+#divNewsStories .card-footer, #divTwitter .card-footer {
     display: none;
 }
 
@@ -224,7 +232,7 @@
 
 .autocomplete-suggestions strong {
     font-weight: 700;
-    color: #93C54B;
+    color: #5cb85c;
 }
 
 .autocomplete-group {
