@@ -192,8 +192,10 @@
     getLibrariesListSorted: function (authority) {
         var libraries = this.getLibrariesByAuthority();
         return $.map(this.authorities, function (i, x) {
-            if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function (y, z) { return y.name });
-        }).sort();
+            if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function (y, z) {return { id: y.id, name: y.name } });
+        }).sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+        });
     },
     getStatCountsByAuthority: function (authority) {
         var counts = { statutory2010: 0, statutory2016: 0, libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0, newLibs: 0, libsChange: 0 };
@@ -222,6 +224,13 @@
             if (i == authority || !authority) $.each(x.libraries, function (y, lib) { if (lib.type == type) count = count + 1; });
         });
         return count;
+    },
+    getLibraryById: function (lib) {
+        var library = {};
+        $.each(this.libraries, function (i, a) {
+            if (i == lib) library = a;
+        });
+        return library;
     },
     getLibraryByName: function (lib) {
         var library = {};
@@ -342,9 +351,10 @@
         var authLibraries = {};
         $.each(this.libraries, function (i, lib) {
             if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
+            // assign an id
+            lib.id = i;
             if (lib.type == '') lib.type = lib.closed;
-            // Library must have a type or be closed.
-            if (lib.type != '') authLibraries[lib['authority_id']].push(lib);
+            authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;
     },

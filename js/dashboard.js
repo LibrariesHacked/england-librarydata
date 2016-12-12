@@ -159,24 +159,24 @@
         var updateLibraryDetailsSelect = function (authority) {
             $('#selLibraryDetailsLibrary').attr('disabled', true);
             $('#selLibraryDetailsLibrary').empty();
-            $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('Select a library'));
-            $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z).text(z)) });
+            $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('select a library'));
+            $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.id).text(z.name.toLowerCase())) });
             $('#selLibraryDetailsLibrary').attr('disabled', false);
         };
- 
+
         // Event: On selecting a library, display that library's details.
         $('#selLibraryDetailsLibrary').change(function () {
             var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
             if (lib == '') return;
-            var library = PublicLibrariesNews.getLibraryByName(lib);
+            var library = PublicLibrariesNews.getLibraryById(lib);
             $('#divLibraryDetails').empty();
             $('#divLibraryDeprivationDetails').empty();
             $('#divLibraryDetails').append('<p>' + (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
-                (library.address ? (' ' + library.address + '. ') : '') +
-                (library.notes ? (' ' + library.notes + '. ') : '') +
-                (library.closed ? ('Closed in ' + library.closed_year + '. ') : '') + '</p>');
-            if (library.email) $('#divLibraryDetails').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span> Email</a> ');
-            if (library.url) $('#divLibraryDetails').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span> Website</a>');
+                (library.address ? (' ' + library.address.toLowerCase() + '. ') : '') +
+                (library.notes ? (' ' + library.notes.toLowerCase() + '. ') : '') +
+                (library.closed ? ('closed in ' + library.closed_year + '. ') : '') + '</p>');
+            if (library.email) $('#divLibraryDetails').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span>&nbsp;email</a> ');
+            if (library.url) $('#divLibraryDetails').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span>&nbsp;website</a>');
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append('<div class="row">' +
                 '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +
@@ -267,7 +267,6 @@
         updateSwitchChevrons();
         for (x = 0 ; x < 1; x++) addLocation(x, 'last');
 
-
         //////////////////////////////////////////////
         // 6. Twitter
         // 
@@ -305,6 +304,7 @@
                 for (x = 0 ; x < 1; x++) addTweet(id + x, 'last');
             }
         };
+
         var updateTwitterSwitchChevrons = function () {
             $('#tweetsSwitch li').attr('class', '');
             if (currentlyShowingTwitter[0] != 0) {
@@ -372,7 +372,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'library locations avg. deprivation by library type'
+                    text: 'library locations avg. deprivation, by library type'
                 }
             }
         });
@@ -469,7 +469,7 @@
 
         authmap = L.map('divAuthMap', { zoomControl: false }).setView([52.6, -2.5], 7);
         L.tileLayer(config.mapTilesLight).addTo(authmap);
-        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAuthority').append($("<option></option>").attr("value", x).text(x)); });
+        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAuthority').append($("<option></option>").attr("value", x).text(x.toLowerCase())); });
 
         var updateAll = function (auth) {
             var auth = $('#selAuthority').find(":selected").val();

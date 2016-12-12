@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="Data dashboard for Libraries Taskforce English libraries open dataset">
     <meta name="author" content="Libraries Hacked">
-    <title>England.LibraryData</title>
+    <title>about | england.librarydata</title>
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/tether/dist/css/tether.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
@@ -17,7 +17,7 @@
         <div class="container">
             <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
             <div class="collapse navbar-toggleable-md" id="navbarResponsive">
-                <a class="navbar-brand" href="/"><span class="fa fa-cube"></span> <span class="text-danger">england</span>.librarydata</a>
+                <a class="navbar-brand" href="/"><span class="fa fa-cube strong"></span> <span class="text-danger strong">england</span>.librarydata</a>
                 <ul class="nav navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="/">dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
@@ -27,16 +27,26 @@
         </div>
     </nav>
     <div id="main" class="container main">
-        <h1 class="text-primary">about this</h1><hr/>
-        <p>Public library data is rich, varied, interesting, and there is a great demand for it.  But with more public open data available than ever before, used for creative and analytical purposes, library data is also very rare.</p>
-        <p>Other than citizen personal information, there is no good reason to not make all data related to public libraries openly licensed, freely available for anyone to use.</p>
-        <p>The Libraries Taskforce for England have released their <a>core libraries dataset</a>, compiled and then validated by the 151 library authorities in England.  A core libraries dataset is at the minimum of what the public should know about public libraries.  Where are they? Where were the ones that closed? How many are there?  What about the different types of library: Volunteer, Local authority, Commissioned.</p>
-        <p>This data doesn't answer any great questions about outcomes from library usage, the value of libraries, or provide any significant measures.  Location data and counts of libraries are important though.  A single location holds a great deal of associated information.  Deprivation indices measure the relative deprivation of an area, under categories such as income, education, housing, and crime.  Public Libraries in England are also tied to our local government administrations which themselves will have different geographical profiles.  Some may be very rural widespread areas that require a different approach to a library service to one in a London Borough, or in a City authority.</p>
+        <h1 class="text-primary">about</h1><hr/>
+        <h2>public library open data</h2>
+        <p>Public library data is rich, varied, interesting, and there is a great demand for it.  But with more public open data available than ever before, used for creative and analytical purposes, data from and about libraries is very rare.</p>
+        <p>Other than protecting citizen personal information, there is no good reason to not make all data related to public libraries openly licensed, and freely available for anyone to use.</p>
+        <p>The Libraries Taskforce for England have released their <a href="https://librariestaskforce.blog.gov.uk/" title="Libraries Taskforce" target="_blank">core libraries dataset</a>, compiled and then validated by the 151 library authorities in England.  A core libraries dataset is at a minimum what the public should know about libraries.  Where are they? Where were the ones that closed? How many are there?  What about the different types of library and how has that picture changed: volunteer, local authority, commissioned?</p>
+        <p>This data doesn't answer any great questions about outcomes from library usage, the value of libraries, or provide significant measures.  But good location data, and counts of libraries are important though.  A single location holds a great deal of associated information.  Deprivation indices measure the relative deprivation of an area, under categories such as income, education, housing, and crime.  Public Libraries in England are also tied to our local government administrations which themselves will have different geographical profiles.  Some may be very rural widespread areas that require a different approach to a library service to one in a London Borough, or in a Unitary City authority.</p>
+        <h2>this project</h2>
         <p>This project is experimental, using various open datasets such as authority boundaries, population statistics, and the deprivation indices to merge these with the core libraries dataset and see what can be done.</p>
         <p>It may not always be correct, and the methodology is likely to have plenty of issues, but it is open source.  That means the full code is <a>hosted on GitHub</a>.  A step-by-step description of how the underlying data was merged with other sources is given as part of that GitHub repository.</p>
         <p>If you find any errors then shout about these, but also suggest improvements and features.  For those with GitHub accounts you can raise bugs and feature requests (and get involved in the coding).</p>
         <p>The core dataset is a start, at a national level, for English public libraries open data.  As well as maintaining and improving that dataset it should be used as a first step to far more data.  Loans, expenditure, footfall, PC usage, catalogue data, and more - for all library services in England.  These are datasets that combined together could be used by the public to create real insight into library usage.  There should be no need to prove the value of libraries, but there's plenty to gain from a better understanding of the data, and using that to improve services.  For a great introduction to libraries open data please do look at (and copy) Newcastle Libraries open datasets and hack events.</p>
-        <p>Dave - <a href="https://twitter.com/librarieshacked" target="_blank">@librarieshacked</a> - <a href="mailto:info@librarieshacked.org">info@librarieshacked.org</a> - <a href="https://www.librarieshacked.org" target="_blank" title="Libraries hacked website">{ libraries: hacked }</a> </p>
+        <p>Twitter: <a href="https://twitter.com/librarieshacked" target="_blank">@librarieshacked</a>.  Email: <a href="mailto:info@librarieshacked.org">info@librarieshacked.org</a>.  Web: <a href="https://www.librarieshacked.org" target="_blank" title="Libraries hacked website">{ libraries: hacked }</a>.</p>
+        <h2>licences and open data</h2>
+        <p>The Libraries Taskforce core dataset is released under the Open Government Licence.</p>
+        <p>The maps on this page are created using Mapbox tiles.  These are &copy; Mapbox and contain Open Street Map contributor data.</p>
+        <p>Authority boundary lines are taken from Ordnance Survey Open data, in particular, Boundary-line open.</p>
+        <p>Population estimates are taken from the Office for National Statistics.</p>
+        <p>English Indices of Deprivation are taken from the ONS.</p>
+
+        <p></p>
         <footer>
             <hr />
             <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open-source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>.</p>
