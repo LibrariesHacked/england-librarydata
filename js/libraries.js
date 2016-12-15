@@ -354,7 +354,7 @@
             // assign an id
             lib.id = i;
             if (lib.type == '') lib.type = lib.closed;
-            authLibraries[lib['authority_id']].push(lib);
+            if (lib.type != '') authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;
     },

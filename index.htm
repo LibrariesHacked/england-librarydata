@@ -14,6 +14,12 @@
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="bower_components/jquery-shorten-js/dist/css/shorten.min.css" rel="stylesheet" />
     <link href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@librarieshacked">
+    <meta name="twitter:creator" content="@librarieshacked">
+    <meta name="twitter:title" content="england.librarydata dashboard">
+    <meta name="twitter:description" content="england.librarydata dashboard - explore locations of libraries, types, area deprivation and distances to libraries.">
+    <meta name="twitter:image" content="https://england.librarydata.uk/images/dashboard.png">
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body>
@@ -23,8 +29,9 @@
             <div class="collapse navbar-toggleable-md" id="navbarResponsive">
                 <a class="navbar-brand" href="/"><span class="fa fa-cube strong"></span> <span class="text-danger strong">england</span>.librarydata</a>
                 <ul class="nav navbar-nav">
-                    <li class="nav-item active"><a class="nav-link" href="/">dashboard</a></li>
+                    <li class="nav-item active"><a class="nav-link active" href="/">dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about">about</a></li>
                 </ul>
             </div>
         </div>
@@ -167,7 +174,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-primary">library types: <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">what are the different types of library? how many are there? from 2010 - 2016.</h6>
+                        <h6 class="card-subtitle text-muted">what are the different types of library? how many are there? from 2010 to 2016.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row">
@@ -217,7 +224,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-danger">deprivation:  <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">see authority average deprivation stats.</h6>
+                        <h6 class="card-subtitle text-muted">area average deprivation stats.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDepStats1">

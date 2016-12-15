@@ -17,16 +17,15 @@
                 deferRender: true,
                 data: PublicLibrariesNews.getAuthoritiesDataTable(),
                 columns: [
-                    { title: "Name" },
-                    { title: "Code" },
-                    { title: "Libraries" },
-                    { title: "Local authority" },
-                    { title: "Commissioned" },
-                    { title: "Community" },
-                    { title: "Independent community" },
-                    { title: "Closed" },
-                    { title: "Population" },
-                    { title: "Area (hectares)" }
+                    { title: "name" },
+                    { title: "libraries" },
+                    { title: "LAL" },
+                    { title: "CL" },
+                    { title: "CL" },
+                    { title: "ICL" },
+                    { title: "closed" },
+                    { title: "population" },
+                    { title: "area (hectares)" }
                 ]
             });
 
@@ -45,16 +44,16 @@
                 deferRender: true,
                 data: PublicLibrariesNews.getLibrariesDataTable(),
                 columns: [
-                    { title: "Name" },
-                    { title: "Address" },
-                    { title: "Type" },
-                    { title: "Year closed" },
-                    { title: "Notes" },
-                    { title: "IMD Decile" },
-                    { title: "Crime Decile" },
-                    { title: "Education Decile" },
-                    { title: "Income Decile" },
-                    { title: "Health Decile" }
+                    { title: "name" },
+                    { title: "address" },
+                    { title: "postcode" },
+                    { title: "type" },
+                    { title: "closed" },
+                    { title: "notes" },
+                    { title: "multiple" },
+                    { title: "education" },
+                    { title: "income" },
+                    { title: "health" }
                 ]
             });
 
