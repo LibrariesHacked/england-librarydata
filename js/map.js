@@ -73,7 +73,7 @@
                 // loop through our density intervals and generate a label with a colored square for each interval
                 div.innerHTML += '<p class="text-muted strong">' + $('#style-changer li a[data-style=' + mapType + ']').text() + '</p>';
                 for (var i = 0; i <= 1; i = i + 0.2) {
-                    div.innerHTML += '<i style="background: rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + i + ')"></i>' + (i == 0 ? 'Few' : '') + (i == 1 ? 'Lots' : '') + '<br/>';
+                    div.innerHTML += '<i style="background: rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + i + ')"></i>' + (i == 0 ? 'Fewer' : '') + (i == 1 ? 'Lots' : '') + '<br/>';
                 }
                 return div;
             };
@@ -88,7 +88,7 @@
         map.removeLayer(markerArray);
         markerArray.clearLayers();
         $.each(Object.keys(libraries), function (i, t) {
-            var style = { radius: 4, stroke: true, color: config.libStyles[t].colour };
+            var style = { radius: 5, stroke: true, color: config.libStyles[t].colour, fill: config.libStyles[t].colour };
             $.each(libraries[t].libs, function (x, lib) {
                 if (lib.lat && lib.lng) {
                     var m = L.circleMarker([lib.lat, lib.lng], style);
@@ -123,30 +123,45 @@
     /////////////////////////////////////////////////////////
     // Function: clickLibrary
     /////////////////////////////////////////////////////////
-    var clickLibrary = function (lib) {
+    var clickLibrary = function (library) {
         sidebar.close();
 
         var displayLib = function () {
             map.off('moveend', displayLib);
             $('#liLibrary').removeClass('disabled');
             $('#sidebar-librarycontent').empty();
-            $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[lib.type].cssClass + '">' + lib.name + '</h3>');
-
+            $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[library.type].cssClass + '">' + library.name + '</h3>');
             // Display latest tweet
-            var tweet = PublicLibrariesNews.getLatestLibraryTweet(lib.name);
+            var tweet = PublicLibrariesNews.getLatestLibraryTweet(library.name);
             if (tweet) $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
 
-            $('#sidebar-librarycontent').append('<p>' + config.libStyles[lib.type].type + '.  ' + lib.address + '</p>');
-            $('#sidebar-librarycontent').append('<p>' + lib.notes + '</p>');
-            $('#sidebar-librarycontent').append('<p>' +
-                (lib.email ? ('<a href="mailto:' + lib.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span> Email</a> ') : '') +
-                (lib.url ? ('<a href="' + (lib.url.indexOf('http') == -1 ? 'http://' + lib.url : lib.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span> Website</a>') : '') + '</p>');
-            if (lib.closed == 't') $('#sidebar-librarycontent').append('<p class="text-danger">Library closed ' + lib.closed_year + '</p>');
-
+            $('#sidebar-librarycontent').append(
+                '<p>' +
+                (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
+                (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement.</span> ' : '') +
+                (library.address ? (' ' + library.address.toLowerCase() + '. ') : '') +
+                (library.notes ? (' ' + library.notes.toLowerCase() + '. ') : '') +
+                (library.opened_year ? ('opened in ' + library.opened_year + '. ') : '') +
+                (library.closed ? ('closed in ' + library.closed_year + '. ') : '') +
+                '</p>');
+            if (library.email) $('#sidebar-librarycontent').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span>&nbsp;email</a> ');
+            if (library.url) $('#sidebar-librarycontent').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span>&nbsp;website</a>');
+            // Populate the hours and statutory details
+            $('#sidebar-librarycontent').append('<div class="row">' +
+                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead text-info strong">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead text-warning strong">' + library.hours + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead text-success strong">' + library.staffhours + '</p></div>');
+            // Populate the deprivation details.
+            $('#sidebar-librarycontent').append('<div class="row">' +
+                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' +
+                '<p><small class="text-muted strong">these are deprivation deciles (1-10) for the library location.  lower represents greater deprivation.</small></p>');
             sidebar.open('library');
         };
         map.on('moveend', displayLib);
-        map.flyTo(L.latLng(lib.lat, lib.lng), 13);
+        map.flyTo(L.latLng(library.lat, library.lng), 13);
     };
 
     /////////////////////////////////////////////////////////
@@ -162,7 +177,7 @@
 
             // Show authority details
             $('#authority .sidebar-title').text(feature.properties.name);
-            $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><p class="lead text-info strong">' + numFormat(feature.properties.population) + ' people</p></div><div class="col col-md-4"><p class="lead text-warning strong">' + numFormat(feature.properties.hectares) + ' hectares</p></div><div class="col col-md-4"><p class="lead text-success strong">' + numFormat(feature.properties.libraryCount) + ' libraries</p></div><//div>');
+            $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><small class="text-muted strong">population</small><p class="lead text-info strong">' + numFormat(feature.properties.population) + '</p></div><div class="col col-md-4"><small class="text-muted strong">area (hectares)</small><p class="lead text-warning strong">' + numFormat(feature.properties.hectares) + '</p></div><div class="col col-md-4"><small class="text-muted strong">libraries</small><p class="lead text-success strong">' + numFormat(feature.properties.libraryCount) + '</p></div><//div>');
 
             // Display latest tweet
             var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);

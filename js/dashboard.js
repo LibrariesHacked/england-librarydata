@@ -15,7 +15,6 @@
     // 2 months worth.  No geo, Yes twitter, Yes 
     //////////////////////////////////////////////
     PublicLibrariesNews.loadData(2, false, true, true, true, function () {
-
         ///////////////////////////////////////////////////////////////////
         // 1. Find My Library
         // Provides a means to enter postcode to find the closest library.
@@ -145,8 +144,8 @@
             $('#divNewLibs p').text(numFormat(stats.newLibs));
             $('#divLibsChange p').text(numFormat(stats.libsChange));
 
-            $('#divStatutory2010 p').text(numFormat(stats.statutory2010));
-            $('#divStatutory2016 p').text(numFormat(stats.statutory2016));
+            $('#divStatutory2010 p').text(stats.statutory2010);
+            $('#divStatutory2016 p').text(stats.statutory2016);
             $('#divStatutoryChange p').text(numFormat(stats.statutoryChange));
             typeDonut.update();
         };
@@ -157,6 +156,9 @@
 
         // Populate the select library control
         var updateLibraryDetailsSelect = function (authority) {
+            $('#divLibraryDetails').empty();
+            $('#divLibraryStatutoryDetails').empty();
+            $('#divLibraryDeprivationDetails').empty();
             $('#selLibraryDetailsLibrary').attr('disabled', true);
             $('#selLibraryDetailsLibrary').empty();
             $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('select a library'));
@@ -166,17 +168,28 @@
 
         // Event: On selecting a library, display that library's details.
         $('#selLibraryDetailsLibrary').change(function () {
+            $('#divLibraryDetails').empty();
+            $('#divLibraryStatutoryDetails').empty();
+            $('#divLibraryDeprivationDetails').empty();
             var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
             if (lib == '') return;
             var library = PublicLibrariesNews.getLibraryById(lib);
-            $('#divLibraryDetails').empty();
-            $('#divLibraryDeprivationDetails').empty();
-            $('#divLibraryDetails').append('<p>' + (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
+            $('#divLibraryDetails').append(
+                '<p>' +
+                (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
+                (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement.</span> ' : '') +
                 (library.address ? (' ' + library.address.toLowerCase() + '. ') : '') +
                 (library.notes ? (' ' + library.notes.toLowerCase() + '. ') : '') +
-                (library.closed ? ('closed in ' + library.closed_year + '. ') : '') + '</p>');
+                (library.opened_year ? ('opened in ' + library.opened_year + '. ') : '') +
+                (library.closed ? ('closed in ' + library.closed_year + '. ') : '') +
+                '</p>');
             if (library.email) $('#divLibraryDetails').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span>&nbsp;email</a> ');
             if (library.url) $('#divLibraryDetails').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span>&nbsp;website</a>');
+            // Populate the hours and statutory details
+            $('#divLibraryStatutoryDetails').append('<div class="row">' +
+                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead text-info strong">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead text-warning strong">' + library.hours + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead text-success strong">' + library.staffhours + '</p></div>');
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append('<div class="row">' +
                 '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +

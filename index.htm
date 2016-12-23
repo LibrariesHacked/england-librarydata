@@ -18,11 +18,11 @@
     <meta name="twitter:site" content="@librarieshacked">
     <meta name="twitter:creator" content="@librarieshacked">
     <meta name="twitter:title" content="england.librarydata dashboard">
-    <meta name="twitter:description" content="england.librarydata dashboard - explore locations of libraries, types, area deprivation and distances to libraries.">
+    <meta name="twitter:description" content="explore locations of libraries, types, area deprivation and distances to libraries.">
     <meta name="twitter:image" content="https://england.librarydata.uk/images/dashboard.png">
     <link href="css/site.css" rel="stylesheet">
 </head>
-<body>
+<body class="grey">
     <nav class="navbar navbar-fixed-top navbar-light bg-faded">
         <div class="container">
             <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
@@ -80,9 +80,9 @@
                         </div>
                         <div id="divLibraryDetails"></div>
                     </div>
+                    <div class="card-block" id="divLibraryStatutoryDetails"></div>
                     <div class="card-block" id="divLibraryDeprivationDetails"></div>
                 </div>
-
                 <!-- Widget 3: Libraries distance stats -->
                 <div class="card">
                     <div class="card-block">
@@ -233,6 +233,7 @@
                             <div id="divEducation" class="stats col-xs-3"><small class="text-muted strong">education</small><p class="lead text-success strong"></p></div>
                             <div id="divHealth" class="stats col-xs-3"><small class="text-muted strong">health</small><p class="lead text-danger strong"></p></div>
                         </div>
+                        <p><small class="text-muted strong">these are average deprivation deciles (1-10) for the area.  lower represents greater deprivation.</small></p>
                     </div>
                     <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="300"></canvas></div></div>
                 </div>
