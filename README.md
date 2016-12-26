@@ -1,4 +1,4 @@
-# Public Libraries News
+# England.  LibraryData.
 
 Project to display English libraries data in a data dashboard.
 
@@ -12,28 +12,50 @@ Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK
 
 | Technology | Description |
 | ---------- | ----------- |
-| Web | The site is coded using front end web technologies: HTML/CSS/JavaScript |
-| Google apps scripts | Data is refreshed from PLN by using Google apps scripts. |
-| PostGIS database | A PostGIS database was used for the majority of the geospatial analysis data. |
+| Web | The site is coded using front-end web technologies: HTML/CSS/JavaScript |
+| Google apps scripts | Data is refreshed from PLN and Twitter by using Google apps scripts. |
+| PostGIS database | A PostGIS database was used for the majority of the geospatial analysis. |
 
 ## Functionality
 
 ### Data dashboard
 
-#### Settings
+The dashboard is split into cards, providing different areas of functionality.
 
-#### Find nearest library
+#### 1. Areas
 
-#### Library distance stats
+The dashboard provides either data on all library services, or for specific areas.  Using the drop down control in this card will filter the data to show for that library service.
 
-#### News and changes
+#### 2. Library details
 
-#### Library details
+After choosing a library service this gives the opportunity to select a particular library to see further details.
 
-#### Library types by authority
+Details shown for each library are:
 
-#### Libraries on Twitter
+- library type
+- address
+- closed details (if applicable)
+- notes on the library
+- email and website (as buttons)
+- deprivation deciles for the area the library is located in.
 
+#### 3. Library distance stats
+
+
+
+#### 4. Find nearest library
+
+
+#### 5. Library types
+
+
+#### 6. News and changes
+
+
+#### 7. Libraries on Twitter
+
+
+#### 8. Deprivation stats
 
 ### Map
 
@@ -41,12 +63,15 @@ Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK
 ### The Data
 
 
+### About 
+
 
 ## File descriptions
 
 A summary of some of the key files in this repository.
 
-| Folder | File | Description | 
+| Folder | File | Description |
+| ------ | ---- | ----------- |
 | / | LICENSE |  |
 | / | create-db.md |  |
 | / | bower |  |
@@ -61,9 +86,11 @@ A summary of some of the key files in this repository.
 
 ## Build
 
-The project uses bower package manager.  
+The project uses bower for dependency management.  To build, run:
 
+```
 bower install
+```
 
 ## Deploy
 
