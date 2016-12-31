@@ -1,7 +1,6 @@
 ﻿html, body, #mapContainer {
     height: 100%;
     min-height: 100%;
-    
 }
 
 .grey {
@@ -40,12 +39,6 @@ nav {
 
 .tweet-account-link {
     font-size: 1.5em;
-}
-
-.card-heading {
-    text-transform: uppercase;
-    font-weight: 700;
-    font-size: 1em;
 }
 
 #main {
