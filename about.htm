@@ -45,25 +45,27 @@
             <thead>
                 <tr><th>Field</th><th>Description</th></tr>
             </thead>
-            <tr><td>Current field: Library service</td><td>The library authoritity e.g. Gloucestershire.  Some issues with this field are the variety of ways of expressing the name, which may not match to official stats.  For example, 'Bath and NE Somerset', where Bath and North East Somerset should probably be used.</td></tr>
-            <tr><td>Current field: Library name</td><td>Standardisation of naming conventions would be useful here.  For example, some are appended with 'library', others not.  Some have very descriptive names such as 'Anlaby Library and Customer Service Centre at East Riding Leisure Haltemprice' - some of that information may be more appropriate in the address details.</td></tr>
-            <tr class="table-danger"><td>Suggested field: Unique Property Reference Number</td><td>This suggested field would be the local authority Unique Property Reference Number.  This identifier is a single reference that would allow cross matching of the address to various other local authority datasets.  This reference would also allow for exact geo-coordinates of the location, taking these from Ordnance Survey data.  This is not open data but there is a 'presumption to publish' for various government datasets - generally provided the information does not compromise OS commercial capabilities.  A 3000 dataset of libraries would not seriously damage OS commercial property, so a request could likely be made to allow this data to be released with an open licence.</td></tr>
-            <tr class="table-danger"><td>Suggested field: Longitude</td><td>From the above reference number it would be possible to include the latitude coordinate of the library.</td></tr>
-            <tr class="table-danger"><td>Suggested field: Latitude</td><td>From the above reference number it would be possible to include the latitude coordinate of the library.</td></tr>
-            <tr><td>Modify field: Postal address</td><td>Suggested discard: </td></tr>
-            <tr><td>Modify field: Postcode</td><td></td></tr>
-            <tr><td>Current field: Included in statutory service on 1 April 2010</td><td>The statutory service indicator is used variably by authorities.  The majority .  However Cornwall claim that statutory library provision has risen from 31 statutory libraries in 2010 to 48 in 2016.  This is due to the fact that they have marked the 17 community 'micro' libraries.  These libraries offer around 200 books where customers self serve on an honesty basis.  Due to the dubious nature of this being part of statutory provision, this project overrrides the statutory indication to 'No' if the library is of type CL or ICL.</td></tr>
-            <tr><td>Current field: Included in statutory service on 1 July 2016</td><td></td></tr>
-            <tr><td>Current field: Type of library</td><td>LAL, LAL-, CL, CRL, CRL+, ICL, ICL+.  </td></tr>
-            <tr><td>XL: Closed library</td><td></td></tr>
-            <tr><td>Year of closure</td><td>There's little room for ambiguity here but the library services manage a lot of variation.  'Dec-12', 'Sept 2012', 2012, and more.  The month could be useful, but without a defined structure makes it more difficult to use this field.</td></tr>
-            <tr><td>New building since 1 April 2010: insert year of opening</td><td>One entry decides that a simple number iOne library service goes for 'Will be same as Cheltenham Road' - which if the case, shouldn't it just BE the same as Cheltenham Road?</td></tr>
-            <tr><td>Did the new building replace an existing library: Yes/No</td><td></td></tr>
-            <tr><td>Notes</td><td>General notes field.</td></tr>
-            <tr><td>Number of hours open each week</td><td></td></tr>
-            <tr><td>Number of staffed hours each week</td><td>Bournemouth have gone quite leftfield on this field and decided that there are far more staffed hours for each library than there are overall hours.  For example Charminster library is open 39 hours a week, including 148.75 staffed hours.</td></tr>
-            <tr><td>Contact email</td><td></td></tr>
-            <tr><td>URL of library website</td><td></td></tr>
+            <tbody>
+                <tr><td>Current field: Library service</td><td>The library authoritity e.g. Gloucestershire.  Some issues with this field are the variety of ways of expressing the name, which may not match to official stats.  For example, 'Bath and NE Somerset', where Bath and North East Somerset should probably be used.</td></tr>
+                <tr><td>Current field: Library name</td><td>Standardisation of naming conventions would be useful here.  For example, some are appended with 'library', others not.  Some have very descriptive names such as 'Anlaby Library and Customer Service Centre at East Riding Leisure Haltemprice' - some of that information may be more appropriate in the address details.</td></tr>
+                <tr><td><span class="text-danger">Suggested field: Unique Property Reference Number</span></td><td>This suggested field would be the local authority Unique Property Reference Number.  This identifier is a single reference that would allow cross matching of the address to various other local authority datasets.  This reference would also allow for exact geo-coordinates of the location, taking these from Ordnance Survey data.  This is not open data but there is a 'presumption to publish' for various government datasets - generally provided the information does not compromise OS commercial capabilities.  A 3000 dataset of libraries would not seriously damage OS commercial property, so a request could likely be made to allow this data to be released with an open licence.</td></tr>
+                <tr><td><span class="text-danger">Suggested field: Longitude</span></td><td>From the above reference number it would be possible to include the latitude coordinate of the library.</td></tr>
+                <tr><td><span class="text-danger">Suggested field: Latitude</span></td><td>From the above reference number it would be possible to include the latitude coordinate of the library.</td></tr>
+                <tr><td>Modify field: Postal address</td><td>Suggested discard: </td></tr>
+                <tr><td>Modify field: Postcode</td><td></td></tr>
+                <tr><td>Current field: Included in statutory service on 1 April 2010</td><td>The statutory service indicator is used variably by authorities.  The majority .  However Cornwall claim that statutory library provision has risen from 31 statutory libraries in 2010 to 48 in 2016.  This is due to the fact that they have marked the 17 community 'micro' libraries.  These libraries offer around 200 books where customers self serve on an honesty basis.  Due to the dubious nature of this being part of statutory provision, this project overrrides the statutory indication to 'No' if the library is of type CL or ICL.</td></tr>
+                <tr><td>Current field: Included in statutory service on 1 July 2016</td><td></td></tr>
+                <tr><td>Current field: Type of library</td><td>LAL, LAL-, CL, CRL, CRL+, ICL, ICL+.  </td></tr>
+                <tr><td>XL: Closed library</td><td></td></tr>
+                <tr><td>Year of closure</td><td>There's little room for ambiguity here but the library services manage a lot of variation.  'Dec-12', 'Sept 2012', 2012, and more.  The month could be useful, but without a defined structure makes it more difficult to use this field.</td></tr>
+                <tr><td>New building since 1 April 2010: insert year of opening</td><td>One entry decides that a simple number iOne library service goes for 'Will be same as Cheltenham Road' - which if the case, shouldn't it just BE the same as Cheltenham Road?</td></tr>
+                <tr><td>Did the new building replace an existing library: Yes/No</td><td></td></tr>
+                <tr><td>Notes</td><td>General notes field.</td></tr>
+                <tr><td>Number of hours open each week</td><td></td></tr>
+                <tr><td>Number of staffed hours each week</td><td>Bournemouth have gone quite leftfield on this field and decided that there are far more staffed hours for each library than there are overall hours.  For example Charminster library is open 39 hours a week, including 148.75 staffed hours.</td></tr>
+                <tr><td>Contact email</td><td></td></tr>
+                <tr><td>URL of library website</td><td></td></tr>
+            </tbody>
         </table>
         <h2>licences and open data</h2>
         <p>The Libraries Taskforce core dataset is released under the Open Government Licence.</p>

@@ -26,9 +26,9 @@ The Ordnance Survey have an open data product listing all postcodes in the UK, c
 
 - Download code-point open from [OS Open Data](https://www.ordnancesurvey.co.uk/opendatadownload/products.html).
 
-This data is provided as a series of CSV files for each postcode area.  It would be a lot simpler to import the data as a single CSV file.  There are many ways to combine CSV files into one, depending on operating system.  
+This data is provided as a series of CSV files for each postcode area.  It would be a lot simpler to import the data as a single CSV file.  There are many ways to combine CSV files into one, depending on your operating system.  
 
-- For a simple Windows PC, run the following command using the cmd.exe tool.
+- For Windows, run the following command at a command prompt.
 
 ```
 copy *.csv postcodes.csv
@@ -64,7 +64,7 @@ copy postcodes FROM 'postcodes.csv' delimiter ',' csv;
 ## Dataset: OS boundaries
 
 - Download [Boundary Lines](https://www.ordnancesurvey.co.uk/opendatadownload/products.html) from the OS Open Data products.  Alternatively, copies of the relevant boundary line files are included in the data directory of this project.
-- From a command line, run the following commands (requires **shp2pgsql** which should be available with PostGIS).  This will automatically create the relevant tables.
+- From a command prompt, run the following commands (requires **shp2pgsql** which should be available with PostGIS).  This will automatically create the relevant tables.
 
 ```
 shp2pgsql "county_region.shp" | psql -d uklibs -U "postgres"
@@ -73,7 +73,7 @@ shp2pgsql "district_borough_unitary_region.shp" | psql -d uklibs -U "postgres"
 
 ## Dataset: ONS Population estimates mid-2015
 
-- Download from [ONS mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland).  A copy of the data is included in the data directory of this project.
+- Download from the ONS [mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland).  A copy of the data is included in the data directory of this project.
 - Create a basic table with 3 columns to store the counts.
 
 ```
@@ -94,8 +94,8 @@ copy population FROM 'ukpopulation.csv' delimiter ',' csv;
 
 ## Dataset: Lower layer super output areas
 
-- Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
-- Select Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales
+- Download LSOA Boundaries Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
+- Select the download of Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales
 - From a command line run:
 
 ```
@@ -106,7 +106,7 @@ shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boundaries
 
 - Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
 - Select Lower Layer Super Output Areas (December 2011) Population Weighted Centroids
-- 
+- From a command line run:
 
 ```
 shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Population_Weighted_Centroids.shp" | psql -d uklibraries -U "postgres"
@@ -221,7 +221,7 @@ copy imd from 'File_7_ID_2015_All_ranks__deciles_and_scores_for_the_Indices_of_D
 
 ## Convert source data
 
-The spreadsheet is distributed as an Excel file.  To convert that file it was opened in Excel, the rows copied and saved to a new file, and then saved as CSV.
+The spreadsheet is distributed from the Libraries Taskforce as an Excel file.  To convert that file it was opened in Excel, the rows copied and saved to a new file, and then saved as CSV.
 
 ## Setup receiving table
 
@@ -304,7 +304,7 @@ where code is null
 
 That will still leave around 10 with no matching code.  The likely reason for this will be counties that are named irregularly (e.g. Bath and NE Somerset instead of Bath and North East Somerset).
 
-Edit the table manually to fill in the missing values.
+- Edit the table manually to fill in the missing values.
 
 - Export an authorities CSV file:
 
@@ -336,7 +336,7 @@ copy (
 ) to 'authorities.csv' delimiter ',' csv header;
 ```
 
-Export the authorities as GeoJSON:
+- Export the authorities as GeoJSON:
 
 ```
 copy (
@@ -410,7 +410,8 @@ select	r.library, a.id, r.address, p.postcode,
 	case when lower(r.statutoryapril2010) = 'yes' then true else false end,
 	case when lower(r.statutoryjuly2016) = 'yes' then true else false end,
 	r.new,
-	case when lower(r.replacement) = 'yes' then true else false end,
+	case	when lower(replacement) != 'no' and replacement != '' then true 
+			else false end 
 	r.notes, r.hours, r.staffhours, r.email, r.url
 from raw r
 join authorities a

@@ -135,18 +135,13 @@
             });
             var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
             // These stats shown at the authority selector.
-            $('#divNumLibs p').text(numFormat(stats.libraries));
+            $('#divNumLibs p').text(stats.libraries);
             $('#divPopulation p').text(numFormat(stats.population));
             $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
 
             // These stats shown at the library types widget
-            $('#divClosedLibs p').text(numFormat(stats.closedLibraries));
-            $('#divNewLibs p').text(numFormat(stats.newLibs));
-            $('#divLibsChange p').text(numFormat(stats.libsChange));
-
-            $('#divStatutory2010 p').text(stats.statutory2010);
-            $('#divStatutory2016 p').text(stats.statutory2016);
-            $('#divStatutoryChange p').text(numFormat(stats.statutoryChange));
+            $('#divTotalCount p').text(stats.libraries + ' (' + stats.statutoryChange + ')');
+            $('#divStatutoryCount p').text(stats.statutory2016 + ' (' + stats.libsChange + ')');
             typeDonut.update();
         };
 
@@ -178,7 +173,6 @@
                 '<p>' +
                 (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
                 (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement.</span> ' : '') +
-                (library.address ? (' ' + library.address.toLowerCase() + '. ') : '') +
                 (library.notes ? (' ' + library.notes.toLowerCase() + '. ') : '') +
                 (library.opened_year ? ('opened in ' + library.opened_year + '. ') : '') +
                 (library.closed ? ('closed in ' + library.closed_year + '. ') : '') +
@@ -186,17 +180,19 @@
             if (library.email) $('#divLibraryDetails').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span>&nbsp;email</a> ');
             if (library.url) $('#divLibraryDetails').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span>&nbsp;website</a>');
             // Populate the hours and statutory details
-            $('#divLibraryStatutoryDetails').append('<div class="row">' +
+            $('#divLibraryStatutoryDetails').append(
+                '<div class="row">' +
                 '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead text-info strong">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
                 '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead text-warning strong">' + library.hours + '</p></div>' +
                 '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead text-success strong">' + library.staffhours + '</p></div>');
             // Populate the deprivation details.
-            $('#divLibraryDeprivationDetails').append('<div class="row">' +
+            $('#divLibraryDeprivationDetails').append((library.address ? ('<p class="lead">deprivation: ' + library.address.toLowerCase() + '</p>') : '') +
+                '<div class="row">' +
                 '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +
                 '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
                 '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
                 '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' + 
-                '<p><small class="text-muted strong">these are deprivation deciles (1-10) for the library location.  lower represents greater deprivation.</small></p>');
+                '<p><small class="text-muted strong">a lower decile (1-10) shows greater deprivation.</small></p>');
         });
 
         /////////////////////////////////////////////////////////////////
@@ -237,14 +233,16 @@
         };
         var addLocation = function (index, position) {
             var it = stories[storiesOrdered[index]];
-            var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + storiesOrdered[index] + '">' +
+            if (it) {
+                var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + storiesOrdered[index] + '">' +
                 '<span class="tag tag-danger tag-pill float-xs-right">1/' + it.stories.length + '</span>' +
                 '<div><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p></div>' +
-                (it.stories.length > 1 ? '<p><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') + 
+                (it.stories.length > 1 ? '<p><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
                 '<p><a class="btn btn-sm btn-outline-danger btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
-            position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);
-            $('.list-group-item-text').shorten();
-            $('#Location' + index).on('click', clickNextItem);
+                position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);
+                $('.list-group-item-text').shorten();
+                $('#Location' + index).on('click', clickNextItem);
+            }
         };
         var removeLocation = function (position) {
             $('#newsCounts div:' + position).remove();
