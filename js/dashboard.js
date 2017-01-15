@@ -27,7 +27,7 @@
                 if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
                 fmlRoute = L.polyline($.map(route.line, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['ICL'].colour, dashArray: [5, 5], weight: 2 });
                 fmlMap.addLayer(fmlRoute);
-                $('#fmlRouteContent #' + type + ' #div' + type + 'Distance p').text(getMiles(route.distance).toFixed(1) + ' miles');
+                $('#fmlRouteContent #' + type + ' #div' + type + 'Distance p').text(getMiles(route.distance).toFixed(1) + ' mi.');
                 $('#fmlRouteContent #' + type + ' #div' + type + 'Time p').text(moment.duration(route.time * 1000).humanize() + ' ');
                 var stepsHtml = '';
                 $('#div' + type + 'Instructions').empty();
@@ -182,16 +182,16 @@
             // Populate the hours and statutory details
             $('#divLibraryStatutoryDetails').append(
                 '<div class="row">' +
-                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead text-info strong">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead text-warning strong">' + library.hours + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead text-success strong">' + library.staffhours + '</p></div>');
+                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead strong">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead strong">' + library.hours + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead strong">' + library.staffhours + '</p></div>');
             // Populate the deprivation details.
-            $('#divLibraryDeprivationDetails').append((library.address ? ('<p class="lead">deprivation: ' + library.address.toLowerCase() + '</p>') : '') +
+            $('#divLibraryDeprivationDetails').append((library.address ? ('<small class="text-muted">deprivation: ' + library.address.toLowerCase() + '</p>') : '') +
                 '<div class="row">' +
-                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' + 
+                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead strong">' + library.imd_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead strong">' + library.income_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead strong">' + library.education_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead strong">' + library.health_decile + '</p></div></div>' + 
                 '<p><small class="text-muted strong">a lower decile (1-10) shows greater deprivation.</small></p>');
         });
 
@@ -290,9 +290,9 @@
                 var tweet = tweets[index]
                 var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet.account + '">' +
                     '<div class="row">' +
-                    '<div class="stats col col-xs-4"><small class="text-muted strong">tweets</small><p class="lead text-info strong">' + numFormat(tweet.tweets) + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted strong">followers</small><p class="lead text-warning strong">' + numFormat(tweet.followers) + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted strong">following</small><p class="lead text-success strong">' + numFormat(tweet.following) + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted strong">tweets</small><p class="lead strong">' + numFormat(tweet.tweets) + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted strong">followers</small><p class="lead strong">' + numFormat(tweet.followers) + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted strong">following</small><p class="lead strong">' + numFormat(tweet.following) + '</p></div>' +
                     '</div>' +
                     '<p class="list-group-item-text">' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>' + '</div>';
                 position == 'first' ? $('#tweetsCounts').prepend(li) : $('#tweetsCounts').append(li);
@@ -467,8 +467,8 @@
             distanceLine.config.data.datasets[0].data = $.map(distances, function (x, y) { return Math.round((x / population) * 100); });
             distanceLine.update();
             
-            $('#divDistanceAverage p').text((totalDistance / population).toFixed(1) + ' miles');
-            $('#divDistanceLongest p').text(Object.keys(distances).sort((function (a, b) { return parseInt(b) - parseInt(a) }))[0] + ' miles');
+            $('#divDistanceAverage p').text((totalDistance / population).toFixed(1) + ' mi.');
+            $('#divDistanceLongest p').text(Object.keys(distances).sort((function (a, b) { return parseInt(b) - parseInt(a) }))[0] + ' mi.');
             $('#divDistancePopOverOne p').text(Math.round((($.map(Object.keys(distances), function (x, i) { if (parseInt(x) > 1) return distances[x]; })).sum() / population) * 100) + '%');
         };
 
