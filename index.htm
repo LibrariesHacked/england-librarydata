@@ -23,7 +23,7 @@
     <link href="css/site.css" rel="stylesheet">
 </head>
 <body class="grey">
-    <nav class="navbar navbar-fixed-top navbar-light bg-faded">
+    <nav class="navbar navbar-light bg-faded">
         <div class="container">
             <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
             <div class="collapse navbar-toggleable-md" id="navbarResponsive">
@@ -40,7 +40,7 @@
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <!-- Beta -->
-                <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <div class="alert alert-warning alert-dismissible fade in" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -49,7 +49,7 @@
                 <!-- Widget 1: Settings -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-primary">area</h4>
+                        <h4 class="card-title text-muted">area</h4>
                         <h6 class="card-subtitle text-muted">select the area you're interested in.</h6>
                     </div>
                     <div class="card-block" id="divAuthMap"></div>
@@ -60,16 +60,16 @@
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthStats1">
-                            <div id="divPopulation" class="stats col-xs-4"><small class="text-muted strong">population</small><p class="lead strong"></p></div>
-                            <div id="divNumLibs" class="stats col-xs-4"><small class="text-muted strong">libraries</small><p class="lead strong"></p></div>
-                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted strong"><abbr title="people per library">ppl per lib</abbr></small><p class="lead strong"></p></div>
+                            <div id="divPopulation" class="stats col-xs-4"><small class="text-muted strong">population</small><p class="lead text-primary strong"></p></div>
+                            <div id="divNumLibs" class="stats col-xs-4"><small class="text-muted strong">libraries</small><p class="lead text-primary strong"></p></div>
+                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted strong"><abbr title="people per library">ppl per lib</abbr></small><p class="lead text-primary strong"></p></div>
                         </div>
                     </div>
                 </div>
                 <!-- Widget 2: Library details by authority -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-info">library details</h4>
+                        <h4 class="card-title text-muted">library details</h4>
                         <h6 class="card-subtitle text-muted">see details of a library.</h6>
                     </div>
                     <div class="card-block">
@@ -78,15 +78,15 @@
                                 <option value="">select a library</option>
                             </select>
                         </div>
-                        <div id="divLibraryStatutoryDetails"></div>
                         <div id="divLibraryDetails"></div>
+                        <div id="divLibraryStatutoryDetails"></div>
+                        <div id="divLibraryDeprivationDetails"></div>
                     </div>
-                    <div class="card-block" id="divLibraryDeprivationDetails"></div>
                 </div>
                 <!-- Widget 3: Libraries distance stats -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-warning">distances: <span class="sel-auth-name"></span></h4>
+                        <h4 class="card-title text-muted">distances: <span class="sel-auth-name"></span></h4>
                         <h6 class="card-subtitle text-muted">how far to the nearest library?</h6>
                     </div>
                     <div class="card-block">
@@ -105,7 +105,7 @@
                 <!-- Widget 4: Find My Library -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-success">nearest library</h4>
+                        <h4 class="card-title text-muted">nearest library</h4>
                         <h6 class="card-subtitle text-muted">find the nearest library to a location.</h6>
                     </div>
                     <div class="card-block">
@@ -173,7 +173,7 @@
                 <!-- Widget 5: Library types by authority -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-primary">library types: <span class="sel-auth-name"></span></h4>
+                        <h4 class="card-title text-muted">library types: <span class="sel-auth-name"></span></h4>
                         <h6 class="card-subtitle text-muted">what are the different types of library? how many are there? from 2010 to 2016.</h6>
                     </div>
                     <div class="card-block">
@@ -193,7 +193,7 @@
                 <!-- Widget 6: Public libraries news -->
                 <div id="divNewsStories" class="card">
                     <div class="card-block">
-                        <h4 id="hdrNews" class="card-title text-danger"><span class="sel-auth-name"></span> news</h4>
+                        <h4 id="hdrNews" class="card-title text-muted"><span class="sel-auth-name"></span> news</h4>
                         <h6 class="card-subtitle text-muted">stories taken from public libraries news.</h6>
                     </div>
                     <div id="newsCounts" class="list-group list-group-flush"></div>
@@ -205,7 +205,7 @@
                 <!-- Widget 7: Tweets -->
                 <div id="divTwitter" class="card">
                     <div class="card-block">
-                        <h4 id="hdrTwitter" class="card-title text-info"><span class="sel-auth-name"></span> on twitter</h4>
+                        <h4 id="hdrTwitter" class="card-title text-muted"><span class="sel-auth-name"></span> on twitter</h4>
                         <h6 class="card-subtitle text-muted">what they're saying.</h6>
                     </div>
                     <div id="tweetsCounts" class="list-group list-group-flush"></div>
@@ -217,7 +217,7 @@
                 <!-- Widget 8: Libraries area stats -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-danger">deprivation:  <span class="sel-auth-name"></span></h4>
+                        <h4 class="card-title text-muted">deprivation:  <span class="sel-auth-name"></span></h4>
                         <h6 class="card-subtitle text-muted">area average deprivation stats.</h6>
                     </div>
                     <div class="card-block">
