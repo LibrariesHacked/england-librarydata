@@ -12,6 +12,18 @@
         XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#d9534f' },
         XLR: { type: 'replaced', description: '', cssClass: 'muted', colour: '#818a91' }
     },
+    depStatStyles: {
+        1: 'danger',
+        2: 'danger',
+        3: 'warning',
+        4: 'warning',
+        5: 'primary',
+        6: 'primary',
+        7: 'primary',
+        8: 'primary',
+        9: 'primary',
+        10: 'primary',
+    },
     markerPoints: { radius: 4, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
     boundaryLines: {
         gl: { fillColor: "#772953", color: "#772953", weight: 2, opacity: 0.7, fillOpacity: 0.1 },

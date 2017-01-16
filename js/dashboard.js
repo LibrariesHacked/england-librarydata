@@ -11,10 +11,128 @@
     Chart.defaults.global.defaultFontFamily = '"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif';
 
     //////////////////////////////////////////////
-    // LOAD.  Load the data.
-    // 2 months worth.  No geo, Yes twitter, Yes 
+    // LOAD.  Load the data
     //////////////////////////////////////////////
     PublicLibrariesNews.loadData(2, false, true, true, true, function () {
+
+        //////////////////////////////////////////////
+        // 1. Widget: Select area
+        //////////////////////////////////////////////
+
+
+        //////////////////////////////////////////////
+        // 2. Widget: Library details
+        //////////////////////////////////////////////
+
+        // Clears down the library details widget
+        var clearLibraryDetails = function () {
+            $('#divLibraryLinks').empty();
+            $('#divLibraryDetails').empty();
+            $('#divLibraryStatutoryDetails').empty();
+            $('#divLibraryDeprivationDetails').empty();
+        };
+
+        // Populate the select library control
+        var updateLibraryDetailsSelect = function (authority) {
+            clearLibraryDetails();
+            $('#selLibraryDetailsLibrary').attr('disabled', true);
+            $('#selLibraryDetailsLibrary').empty();
+            $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('select a library'));
+            $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.id).text(z.name)) });
+            $('#selLibraryDetailsLibrary').attr('disabled', false);
+        };
+
+        // Event: On selecting a library, display that library's details.
+        $('#selLibraryDetailsLibrary').change(function () {
+            clearLibraryDetails();
+            var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
+            if (lib == '') return;
+            var library = PublicLibrariesNews.getLibraryById(lib);
+            var libStyle = config.libStyles[library.type].cssClass;
+
+            // Set up the links to email and website.
+            $('#divLibraryLinks').append('<p>' +
+                (library.email ? '<a href= "mailto:' + library.email + '" target= "_blank" class="btn btn-outline-' + libStyle + '" > <span class="fa fa-envelope"></span> email</a > ' : '') +
+                (library.url ? '<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-' + libStyle + '"><span class="fa fa-external-link"></span>&nbsp;website</a>' : '') + '</p>'
+            );
+
+            // Set up the library details such as closed/open year, type, and notes
+            $('#divLibraryDetails').append('<p>' +
+                (library.type ? ('<span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span> ') : '') +
+                (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement</span> ' : '') +
+                (library.notes ? library.notes : '') +
+                (library.opened_year ? (' opened in ' + library.opened_year) : '') +
+                (library.closed ? (' closed in ' + library.closed_year) : '') + '</p>'
+            );
+
+            // Populate the hours and statutory details
+            $('#divLibraryStatutoryDetails').append(
+                '<div class="row">' +
+                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead strong text-' + libStyle + '">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead strong text-' + libStyle + '">' + library.hours + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead strong text-' + libStyle + '">' + library.staffhours + '</p>' +
+                '</div>'
+            );
+
+            // Populate the deprivation details.
+            $('#divLibraryDeprivationDetails').append(
+                (library.address ? ('<small class="text-muted strong">deprivation for ' + library.address.toLowerCase() + '</p>') : '') +
+                '<div class="row">' +
+                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead strong text-' + config.depStatStyles[library.imd_decile] + '">' + library.imd_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead strong text-' + config.depStatStyles[library.income_decile] + '">' + library.income_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead strong text-' + config.depStatStyles[library.education_decile] + '">' + library.education_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead strong text-' + config.depStatStyles[library.health_decile] + '">' + library.health_decile + '</p></div></div>' +
+                '<p><small class="text-muted strong">a lower decile (1-10) shows greater deprivation.</small></p>'
+            );
+        });
+
+        //////////////////////////////////////////////
+        // 2. Widget: Library types by authority
+        //////////////////////////////////////////////
+        var typeDonut = new Chart($('#divLibrariesDonutChart'), {
+            data: {
+                datasets: [{
+                    data: [11, 16, 7, 3, 14, 11],
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
+                        return config.libStyles[x].colour;
+                    })
+                }],
+                labels: $.map(Object.keys(config.libStyles), function (x, y) {
+                    return config.libStyles[x].type;
+                })
+            },
+            type: "polarArea",
+            options: {
+                elements: {
+                    arc: { borderColor: "#98978B" }
+                },
+                legend: {
+                    position: 'bottom'
+                },
+                startAngle: (-0.3 * Math.PI)
+            },
+            title: {
+                display: true,
+                text: 'number of libraries'
+            }
+        });
+        var updateLibTypesDonut = function (libAuthority) {
+            typeDonut.config.data.datasets[0].data = [];
+            $.each(Object.keys(config.libStyles), function (t, c) {
+                typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c));
+            });
+            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
+            // These stats shown at the authority selector.
+            $('#divNumLibs p').text(stats.libraries);
+            $('#divPopulation p').text(numFormat(stats.population));
+            $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
+
+            // These stats shown at the library types widget
+            $('#divTotalCount p').text(stats.libraries + ' (' + stats.statutoryChange + ')');
+            $('#divStatutoryCount p').text(stats.statutory2016 + ' (' + stats.libsChange + ')');
+            typeDonut.update();
+        };
+
         ///////////////////////////////////////////////////////////////////
         // 1. Find My Library
         // Provides a means to enter postcode to find the closest library.
@@ -97,104 +215,7 @@
                 fmlMap.flyToBounds([[fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng], [fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng]]);
             }
         });
-
-        //////////////////////////////////////////////
-        // 2. Widget: Library types by authority
-        //////////////////////////////////////////////
-        var typeDonut = new Chart($('#divLibrariesDonutChart'), {
-            data: {
-                datasets: [{
-                    data: [11, 16, 7, 3, 14, 11],
-                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                        return config.libStyles[x].colour;
-                    })
-                }],
-                labels: $.map(Object.keys(config.libStyles), function (x, y) {
-                    return config.libStyles[x].type;
-                })
-            },
-            type: "polarArea",
-            options: {
-                elements: {
-                    arc: { borderColor: "#98978B" }
-                },
-                legend: {
-                    position: 'bottom'
-                },
-                startAngle: (-0.3 * Math.PI)
-            },
-            title: {
-                display: true,
-                text: 'number of libraries'
-            }
-        });
-        var updateLibTypesDonut = function (libAuthority) {
-            typeDonut.config.data.datasets[0].data = [];
-            $.each(Object.keys(config.libStyles), function (t, c) {
-                typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c));
-            });
-            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
-            // These stats shown at the authority selector.
-            $('#divNumLibs p').text(stats.libraries);
-            $('#divPopulation p').text(numFormat(stats.population));
-            $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
-
-            // These stats shown at the library types widget
-            $('#divTotalCount p').text(stats.libraries + ' (' + stats.statutoryChange + ')');
-            $('#divStatutoryCount p').text(stats.statutory2016 + ' (' + stats.libsChange + ')');
-            typeDonut.update();
-        };
-
-        //////////////////////////////////////////////
-        // 3. Widget: Library details by authority
-        //////////////////////////////////////////////
-
-        // Populate the select library control
-        var updateLibraryDetailsSelect = function (authority) {
-            $('#divLibraryDetails').empty();
-            $('#divLibraryStatutoryDetails').empty();
-            $('#divLibraryDeprivationDetails').empty();
-            $('#selLibraryDetailsLibrary').attr('disabled', true);
-            $('#selLibraryDetailsLibrary').empty();
-            $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('select a library'));
-            $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.id).text(z.name.toLowerCase())) });
-            $('#selLibraryDetailsLibrary').attr('disabled', false);
-        };
-
-        // Event: On selecting a library, display that library's details.
-        $('#selLibraryDetailsLibrary').change(function () {
-            $('#divLibraryDetails').empty();
-            $('#divLibraryStatutoryDetails').empty();
-            $('#divLibraryDeprivationDetails').empty();
-            var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
-            if (lib == '') return;
-            var library = PublicLibrariesNews.getLibraryById(lib);
-            $('#divLibraryDetails').append(
-                '<p>' +
-                (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
-                (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement.</span> ' : '') +
-                (library.notes ? (' ' + library.notes.toLowerCase() + '. ') : '') +
-                (library.opened_year ? ('opened in ' + library.opened_year + '. ') : '') +
-                (library.closed ? ('closed in ' + library.closed_year + '. ') : '') +
-                '</p>');
-            if (library.email) $('#divLibraryDetails').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span>&nbsp;email</a> ');
-            if (library.url) $('#divLibraryDetails').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span>&nbsp;website</a>');
-            // Populate the hours and statutory details
-            $('#divLibraryStatutoryDetails').append(
-                '<div class="row">' +
-                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead strong">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead strong">' + library.hours + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead strong">' + library.staffhours + '</p></div>');
-            // Populate the deprivation details.
-            $('#divLibraryDeprivationDetails').append((library.address ? ('<small class="text-muted">deprivation: ' + library.address.toLowerCase() + '</p>') : '') +
-                '<div class="row">' +
-                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead strong">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead strong">' + library.income_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead strong">' + library.education_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead strong">' + library.health_decile + '</p></div></div>' + 
-                '<p><small class="text-muted strong">a lower decile (1-10) shows greater deprivation.</small></p>');
-        });
-
+        
         /////////////////////////////////////////////////////////////////
         // 4. Widgets: Public Libraries News Local and changes stories
         /////////////////////////////////////////////////////////////////
