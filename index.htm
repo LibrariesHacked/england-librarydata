@@ -40,7 +40,7 @@
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                 <!-- Beta -->
-                <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                <div id="divBetaAlert" class="alert alert-warning alert-dismissible fade in" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -88,13 +88,13 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-muted">distances: <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">how far to the nearest library?</h6>
+                        <h6 class="card-subtitle text-muted">how far to the nearest library? measured to the nearest mile.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDistanceStats">
-                            <div id="divDistanceAverage" class="col-xs-4"><small class="text-muted strong">average</small><p class="lead strong"></p></div>
-                            <div id="divDistanceLongest" class="col-xs-4"><small class="text-muted strong">furthest</small><p class="lead strong"></p></div>
-                            <div id="divDistancePopOverOne" class="col-xs-4"><small class="text-muted strong">over 1 mile</small><p class="lead strong"></p></div>
+                            <div id="divDistanceAverage" class="col-xs-4"><small class="text-muted strong">average</small><p class="lead strong text-info"></p></div>
+                            <div id="divDistanceLongest" class="col-xs-4"><small class="text-muted strong">furthest</small><p class="lead strong text-info"></p></div>
+                            <div id="divDistancePopOverOne" class="col-xs-4"><small class="text-muted strong">over 1 mi.</small><p class="lead strong text-info"></p></div>
                         </div>
                     </div>
                     <div class="card-block">
@@ -106,15 +106,15 @@
                 <!-- Widget 4: Find My Library -->
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card-title text-muted">nearest library</h4>
+                        <h4 class="card-title text-muted">nearest library<span id="spNearestLibName"></span></h4>
                         <h6 class="card-subtitle text-muted">find the nearest library to a location.</h6>
                     </div>
                     <div class="card-block">
                         <div class="form-group">
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <span class="fa fa-home" id="spFmlHome"></span>
-                                    <span class="fa fa-spinner fa-spin" id="spFmlSpinning"></span>
+                                    <span class="fa fa-home text-muted" id="spFmlHome"></span>
+                                    <span class="fa fa-spinner fa-spin text-muted" id="spFmlSpinning"></span>
                                 </span>
                                 <input id="txtAddress" class="form-control" type="text" placeholder="enter a location e.g. BA1 7JH">
                             </div>
@@ -137,35 +137,34 @@
                                 <label class="form-check-inline" for="chbICL">independent</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-block" id="divFmlContent">
-                        <p class="lead strong" id="fmlLibrary"></p>
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item"><a class="nav-link active" href="#Walking" data-toggle="tab">walking</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#Cycling" data-toggle="tab">cycling</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#Driving" data-toggle="tab">driving</a></li>
-                        </ul>
-                        <div class="tab-content" id="fmlRouteContent">
-                            <div class="tab-pane fade active in" id="Walking">
-                                <div class="row">
-                                    <div id="divWalkingDistance" class="col col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong"></p></div>
-                                    <div id="divWalkingTime" class="col col-sm-6"><small class="text-muted strong">time</small><p class="lead strong"></p></div>
+                        <div id="divFmlContent">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a class="nav-link active" href="#Walking" data-toggle="tab">walking</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#Cycling" data-toggle="tab">cycling</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#Driving" data-toggle="tab">driving</a></li>
+                            </ul>
+                            <div class="tab-content" id="fmlRouteContent">
+                                <div class="tab-pane fade active in" id="Walking">
+                                    <div class="row">
+                                        <div id="divWalkingDistance" class="col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong text-primary"></p></div>
+                                        <div id="divWalkingTime" class="col-sm-6"><small class="text-muted strong">time</small><p class="lead strong text-primary"></p></div>
+                                    </div>
+                                    <div id="divWalkingInstructions"></div>
                                 </div>
-                                <div id="divWalkingInstructions"></div>
-                            </div>
-                            <div class="tab-pane fade" id="Cycling">
-                                <div class="row">
-                                    <div id="divCyclingDistance" class="col col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong"></p></div>
-                                    <div id="divCyclingTime" class="col col-sm-6"><small class="text-muted strong">time</small><p class="lead strong"></p></div>
+                                <div class="tab-pane fade" id="Cycling">
+                                    <div class="row">
+                                        <div id="divCyclingDistance" class="col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong text-primary"></p></div>
+                                        <div id="divCyclingTime" class="col-sm-6"><small class="text-muted strong">time</small><p class="lead strong text-primary"></p></div>
+                                    </div>
+                                    <div id="divCyclingInstructions"></div>
                                 </div>
-                                <div id="divCyclingInstructions"></div>
-                            </div>
-                            <div class="tab-pane fade" id="Driving">
-                                <div class="row">
-                                    <div id="divDrivingDistance" class="col col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong"></p></div>
-                                    <div id="divDrivingTime" class="col col-sm-6"><small class="text-muted strong">time</small><p class="lead strong"></p></div>
+                                <div class="tab-pane fade" id="Driving">
+                                    <div class="row">
+                                        <div id="divDrivingDistance" class="col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong text-primary"></p></div>
+                                        <div id="divDrivingTime" class="col-sm-6"><small class="text-muted strong">time</small><p class="lead strong text-primary"></p></div>
+                                    </div>
+                                    <div id="divDrivingInstructions"></div>
                                 </div>
-                                <div id="divDrivingInstructions"></div>
                             </div>
                         </div>
                     </div>
@@ -179,8 +178,8 @@
                     </div>
                     <div class="card-block">
                         <div class="row">
-                            <div id="divTotalCount" class="stats col col-xs-6"><small class="text-muted strong">total</small><p class="lead strong"></p></div>
-                            <div id="divStatutoryCount" class="stats col col-xs-6"><small class="text-muted strong">statutory</small><p class="lead strong"></p></div>
+                            <div id="divTotalCount" class="col-xs-6"><small class="text-muted strong">total</small><p class="lead strong text-primary"></p></div>
+                            <div id="divStatutoryCount" class="col-xs-6"><small class="text-muted strong">statutory</small><p class="lead strong text-primary"></p></div>
                         </div>
                     </div>
                     <div class="card-block">
@@ -223,10 +222,10 @@
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDepStats1">
-                            <div id="divIMD" class="stats col-xs-3"><small class="text-muted strong">multiple</small><p class="lead strong"></p></div>
-                            <div id="divIncome" class="stats col-xs-3"><small class="text-muted strong">income</small><p class="lead strong"></p></div>
-                            <div id="divEducation" class="stats col-xs-3"><small class="text-muted strong">education</small><p class="lead strong"></p></div>
-                            <div id="divHealth" class="stats col-xs-3"><small class="text-muted strong">health</small><p class="lead strong"></p></div>
+                            <div id="divIMD" class="stats col-xs-3"><small class="text-muted strong">multiple</small><p class="lead strong text-primary"></p></div>
+                            <div id="divIncome" class="stats col-xs-3"><small class="text-muted strong">income</small><p class="lead strong text-primary"></p></div>
+                            <div id="divEducation" class="stats col-xs-3"><small class="text-muted strong">education</small><p class="lead strong text-primary"></p></div>
+                            <div id="divHealth" class="stats col-xs-3"><small class="text-muted strong">health</small><p class="lead strong text-primary"></p></div>
                         </div>
                         <p><small class="text-muted strong">these are average deprivation deciles (1-10) for the area.  lower represents greater deprivation.</small></p>
                     </div>

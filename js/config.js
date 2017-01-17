@@ -15,8 +15,8 @@
     depStatStyles: {
         1: 'danger',
         2: 'danger',
-        3: 'warning',
-        4: 'warning',
+        3: 'primary',
+        4: 'primary',
         5: 'primary',
         6: 'primary',
         7: 'primary',
