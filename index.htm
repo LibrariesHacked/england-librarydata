@@ -50,7 +50,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-muted">area</h4>
-                        <h6 class="card-subtitle text-muted">select the area you're interested in.</h6>
+                        <h6 class="card-subtitle text-muted">select the library area you're interested in.</h6>
                     </div>
                     <div class="card-block" id="divAuthMap"></div>
                     <div class="card-block">
@@ -60,9 +60,9 @@
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthStats1">
-                            <div id="divPopulation" class="stats col-xs-4"><small class="text-muted strong">population</small><p class="lead text-primary strong"></p></div>
-                            <div id="divNumLibs" class="stats col-xs-4"><small class="text-muted strong">libraries</small><p class="lead text-primary strong"></p></div>
-                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted strong"><abbr title="people per library">ppl per lib</abbr></small><p class="lead text-primary strong"></p></div>
+                            <div id="divPopulation" class="stats col-xs-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="count taken from 2015 population estimates"></a></small><p class="lead text-info strong"></p></div>
+                            <div id="divNumLibs" class="stats col-xs-4"><small class="text-muted">libraries&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="count of all libraries of all types"></a></small><p class="lead text-info strong"></p></div>
+                            <div id="divLibsPerPopulation" class="stats col col-xs-4"><small class="text-muted"><abbr title="people per library">ppl per lib</abbr>&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="count of all libraries divided by population"></a></small><p class="lead text-info strong"></p></div>
                         </div>
                     </div>
                 </div>
@@ -88,13 +88,13 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title text-muted">distances: <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">how far to the nearest library? measured to the nearest mile.</h6>
+                        <h6 class="card-subtitle text-muted">how far to the nearest library? straight line distances measured to the nearest mile, including all library types.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDistanceStats">
-                            <div id="divDistanceAverage" class="col-xs-4"><small class="text-muted strong">average</small><p class="lead strong text-info"></p></div>
-                            <div id="divDistanceLongest" class="col-xs-4"><small class="text-muted strong">furthest</small><p class="lead strong text-info"></p></div>
-                            <div id="divDistancePopOverOne" class="col-xs-4"><small class="text-muted strong">over 1 mi.</small><p class="lead strong text-info"></p></div>
+                            <div id="divDistanceAverage" class="col-xs-4"><small class="text-muted">average&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="average distance in miles for the population to travel"></a></small><p class="lead strong text-info"></p></div>
+                            <div id="divDistanceLongest" class="col-xs-4"><small class="text-muted">furthest&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="the furthest distance in miles"></a></small><p class="lead strong text-info"></p></div>
+                            <div id="divDistancePopOverOne" class="col-xs-4"><small class="text-muted">2 miles.&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="percentage of the population travelling at least 2 miles"></a></small><p class="lead strong text-info"></p></div>
                         </div>
                     </div>
                     <div class="card-block">
@@ -146,22 +146,22 @@
                             <div class="tab-content" id="fmlRouteContent">
                                 <div class="tab-pane fade active in" id="Walking">
                                     <div class="row">
-                                        <div id="divWalkingDistance" class="col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong text-primary"></p></div>
-                                        <div id="divWalkingTime" class="col-sm-6"><small class="text-muted strong">time</small><p class="lead strong text-primary"></p></div>
+                                        <div id="divWalkingDistance" class="col-sm-6"><small class="text-muted">distance&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="the distance in miles to the library"></a></small><p class="lead strong text-info"></p></div>
+                                        <div id="divWalkingTime" class="col-sm-6"><small class="text-muted">time&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="an estimated walking time"></a></small><p class="lead strong text-info"></p></div>
                                     </div>
                                     <div id="divWalkingInstructions"></div>
                                 </div>
                                 <div class="tab-pane fade" id="Cycling">
                                     <div class="row">
-                                        <div id="divCyclingDistance" class="col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong text-primary"></p></div>
-                                        <div id="divCyclingTime" class="col-sm-6"><small class="text-muted strong">time</small><p class="lead strong text-primary"></p></div>
+                                        <div id="divCyclingDistance" class="col-sm-6"><small class="text-muted">distance&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="the distance in miles to the library"></a></small><p class="lead strong text-info"></p></div>
+                                        <div id="divCyclingTime" class="col-sm-6"><small class="text-muted">time&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="an estimated cycle time"></a></small><p class="lead strong text-info"></p></div>
                                     </div>
                                     <div id="divCyclingInstructions"></div>
                                 </div>
                                 <div class="tab-pane fade" id="Driving">
                                     <div class="row">
-                                        <div id="divDrivingDistance" class="col-sm-6"><small class="text-muted strong">distance</small><p class="lead strong text-primary"></p></div>
-                                        <div id="divDrivingTime" class="col-sm-6"><small class="text-muted strong">time</small><p class="lead strong text-primary"></p></div>
+                                        <div id="divDrivingDistance" class="col-sm-6"><small class="text-muted">distance&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="the distance in miles to the library"></a></small><p class="lead strong text-info"></p></div>
+                                        <div id="divDrivingTime" class="col-sm-6"><small class="text-muted">time&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="an estimated driving time"></a></small><p class="lead strong text-info"></p></div>
                                     </div>
                                     <div id="divDrivingInstructions"></div>
                                 </div>
@@ -178,8 +178,8 @@
                     </div>
                     <div class="card-block">
                         <div class="row">
-                            <div id="divTotalCount" class="col-xs-6"><small class="text-muted strong">total</small><p class="lead strong text-primary"></p></div>
-                            <div id="divStatutoryCount" class="col-xs-6"><small class="text-muted strong">statutory</small><p class="lead strong text-primary"></p></div>
+                            <div id="divTotalCount" class="col-xs-6"><small class="text-muted">total&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="the number of libraries currently open, with change since april 2010"></a></small><p class="strong"><span id="spLibTotal" class="strong lead text-info"></span> <span id="spLibChange"></span></p></div>
+                            <div id="divStatutoryCount" class="col-xs-6"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="the number of libraries part of statutory provision, with change since april 2010"></a></small><p class="strong"><span id="spStatTotal" class="strong lead text-info"></span> <span id="spStatChange"></span></p></div>
                         </div>
                     </div>
                     <div class="card-block">
@@ -222,20 +222,26 @@
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDepStats1">
-                            <div id="divIMD" class="stats col-xs-3"><small class="text-muted strong">multiple</small><p class="lead strong text-primary"></p></div>
-                            <div id="divIncome" class="stats col-xs-3"><small class="text-muted strong">income</small><p class="lead strong text-primary"></p></div>
-                            <div id="divEducation" class="stats col-xs-3"><small class="text-muted strong">education</small><p class="lead strong text-primary"></p></div>
-                            <div id="divHealth" class="stats col-xs-3"><small class="text-muted strong">health</small><p class="lead strong text-primary"></p></div>
+                            <div id="divIMD" class="stats col-xs-3"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="a combination of multiple deprivation measures to give overall indicator"></a></small><p class="lead strong text-info"></p></div>
+                            <div id="divIncome" class="stats col-xs-3"><small class="text-muted">income&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="income deprivation for the area"></a></small><p class="lead strong text-info"></p></div>
+                            <div id="divEducation" class="stats col-xs-3"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="education deprivation for the area"></a></small><p class="lead strong text-info"></p></div>
+                            <div id="divHealth" class="stats col-xs-3"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="health deprivation for the area"></a></small><p class="lead strong text-info"></p></div>
                         </div>
-                        <p><small class="text-muted strong">these are average deprivation deciles (1-10) for the area.  lower represents greater deprivation.</small></p>
+                        <p><small class="text-muted">these are average deprivation deciles (1-10) for the area.  lower represents greater deprivation.</small></p>
                     </div>
-                    <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="300"></canvas></div></div>
+                    <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="450"></canvas></div></div>
                 </div>
             </div>
         </div>
         <footer>
             <hr />
-            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">github</a>.</p>
+            <p>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="https://www.librarydata.uk" title="library data UK home page" target="_blank">librarydata.uk</a> <span class="text-muted">|</span></li>
+                    <li class="list-inline-item"><a href="https://books.librarydata.uk" title="library data books page" target="_blank">books</a></li>
+                </ul>
+            </p>
+            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">github</a>.  part of librarydata.uk project.</p>
         </footer>
     </div>
     <!-- Framework plugins -->

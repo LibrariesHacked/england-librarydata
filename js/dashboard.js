@@ -82,22 +82,23 @@
             // Populate the hours and statutory details
             $('#divLibraryStatutoryDetails').append(
                 '<div class="row">' +
-                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead strong text-' + libStyle + '">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead strong text-' + libStyle + '">' + library.hours + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead strong text-' + libStyle + '">' + library.staffhours + '</p>' +
+                '<div class="col col-xs-4"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="is this part of the local authority statutory provision?"></a></small><p class="lead strong text-' + libStyle + '">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="number of hours open per week"></a></small><p class="lead strong text-' + libStyle + '">' + (library.hours ? library.hours : '0') + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">staff hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="number of staff hours per week"></a></small><p class="lead strong text-' + libStyle + '">' + (library.staffhours ? library.staffhours : '0') + '</p>' +
                 '</div>'
             );
 
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append(
-                (library.address ? ('<small class="text-muted strong">deprivation decile (1-10) for ' + library.address + '</p>') : '') +
+                (library.address ? ('<small class="text-muted">deprivation decile (1-10) for ' + library.address + '</small></p>') : '') +
                 '<div class="row">' +
-                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead strong text-' + config.depStatStyles[library.imd_decile] + '">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead strong text-' + config.depStatStyles[library.income_decile] + '">' + library.income_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead strong text-' + config.depStatStyles[library.education_decile] + '">' + library.education_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead strong text-' + config.depStatStyles[library.health_decile] + '">' + library.health_decile + '</p></div></div>' +
-                '<p><small class="text-muted strong">lower shows greater deprivation.</small></p>'
+                '<div class="col col-xs-3"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="a combination of multiple deprivation measures to give overall indicator"></a></small><p class="lead strong text-' + config.depStatStyles[library.imd_decile] + '">' + library.imd_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">income&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="income deprivation for the area"></a></small><p class="lead strong text-' + config.depStatStyles[library.income_decile] + '">' + library.income_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="education deprivation for the area"></a></small><p class="lead strong text-' + config.depStatStyles[library.education_decile] + '">' + library.education_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="health deprivation for the area"></a></small><p class="lead strong text-' + config.depStatStyles[library.health_decile] + '">' + library.health_decile + '</p></div></div>' +
+                '<p><small class="text-muted">lower shows greater deprivation.</small></p>'
             );
+            updateTooltips();
         });
 
         //////////////////////////////////////////////
@@ -254,13 +255,9 @@
             data: {
                 datasets: [{
                     data: [11, 16, 7, 3, 14, 11],
-                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) {
-                        return config.libStyles[x].colour;
-                    })
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].colour; })
                 }],
-                labels: $.map(Object.keys(config.libStyles), function (x, y) {
-                    return config.libStyles[x].type;
-                })
+                labels: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].type; })
             },
             type: "polarArea",
             options: {
@@ -279,9 +276,7 @@
         });
         var updateLibTypesDonut = function (libAuthority) {
             typeDonut.config.data.datasets[0].data = [];
-            $.each(Object.keys(config.libStyles), function (t, c) {
-                typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c));
-            });
+            $.each(Object.keys(config.libStyles), function (t, c) { typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c)); });
             var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
             // These stats shown at the authority selector.
             $('#divNumLibs p').text(stats.libraries);
@@ -289,11 +284,22 @@
             $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
 
             // These stats shown at the library types widget
-            $('#divTotalCount p').text(stats.libraries + ' (' + (stats.statutoryChange > 0 ? '+' : '') + stats.statutoryChange + ')');
-            $('#divStatutoryCount p').text(stats.statutory2016 + ' (' + (stats.libsChange > 0 ? '+' : '') + stats.libsChange + ')');
+            $('#divTotalCount p #spLibTotal').text(stats.libraries);
+            $("#divTotalCount p #spLibChange").removeClass();
+            $("#divTotalCount p #spLibChange").addClass('text-info');
+            if (stats.statutoryChange > 0) $("#divTotalCount p #spLibChange").addClass('text-success');
+            if (stats.statutoryChange < 0) $("#divTotalCount p #spLibChange").addClass('text-danger');
+            $('#divTotalCount p #spLibChange').text('(' + (stats.statutoryChange >= 0 ? '+' : '') + stats.statutoryChange + ')');
+
+            $('#divStatutoryCount p #spStatTotal').text(stats.statutory2016);
+            $("#divStatutoryCount p #spStatChange").removeClass();
+            $("#divStatutoryCount p #spStatChange").addClass('text-info');
+            if (stats.libsChange > 0) $("#divStatutoryCount p #spStatChange").addClass('text-success');
+            if (stats.libsChange < 0) $("#divStatutoryCount p #spStatChange").addClass('text-danger');
+            $('#divStatutoryCount p #spStatChange').text('(' + (stats.libsChange >= 0 ? '+' : '') + stats.libsChange + ')');
             typeDonut.update();
         };
-        
+
         /////////////////////////////////////////////////////////////////
         // 6. Widgets: Public Libraries News Local and changes stories
         /////////////////////////////////////////////////////////////////
@@ -388,9 +394,9 @@
                 var tweet = tweets[index]
                 var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet.account + '">' +
                     '<div class="row">' +
-                    '<div class="stats col col-xs-4"><small class="text-muted strong">tweets</small><p class="lead strong text-info">' + numFormat(tweet.tweets) + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted strong">followers</small><p class="lead strong text-info">' + numFormat(tweet.followers) + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted strong">following</small><p class="lead strong text-info">' + numFormat(tweet.following) + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted">tweets</small><p class="lead strong text-info">' + numFormat(tweet.tweets) + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted">followers</small><p class="lead strong text-info">' + numFormat(tweet.followers) + '</p></div>' +
+                    '<div class="stats col col-xs-4"><small class="text-muted">following</small><p class="lead strong text-info">' + numFormat(tweet.following) + '</p></div>' +
                     '</div>' +
                     '<p class="list-group-item-text">' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>' + '</div>';
                 position == 'first' ? $('#tweetsCounts').prepend(li) : $('#tweetsCounts').append(li);
@@ -486,12 +492,19 @@
         });
         var updateLibTypeStatsBar = function (authority) {
             var authDepStats = PublicLibrariesNews.getDeprivationIndicesAveragesByAuthority(authority);
+            $('#divIMD p, #divCrime p, #divIncome p, #divHealth p, #divEducation p, #divHousing p').removeClass();
             $('#divIMD p').text((authDepStats.Multiple.sum() / authDepStats.Multiple.length).toFixed(0));
+            $('#divIMD p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Multiple.sum() / authDepStats.Multiple.length).toFixed(0)])
             $('#divCrime p').text((authDepStats.Crime.sum() / authDepStats.Crime.length).toFixed(0));
+            $('#divCrime p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Crime.sum() / authDepStats.Crime.length).toFixed(0)])
             $('#divIncome p').text((authDepStats.Income.sum() / authDepStats.Income.length).toFixed(0));
+            $('#divIncome p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Income.sum() / authDepStats.Income.length).toFixed(0)])
             $('#divHealth p').text((authDepStats.Health.sum() / authDepStats.Health.length).toFixed(0));
+            $('#divHealth p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Health.sum() / authDepStats.Health.length).toFixed(0)])
             $('#divEducation p').text((authDepStats.Education.sum() / authDepStats.Education.length).toFixed(0));
+            $('#divEducation p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Education.sum() / authDepStats.Education.length).toFixed(0)])
             $('#divHousing p').text((authDepStats.Housing.sum() / authDepStats.Housing.length).toFixed(0));
+            $('#divHousing p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Housing.sum() / authDepStats.Housing.length).toFixed(0)])
             typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
                 var ind = PublicLibrariesNews.getDeprivationIndicesByAuthorityAndLibType(authority, x);
                 if (ind.Multiple.length > 0) {
@@ -502,7 +515,9 @@
                             $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
                             return ind[i] == 0 ? '' : (sum / ind[i].length).toFixed(1);
                         }),
-                        backgroundColor: config.libStyles[x].colour
+                        backgroundColor: config.libStyles[x].colour,
+                        borderColor: '#98978B',
+                        borderWidth: 1
                     };
                 }
             });
@@ -554,4 +569,14 @@
     // Helper Function: getMiles
     /////////////////////////////////////////////////////////
     var getMiles = function (i) { return i * 0.000621371192; };
+
+    /////////////////////////////////////////////////////////
+    // Tooltips
+    /////////////////////////////////////////////////////////
+    var updateTooltips = function () {
+        $('[data-toggle="tooltip"]').on('click', function (e) {
+            e.preventDefault();
+        }).tooltip();
+    };
+    updateTooltips();
 });

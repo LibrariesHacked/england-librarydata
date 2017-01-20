@@ -16,7 +16,8 @@ nav {
 }
 
 .sidebar-header, .sidebar-tabs > li.active, .sidebar-tabs > ul > li.active {
-    background-color: #93C54B;
+    background-color: #F2F4F8;
+    color: #d9534f;
     font-weight: 700;
 }
 
