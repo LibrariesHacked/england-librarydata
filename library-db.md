@@ -4,17 +4,17 @@ These are instructions to set up a spatial database using the Libraries Taskforc
 
 ## Pre-requisites
 
-- A [PostGIS](http://postgis.net/install/) database setup.
+- A [PostGIS](http://postgis.net/install/) database server.
 
 ## Database setup
 
-Create a new database
+1. Create a new database
 
 ```
-create database uklibs
+create database englandlibs
 ```
 
-We want this to be a spatial database so on the database run the command to add PostGIS extensions.
+2. We want this to be a spatial database, so on the database run the command to add PostGIS extensions.
 
 ```
 create extension postgis
@@ -24,21 +24,22 @@ create extension postgis
 
 The Ordnance Survey have an open data product listing all postcodes in the UK, complete with geo-cordinates (the centre of the postcode), and various codes specifying the authorities each postcode falls within.  
 
-- Download code-point open from [OS Open Data](https://www.ordnancesurvey.co.uk/opendatadownload/products.html).
+1. Download code-point open from [OS Open Data](https://www.ordnancesurvey.co.uk/opendatadownload/products.html).
 
-This data is provided as a series of CSV files for each postcode area.  It would be a lot simpler to import the data as a single CSV file.  There are many ways to combine CSV files into one, depending on your operating system.  
+This data is provided as a series of CSV files for each postcode area.  It would be a lot simpler to import the data as a single CSV file.  There are many ways to combine CSV files into one, depending on your operating system.
 
-- For Windows, run the following command at a command prompt.
+2. For Windows, run the following command at a command prompt.
 
 ```
 copy *.csv postcodes.csv
 ```
 
-Once the data is in a single CSV file it can be imported into a database.  A copy of the [postcodes.csv](/data/postcodes.csv) file is in the data directory of this project.
+Once the data is in a single CSV file it can be imported into a database.
 
-- Create the table.
+3. Create the table.
 
 ```
+-- Table: postcodes
 create table postcodes
 (
   postcode character varying(8) not null,
@@ -51,11 +52,25 @@ create table postcodes
   admin_county_code character varying(9),
   admin_district_code character varying(9),
   admin_ward_code character varying(9),
-  constraint pk_postcode primary key (postcode)
-)
+  constrain pk_postcodes_postcode primary key (postcode)
+);
+
+-- Index: A unique index for postcode
+create unique index cuix_postcodes_postcode
+  on public.postcodes
+  using btree
+  (postcode collate pg_catalog."default");
+-- And use index as clustered index
+alter table postcodes cluster on cuix_postcodes_postcode;
+
+-- Index: A unique index for postcode and the coordinates
+create unique index ix_postcodes_postcode_coords
+  on public.postcodes
+  using btree
+  (postcode collate pg_catalog."default", eastings, northings);
 ```
 
-- Import the postcodes.csv data:
+4. Import the postcodes data into the new table.
 
 ```
 copy postcodes FROM 'postcodes.csv' delimiter ',' csv;
@@ -63,59 +78,177 @@ copy postcodes FROM 'postcodes.csv' delimiter ',' csv;
 
 ## Dataset: OS boundaries
 
-- Download [Boundary Lines](https://www.ordnancesurvey.co.uk/opendatadownload/products.html) from the OS Open Data products.  Alternatively, copies of the relevant boundary line files are included in the data directory of this project.
-- From a command prompt, run the following commands (requires **shp2pgsql** which should be available with PostGIS).  This will automatically create the relevant tables.
+1. Download [Boundary Lines](https://www.ordnancesurvey.co.uk/opendatadownload/products.html) from the OS Open Data products.  Alternatively, copies of the relevant boundary line files (county_region and district_borough_unitary_region) are included in the **data/os** directory of this project.
+2. From a command prompt, run the following commands (requires **shp2pgsql** which should be installed with PostGIS).  This will prompt for the password of your database server (for the specified username) and automatically create the relevant tables.
 
 ```
-shp2pgsql "county_region.shp" | psql -d uklibs -U "postgres"
-shp2pgsql "district_borough_unitary_region.shp" | psql -d uklibs -U "postgres"
+shp2pgsql "county_region.shp" | psql -d uklibs -U "username" -P "password"
+shp2pgsql "district_borough_unitary_region.shp" | psql -d uklibs -U "username" -P "password"
 ```
 
-## Dataset: ONS Population estimates mid-2015
+That will create some table with the boundary data in, but doesn't create the indexes.  
 
-- Download from the ONS [mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland).  A copy of the data is included in the data directory of this project.
-- Create a basic table with 3 columns to store the counts.
+3. Run the following commands on the database to do some indexing.
 
 ```
+-- Index: cuix_countyregion_code
+create unique index cuix_countyregion_code
+  on county_region
+  using btree
+  (code collate pg_catalog."default");
+alter table county_region cluster on cuix_countyregion_code;
+
+-- Index: ix_countyregion_geom
+create index ix_countyregion_geom
+  on county_region
+  using gist
+  (geom);
+
+-- Index: cuix_districtborough_code
+create unique index cuix_districtborough_code
+  on district_borough_unitary_region
+  using btree
+  (code collate pg_catalog."default");
+alter table district_borough_unitary_region cluster on cuix_districtborough_code;
+
+-- Index: ix_districtborough_geom
+create index ix_districtborough_geom
+  on district_borough_unitary_region
+  using gist
+  (geom);
+```
+
+## Dataset: ONS UK and Authorities population estimates mid-2015
+
+1.  Download from the ONS [mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland).  A copy of the data is included in the **data/ons** directory of this project.
+
+2.  Create a basic table with 3 columns to store the counts.
+
+```
+-- Table: population
 create table population
 (
   code character varying(9) not null,
   name text,
   population integer,
-  constraint population_pkey primary key (code)
+  constraint pk_population_code primary key (code)
 )
+
+-- Index: cuix_population_code
+create unique index cuix_population_code
+  on public.population
+  using btree
+  (code collate pg_catalog."default");
+alter table public.population CLUSTER ON cuix_population_code;
 ```
 
-- Import the data from the CSV file.
+3.  Import the data from the CSV file into the table.
 
 ```
 copy population FROM 'ukpopulation.csv' delimiter ',' csv;
 ```
 
-## Dataset: Lower layer super output areas
+## Dataset: Output area population mid-2015.
 
-- Download LSOA Boundaries Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
-- Select the download of Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales
-- From a command line run:
+1. Download the following Census Output Area population statistics. 
+
+- [Census Output Area Estimates - London](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthelondonregionofengland)
+- [Census Output Area Estimates - East](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesintheeastregionofengland)
+- [Census Output Area Estimates - South West](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthesouthwestregionofengland)
+- [Census Output Area Estimates - Yorkshire and the Humber](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesintheyorkshireandthehumberregionofengland)
+- [Census Output Area Estimates - North West](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthenorthwestregionofengland)
+- [Census Output Area Estimates - South East](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthesoutheastregionofengland)
+- [Census Output Area Estimates - East Midlands](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesintheeastmidlandsregionofengland)
+- [Census Output Area Estimates - West Midlands](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthewestmidlandsregionofengland)
+- [Census Output Area Estimates - North East](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthenortheastregionofengland)
+
+These files are in Excel format but the second worksheet in each one can be converted to CSV to get at the data.  Copies of all the CSVs are held in this project in the **data/ons** folder.
+
+2. Create a database table to hold these population stats.
 
 ```
-shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boundaries_in_England_and_Wales.shp" | psql -d uklibraries -U "postgres"
+-- Table: oa_populations
+create table oa_population
+(
+	oa character varying(9) not null,
+	lsoa character varying(9) not null,
+	all_ages integer,
+	age_0 integer,age_1 integer,age_2 integer,age_3 integer,age_4 integer,age_5 integer,age_6 integer,age_7 integer,age_8 integer,age_9 integer,
+	age_10 integer,age_11 integer,age_12 integer,age_13 integer,age_14 integer,age_15 integer,age_16 integer,age_17 integer,age_18 integer,age_19 integer,
+	age_20 integer,age_21 integer,age_22 integer,age_23 integer,age_24 integer,age_25 integer,age_26 integer,age_27 integer,age_28 integer,age_29 integer,
+	age_30 integer,age_31 integer,age_32 integer,age_33 integer,age_34 integer,age_35 integer,age_36 integer,age_37 integer,age_38 integer,age_39 integer,
+	age_40 integer,age_41 integer,age_42 integer,age_43 integer,age_44 integer,age_45 integer,age_46 integer,age_47 integer,age_48 integer,age_49 integer,
+	age_50 integer,age_51 integer,age_52 integer,age_53 integer,age_54 integer,age_55 integer,age_56 integer,age_57 integer,age_58 integer,age_59 integer,
+	age_60 integer,age_61 integer,age_62 integer,age_63 integer,age_64 integer,age_65 integer,age_66 integer,age_67 integer,age_68 integer,age_69 integer,
+	age_70 integer,age_71 integer,age_72 integer,age_73 integer,age_74 integer,age_75 integer,age_76 integer,age_77 integer,age_78 integer,age_79 integer,
+	age_80 integer,age_81 integer,age_82 integer,age_83 integer,age_84 integer,age_85 integer,age_86 integer,age_87 integer,age_88 integer,age_89 integer,
+	age_90 integer,
+	constraint pkey_oapopulations_oa primary key (oa)
+);
+
+-- Index: cuix_oapopulations_lsoa_oa
+create unique index cuix_oapopulations_lsoa_oa
+  on public.oa_population
+  using btree
+  (lsoa collate pg_catalog."default", oa collate pg_catalog."default");
+alter table oa_population cluster on cuix_oapopulations_lsoa_oa;
+
+-- Index: uix_oapopulations_oa_population
+create unique index uix_oapopulations_oa_population
+  on public.oa_population
+  using btree
+  (oa collate pg_catalog."default", all_ages);
+```
+
+3. The import the data from the CSV files.
+
+```
+copy oa_population FROM 'coa-population-mid2015-east.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-eastmidlands.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-london.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-northeast.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-northwest.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-southeast.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-southwest.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-wales.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-westmidlands.csv' delimiter ',' csv header;
+copy oa_population FROM 'coa-population-mid2015-yorkshireandthehumber.csv' delimiter ',' csv header;
+```
+
+## Dataset: Lower layer super output areas
+
+1. Download LSOA Boundaries Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries).  Select the download of Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales
+
+2. From a command line run the following command.
+
+```
+shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boundaries_in_England_and_Wales.shp" | psql -d uklibraries -U "username" -P "password"
+```
+
+3. Then modify the table.
+
+
+```
+
 ```
 
 ## Dataset: Lower layer super output areas population weighted centroids
 
-- Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries)
-- Select Lower Layer Super Output Areas (December 2011) Population Weighted Centroids
-- From a command line run:
+1.  Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries).  Select Lower Layer Super Output Areas (December 2011) Population Weighted Centroids
+
+2.  From a command line run the following command:
 
 ```
 shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Population_Weighted_Centroids.shp" | psql -d uklibraries -U "postgres"
 ```
 
+3.  Then modify the table.
+
 ## Dataset: Lower layer super output areas population estimates mid-2015 
 
-- Download from [ONS LSOA Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/lowersuperoutputareamidyearpopulationestimates)
-- Create a table to store the data.
+1.  Download from [ONS LSOA Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/lowersuperoutputareamidyearpopulationestimates)
+
+2.  Create a table to store the data.
 
 ```
 create table lsoa_population
