@@ -21,6 +21,10 @@ nav {
     font-weight: 700;
 }
 
+small, .lead {
+    font-weight: 700;
+}
+
 #sidebar-maincontent, #sidebar-librarycontent, #sidebar-newscontent, #sidebar-locationcontent {
     background-color: rgba(255, 255, 255, 0.85) !important;
     margin-top: 10px;

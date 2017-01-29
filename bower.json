@@ -33,9 +33,9 @@
     "twitter-text": "npm:twitter-text#^1.14.0",
     "devbridge-autocomplete": "v1.2.26",
     "jquery-shorten-js": "^0.3.1",
-    "bootstrap": "v4.0.0-alpha.5",
     "awesome-bootstrap-checkbox": "v1.0.0-alpha.4",
-    "polyline": "^0.2.0"
+    "polyline": "^0.2.0",
+    "bootstrap": "v4.0.0-alpha.6"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",

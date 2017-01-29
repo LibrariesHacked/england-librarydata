@@ -8,16 +8,13 @@
     var selectedAuth = '';
     var mapType = 1;
     var map = L.map('map').setView([52.55, -2.72], 7);
-    L.tileLayer(config.mapTilesLight, {
-        attribution: config.mapAttribution
-    }).addTo(map);
+    L.tileLayer(config.mapTilesLight, { attribution: config.mapAttribution }).addTo(map);
     var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
     map.addControl(sidebar);
     var legend = null;
-    // L.control.locate().addTo(map);
 
     /////////////////////////////////////////////////////////
-    // Helper Function: numFormat
+    // Helper Functions
     /////////////////////////////////////////////////////////
     var numFormat = function (num) {
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
@@ -32,7 +29,7 @@
             g: parseInt(result[2], 16),
             b: parseInt(result[3], 16)
         } : null;
-    }
+    };
 
     /////////////////////////////////////////////////////////
     // Function setMapStyles
@@ -49,8 +46,8 @@
         authBoundaries.setStyle(function (feature) {
             var style = config.boundaryLines.normal;
             if (selectedAuth != '' && feature.properties['authority_id'] != selectedAuth) return config.boundaryLines.nonselected;
-            if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
             if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 45) return config.boundaryLines.gl;
+            if (feature.properties['authority_id'] == selectedAuth && feature.properties['authority_id'] == 71) return config.boundaryLines.le;
             if (feature.properties['authority_id'] == selectedAuth) return config.boundaryLines.selected;
             style.fillColor = config.fillColours[mapType];
             if (mapType == 1) style.fillOpacity = feature.properties['pcLibraries'].toFixed(1);
@@ -72,9 +69,7 @@
                 var div = L.DomUtil.create('div', 'info legend');
                 // loop through our density intervals and generate a label with a colored square for each interval
                 div.innerHTML += '<p class="text-muted strong">' + $('#style-changer li a[data-style=' + mapType + ']').text() + '</p>';
-                for (var i = 0; i <= 1; i = i + 0.2) {
-                    div.innerHTML += '<i style="background: rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + i + ')"></i>' + (i == 0 ? 'Fewer' : '') + (i == 1 ? 'Lots' : '') + '<br/>';
-                }
+                for (var i = 0; i <= 1; i = i + 0.2) div.innerHTML += '<i style="background: rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + i + ')"></i>' + (i == 0 ? 'fewer' : '') + (i == 1 ? 'lots' : '') + '<br/>';
                 return div;
             };
             legend.addTo(map);
@@ -92,9 +87,7 @@
             $.each(libraries[t].libs, function (x, lib) {
                 if (lib.lat && lib.lng) {
                     var m = L.circleMarker([lib.lat, lib.lng], style);
-                    m.on('click', function (e) {
-                        clickLibrary(lib);
-                    });
+                    m.on('click', function (e) { clickLibrary(lib); });
                     m.bindTooltip(lib.name, {});
                     markerArray.addLayer(m);
                 }
@@ -111,7 +104,6 @@
     var displayPLNStories = function (type, properties, header) {
         if (properties[type]) {
             $('#liNews').removeClass('disabled');
-            $('#sidebar-newscontent').append('<hr>');
             var st = properties[type].stories.slice();
             $('#sidebar-newscontent').append('<h4>' + header + '</h4>');
             $.each(st.reverse(), function () {
@@ -135,8 +127,7 @@
             var tweet = PublicLibrariesNews.getLatestLibraryTweet(library.name);
             if (tweet) $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
 
-            $('#sidebar-librarycontent').append(
-                '<p>' +
+            $('#sidebar-librarycontent').append('<p>' +
                 (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
                 (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement.</span> ' : '') +
                 (library.address ? (' ' + library.address.toLowerCase() + '. ') : '') +
@@ -148,15 +139,15 @@
             if (library.url) $('#sidebar-librarycontent').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span>&nbsp;website</a>');
             // Populate the hours and statutory details
             $('#sidebar-librarycontent').append('<div class="row">' +
-                '<div class="col col-xs-4"><small class="text-muted strong">statutory</small><p class="lead text-info strong">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">hours</small><p class="lead text-warning strong">' + library.hours + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted strong">staff hours</small><p class="lead text-success strong">' + library.staffhours + '</p></div>');
+                '<div class="col col-xs-4"><small class="text-muted">statutory</small><p class="lead text-gray-dark">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">hours</small><p class="lead text-gray-dark">' + library.hours + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">staff hours</small><p class="lead text-gray-dark">' + library.staffhours + '</p></div>');
             // Populate the deprivation details.
             $('#sidebar-librarycontent').append('<div class="row">' +
-                '<div class="col col-xs-3"><small class="text-muted strong">multiple</small><p class="lead text-info strong">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">income</small><p class="lead text-warning strong">' + library.income_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">education</small><p class="lead text-success strong">' + library.education_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted strong">health</small><p class="lead text-danger strong">' + library.health_decile + '</p></div></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">multiple</small><p class="lead text-gray-dark">' + library.imd_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">income</small><p class="lead text-gray-dark">' + library.income_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">education</small><p class="lead text-gray-dark">' + library.education_decile + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-gray-dark">' + library.health_decile + '</p></div></div>' +
                 '<p><small class="text-muted strong">these are deprivation deciles (1-10) for the library location.  lower represents greater deprivation.</small></p>');
             sidebar.open('library');
         };
@@ -177,13 +168,11 @@
 
             // Show authority details
             $('#authority .sidebar-title').text(feature.properties.name);
-            $('#sidebar-authoritycontent').append('<div class="row"><div class="col col-md-4"><small class="text-muted strong">population</small><p class="lead text-info strong">' + numFormat(feature.properties.population) + '</p></div><div class="col col-md-4"><small class="text-muted strong">area (hectares)</small><p class="lead text-warning strong">' + numFormat(feature.properties.hectares) + '</p></div><div class="col col-md-4"><small class="text-muted strong">libraries</small><p class="lead text-success strong">' + numFormat(feature.properties.libraryCount) + '</p></div><//div>');
+            $('#sidebar-authoritycontent').append('<div class="row"><div class="col-md-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + numFormat(feature.properties.population) + '</p></div><div class="col-md-4"><small class="text-muted">area (hectares)</small><p class="lead text-gray-dark">' + numFormat(feature.properties.hectares) + '</p></div><div class="col-md-4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + numFormat(feature.properties.libraryCount) + '</p></div><//div>');
 
             // Display latest tweet
             var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);
-            if (tweet) {
-                $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="https://twitter.com/' + tweet[1] + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</strong> ' + tweet[11] + '</div>');
-            }
+            if (tweet) $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="https://twitter.com/' + tweet[1] + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</strong> ' + tweet[11] + '</div>');
 
             // Show libraries group by type
             $.each(Object.keys(feature.properties.libraries), function (i, k) {
@@ -212,12 +201,11 @@
             addLibrariesToMap(feature.properties.libraries);
             $('#sidebar-newscontent').empty();
             $('#liNews').addClass('disabled');
-            displayPLNStories('changes', feature.properties, 'Changes');
-            displayPLNStories('local', feature.properties, 'Local news');
+            displayPLNStories('changes', feature.properties, 'changes');
+            displayPLNStories('local', feature.properties, 'local news');
             sidebar.open('authority');
             setMapStyles();
         };
-
         map.on('moveend', displayAuthority);
         map.flyToBounds(layer.getBounds(), { paddingTopLeft: L.point(-150, 0) });
     };
@@ -262,8 +250,8 @@
         /////////////////////////////////////////////////////////////
         $('#liReset').on('click', function (e) {
             e.preventDefault();
-            $('#style-changer li a:first').trigger('click');
             sidebar.open('home');
+            $('#style-changer li a:first').trigger('click');
         });
 
         /////////////////////////////////////////////////////////////
@@ -272,25 +260,20 @@
         // and return to full UK state.
         /////////////////////////////////////////////////////////////
         map.on('zoomend', function () {
-            if (markerArray.getLayers().length > 0 && map.getZoom() < 9) {
-                map.removeLayer(markerArray);
-            }
-            if (markerArray.getLayers().length > 0 && map.getZoom() >= 9) {
-                map.addLayer(markerArray);
-            }
+            if (markerArray.getLayers().length > 0 && map.getZoom() >= 9) map.addLayer(markerArray);
+            if (markerArray.getLayers().length > 0 && map.getZoom() < 9) map.removeLayer(markerArray);
         });
 
         /////////////////////////////////////////////////////////////
-        // EVENT: 
-        // 
+        // EVENT: Change map style
         /////////////////////////////////////////////////////////////
         $('#style-changer li a').on('click', function (e) {
-            selectedAuth = '';
-            $('#style-changer li a').removeClass('active');
-            $(e.target).addClass('active')
             e.preventDefault();
-            mapType = e.target.dataset.style;
             setMapStyles();
+            selectedAuth = '';
+            $(e.target).addClass('active');
+            mapType = e.target.dataset.style;
+            $('#style-changer li a').removeClass('active');
         });
     });
 });

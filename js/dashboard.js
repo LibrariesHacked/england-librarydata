@@ -26,6 +26,7 @@
         // Run when the authority is changed to update all individual widgets
         var updateAll = function () {
             var auth = $('#selAuthority').find(":selected");
+            $('.sel-auth-name').removeClass('text-dark-gray text-success').addClass((auth.val() ? 'text-success' : 'text-dark-gray' ));
             $('.sel-auth-name').text(auth.text());
             updateLibTypesDonut(auth.val());
             updateLibTypeStatsBar(auth.val());
@@ -66,8 +67,8 @@
 
             // Set up the links to email and website.
             $('#divLibraryLinks').append('<p>' +
-                (library.email ? '<a href="mailto:' + library.email + '" target= "_blank" class="btn btn-outline-' + libStyle + '" title="email ' + library.name + '"> <span class="fa fa-envelope"></span> email</a > ' : '') +
-                (library.url ? '<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-' + libStyle + '" title="go to ' + library.name + ' website"><span class="fa fa-external-link"></span>&nbsp;website</a>' : '') + '</p>'
+                (library.email ? '<a href="mailto:' + library.email + '" target= "_blank" class="btn btn-secondary" title="email ' + library.name + '"> <span class="fa fa-envelope"></span> email</a > ' : '') +
+                (library.url ? '<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-secondary" title="go to ' + library.name + ' website"><span class="fa fa-external-link"></span>&nbsp;website</a>' : '') + '</p>'
             );
 
             // Set up the library details such as closed/open year, type, and notes
@@ -82,21 +83,20 @@
             // Populate the hours and statutory details
             $('#divLibraryStatutoryDetails').append(
                 '<div class="row">' +
-                '<div class="col col-xs-4"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="is this part of the local authority statutory provision?"></a></small><p class="lead strong text-' + libStyle + '">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted">hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="number of hours open per week"></a></small><p class="lead strong text-' + libStyle + '">' + (library.hours ? library.hours : '0') + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted">staff hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="number of staff hours per week"></a></small><p class="lead strong text-' + libStyle + '">' + (library.staffhours ? library.staffhours : '0') + '</p>' +
+                '<div class="col col-sm-4"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="is this part of the local authority statutory provision?"></a></small><p class="lead text-gray-dark">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of hours open per week"></a></small><p class="lead text-gray-dark">' + (library.hours ? library.hours : '0') + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">staff hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of staff hours per week"></a></small><p class="lead ' + (library.staffhours && library.staffhours != 0 ? ('text-gray-dark">' + library.staffhours) : 'text-danger">0') + '</p>' +
                 '</div>'
             );
 
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append(
-                (library.address ? ('<small class="text-muted">deprivation decile (1-10) for ' + library.address + '</small></p>') : '') +
+                (library.address ? ('<small class="text-muted">deprivation deciles (1-10) for ' + library.address + '.  lower shows greater deprivation:</small></p>') : '') +
                 '<div class="row">' +
-                '<div class="col col-xs-3"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="a combination of multiple deprivation measures to give overall indicator"></a></small><p class="lead strong text-' + config.depStatStyles[library.imd_decile] + '">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">income&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="income deprivation for the area"></a></small><p class="lead strong text-' + config.depStatStyles[library.income_decile] + '">' + library.income_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="education deprivation for the area"></a></small><p class="lead strong text-' + config.depStatStyles[library.education_decile] + '">' + library.education_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" title="health deprivation for the area"></a></small><p class="lead strong text-' + config.depStatStyles[library.health_decile] + '">' + library.health_decile + '</p></div></div>' +
-                '<p><small class="text-muted">lower shows greater deprivation.</small></p>'
+                '<div class="col col-sm-3"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.imd_decile] + '">' + library.imd_decile + '</p></div>' +
+                '<div class="col col-sm-3"><small class="text-muted">income&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="income deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.income_decile] + '">' + library.income_decile + '</p></div>' +
+                '<div class="col col-sm-3"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education_decile] + '">' + library.education_decile + '</p></div>' +
+                '<div class="col col-sm-3"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health_decile] + '">' + library.health_decile + '</p></div></div>'
             );
             updateTooltips();
         });
@@ -155,15 +155,59 @@
             distanceLine.config.data.labels = $.map(distances, function (x, y) { if (y != 'undefined') return y; });
             distanceLine.config.data.datasets[0].data = $.map(distances, function (x, y) { return Math.round((x / population) * 100); });
             distanceLine.update();
-
             $('#divDistanceAverage p').text((totalDistance / population).toFixed(1) + ' mi.');
             $('#divDistanceLongest p').text(Object.keys(distances).sort((function (a, b) { return parseInt(b) - parseInt(a) }))[0] + ' mi.');
-            $('#divDistancePopOverOne p').text(Math.round((($.map(Object.keys(distances), function (x, i) { if (parseInt(x) > 1) return distances[x]; })).sum() / population) * 100) + '%');
+            var popOverOne = (($.map(Object.keys(distances), function (x, i) { if (parseInt(x) > 1) return distances[x]; })).sum() / population) * 100;
+            $('#divDistancePopOverOne p').removeClass().addClass('lead text-' + (popOverOne > 20 ? 'danger' : 'gray-dark'));
+            $('#divDistancePopOverOne p').text(Math.round(popOverOne) + '%');
+        };
+
+        //////////////////////////////////////////////
+        // 4. Widget: Library types by authority
+        //////////////////////////////////////////////
+        var typeDonut = new Chart($('#divLibrariesDonutChart'), {
+            data: {
+                datasets: [{
+                    data: [11, 16, 7, 3, 14, 11],
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].colour; })
+                }],
+                labels: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].type; })
+            },
+            type: "polarArea",
+            options: {
+                elements: {
+                    arc: { borderColor: "#98978B", borderWidth: 1 }
+                },
+                legend: {
+                    position: 'bottom'
+                },
+                startAngle: (-0.3 * Math.PI)
+            },
+            title: {
+                display: true,
+                text: 'number of libraries'
+            }
+        });
+        var updateLibTypesDonut = function (libAuthority) {
+            typeDonut.config.data.datasets[0].data = [];
+            $.each(Object.keys(config.libStyles), function (t, c) { typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c)); });
+            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
+            // These stats shown at the authority selector.
+            $('#divNumLibs p').text(stats.libraries);
+            $('#divPopulation p').text(numFormat(stats.population));
+            $('#divLibsPerPopulation p').removeClass().addClass('lead ' + (stats.peoplePerLibrary < 20000 ? 'text-gray-dark' : 'text-danger'))
+            $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
+            // These stats shown at the library types widget
+            $('#divTotalCount p #spLibTotal').text(stats.libraries);
+            $('#divTotalCount p #spLibChange').html('<span class="badge badge' + (stats.statutoryChange >= 0 ? '-default">+' : '-danger">') + stats.statutoryChange + '</span>');
+            $('#divStatutoryCount p #spStatTotal').text(stats.statutory2016);
+            $('#divStatutoryCount p #spStatChange').html('<span class="badge badge' + (stats.libsChange >= 0 ? '-default">+' : '-danger">') + stats.libsChange + '</span>');
+            typeDonut.update();
         };
 
 
         ///////////////////////////////////////////////////////////////////
-        // 4. Find My Library
+        // 5. Find My Library
         // Provides a means to enter postcode to find the closest library.
         // Displays this on a map, and displays configurable route.
         ///////////////////////////////////////////////////////////////////
@@ -183,7 +227,7 @@
                     if (x.maneuver.type == 'depart' || x.maneuver.type == 'continue') stepsHtml += ' for ' + moment.duration(x.duration, 'seconds').humanize();
                     stepsHtml += '. ';
                 });
-                $('#div' + type + 'Instructions').append('<p><small>' + stepsHtml + '</small></p>');
+                $('#div' + type + 'Instructions').append('<p>' + stepsHtml + '</p>');
                 $('#div' + type + 'Instructions p small').shorten({ chars: 30 });
             });
         };
@@ -231,6 +275,7 @@
                 fmlLibraryMarker = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(suggestion.data[1], suggestion.data[0]), false).layer;
                 fmlHomeMarker = L.marker([suggestion.data[1], suggestion.data[0]], { icon: L.AwesomeMarkers.icon({ prefix: 'fa', icon: 'home', markerColor: 'red' }) });
 
+                $('#spNearestLibName').removeClass().addClass('text-success');
                 $('#spNearestLibName').text(': ' + fmlLibraryMarker.name);
 
                 // Zoom to user location - this will take a little time so delay other actions.
@@ -247,58 +292,6 @@
                 fmlMap.flyToBounds([[fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng], [fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng]]);
             }
         });
-
-        //////////////////////////////////////////////
-        // 5. Widget: Library types by authority
-        //////////////////////////////////////////////
-        var typeDonut = new Chart($('#divLibrariesDonutChart'), {
-            data: {
-                datasets: [{
-                    data: [11, 16, 7, 3, 14, 11],
-                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].colour; })
-                }],
-                labels: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].type; })
-            },
-            type: "polarArea",
-            options: {
-                elements: {
-                    arc: { borderColor: "#98978B", borderWidth: 1 }
-                },
-                legend: {
-                    position: 'bottom'
-                },
-                startAngle: (-0.3 * Math.PI)
-            },
-            title: {
-                display: true,
-                text: 'number of libraries'
-            }
-        });
-        var updateLibTypesDonut = function (libAuthority) {
-            typeDonut.config.data.datasets[0].data = [];
-            $.each(Object.keys(config.libStyles), function (t, c) { typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c)); });
-            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
-            // These stats shown at the authority selector.
-            $('#divNumLibs p').text(stats.libraries);
-            $('#divPopulation p').text(numFormat(stats.population));
-            $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
-
-            // These stats shown at the library types widget
-            $('#divTotalCount p #spLibTotal').text(stats.libraries);
-            $("#divTotalCount p #spLibChange").removeClass();
-            $("#divTotalCount p #spLibChange").addClass('text-info');
-            if (stats.statutoryChange > 0) $("#divTotalCount p #spLibChange").addClass('text-success');
-            if (stats.statutoryChange < 0) $("#divTotalCount p #spLibChange").addClass('text-danger');
-            $('#divTotalCount p #spLibChange').text('(' + (stats.statutoryChange >= 0 ? '+' : '') + stats.statutoryChange + ')');
-
-            $('#divStatutoryCount p #spStatTotal').text(stats.statutory2016);
-            $("#divStatutoryCount p #spStatChange").removeClass();
-            $("#divStatutoryCount p #spStatChange").addClass('text-info');
-            if (stats.libsChange > 0) $("#divStatutoryCount p #spStatChange").addClass('text-success');
-            if (stats.libsChange < 0) $("#divStatutoryCount p #spStatChange").addClass('text-danger');
-            $('#divStatutoryCount p #spStatChange').text('(' + (stats.libsChange >= 0 ? '+' : '') + stats.libsChange + ')');
-            typeDonut.update();
-        };
 
         /////////////////////////////////////////////////////////////////
         // 6. Widgets: Public Libraries News Local and changes stories
@@ -340,7 +333,7 @@
             var it = stories[storiesOrdered[index]];
             if (it) {
                 var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + storiesOrdered[index] + '">' +
-                '<span class="tag tag-danger tag-pill float-xs-right">1/' + it.stories.length + '</span>' +
+                '<span class="tag tag-danger tag-pill float-sm-right">1/' + it.stories.length + '</span>' +
                 '<div><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p></div>' +
                 (it.stories.length > 1 ? '<p><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
                 '<p><a class="btn btn-sm btn-outline-danger btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
@@ -393,11 +386,11 @@
             if (tweets && tweets[index]) {
                 var tweet = tweets[index]
                 var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet.account + '">' +
-                    '<div class="row">' +
-                    '<div class="stats col col-xs-4"><small class="text-muted">tweets</small><p class="lead strong text-info">' + numFormat(tweet.tweets) + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted">followers</small><p class="lead strong text-info">' + numFormat(tweet.followers) + '</p></div>' +
-                    '<div class="stats col col-xs-4"><small class="text-muted">following</small><p class="lead strong text-info">' + numFormat(tweet.following) + '</p></div>' +
-                    '</div>' +
+                    '<div class="container"><div class="row">' +
+                    '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead text-gray-dark">' + numFormat(tweet.tweets) + '</p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead text-gray-dark">' + numFormat(tweet.followers) + '</p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead text-gray-dark">' + numFormat(tweet.following) + '</p></div>' +
+                    '</div></div>' +
                     '<p class="list-group-item-text">' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>' + '</div>';
                 position == 'first' ? $('#tweetsCounts').prepend(li) : $('#tweetsCounts').append(li);
             }
