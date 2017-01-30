@@ -78,7 +78,7 @@ select AddGeometryColumn ('postcodes','geom',27700,'POINT',2);
 update postcodes set geom = ST_SetSRID(ST_MakePoint(eastings, northings), 27700);
 
 -- index: uix_postcodes_geom.  a spatial index on the geometry.
-create unique index uix_postcodes_geom ON postcodes using gist (geom);
+create index ix_postcodes_geom ON postcodes using gist (geom);
 ```
 
 ## Dataset: OS authority boundaries
@@ -139,7 +139,7 @@ create index ix_regions_geom on regions using gist (geom);
 
 ```
 -- table: population
-create table population
+create table regions_population
 (
   code character varying(9) not null,
   name character varying(60),
@@ -148,11 +148,11 @@ create table population
 );
 
 -- index: cuix_population_code.  a unique clustered index on the authority code.
-create unique index cuix_population_code on population using btree (code);
-alter table public.population cluster on cuix_population_code;
+create unique index cuix_population_code on regions_population using btree (code);
+alter table regions_population cluster on cuix_population_code;
 
 -- index: uix_population_code_population.  a unique index on authority code and population count.
-create unique index uix_population_code_population on population using btree (code, population);
+create unique index uix_population_code_population on regions_population using btree (code, population);
 ```
 
 3.  Import the data from the CSV file into the table.
@@ -248,7 +248,7 @@ copy oa_population FROM 'coa-population-mid2015-yorkshireandthehumber.csv' delim
 
 ## Dataset: ONS Lower layer super output area boundaries
 
-1. Download LSOA Boundaries Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries).  Select the download of Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales
+1. Download LSOA Boundaries Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA%20Boundaries).  Select the download of [Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales](http://geoportal.statistics.gov.uk/datasets/da831f80764346889837c72508f046fa_0).
 
 2. From a command line run the following command.
 
@@ -260,7 +260,7 @@ shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boundaries
 
 ```
 -- table: rename to lsoa_boundaries.
-alter table Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boundaries_in_England_and_Wales rename to lsoa_boundaries
+alter table Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boun rename to lsoa_boundaries
 
 -- index: cuix_lsoaboundaries_code.  a unique clustered index on lsoa code.
 create unique index cuix_lsoaboundaries_code on lsoa_boundaries using btree (lsoa11cd);
@@ -296,7 +296,7 @@ create index ix_lsoapopulationweighted_geom on lsoa_population_weighted using gi
 
 ## Dataset: ONS Lower layer super output areas population estimates mid-2015 
 
-1.  Download from [2015 ONS LSOA Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/lowersuperoutputareamidyearpopulationestimates)
+1.  Download from [2015 ONS LSOA Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/lowersuperoutputareamidyearpopulationestimates)  A CSV is available in the **data/ons** folder of this project.
 
 2.  Create a table to store the data.
 
@@ -331,7 +331,7 @@ create unique index uix_lsoapopulation_code_population on lsoa_population using 
 3.  Import the data
 
 ```
-copy lsoa_population FROM 'lsoa-2015-population.csv' delimiter ',' csv header;
+copy lsoa_population FROM 'lsoa-population-mid2015.csv' delimiter ',' csv header;
 ```
 
 ## Dataset: Indices of deprivation
@@ -341,8 +341,8 @@ copy lsoa_population FROM 'lsoa-2015-population.csv' delimiter ',' csv header;
 2.  Create the table to store the data.
 
 ```
--- table: imd.  a table to store deprivation statistics.
-create table imd
+-- table: lsoa_imd.  a table to store deprivation statistics.
+create table lsoa_imd
 (
   lsoa_code character varying(9) not null, lsoa_name text, district_code character varying(9), district_name text,
   imd_score numeric, imd_rank integer, imd_decile integer,
@@ -366,25 +366,25 @@ create table imd
 );
 
 -- index: cuix_imd_code.  a unique clustered index on lsoa code
-create unique index cuix_imd_code on imd using btree (lsoa_code);
-alter table imd cluster on cuix_imd_code;
+create unique index cuix_imd_code on lsoa_imd using btree (lsoa_code);
+alter table lsoa_imd cluster on cuix_imd_code;
 ```
 
 3.  Copy the data from the CSV into the table.
 
 ```
-copy imd from 'File_7_ID_2015_All_ranks__deciles_and_scores_for_the_Indices_of_Deprivation__and_population_denominators.csv' delimiter ',' csv header;
+copy lsoa_imd from 'lsoa-imd.csv' delimiter ',' csv header;
 ```
 
-##  Datase: Libraries Taskforce source data
+##  Dataset: Libraries Taskforce source data
 
 1.  Convert the Excel file.  The spreadsheet is distributed from the Libraries Taskforce as an Excel file.  To convert that file it was opened in Excel, the rows copied and saved to a new file, and then saved as CSV.  The data can then be imported directly into a database.
 
 2.  Create a table to hold the data.
 
 ```
--- table: raw.  stores the raw data from the libraries taskforce.
-create table raw
+-- table: libraries_raw.  stores the raw data from the libraries taskforce.
+create table libraries_raw
 (
   authority text, library text, address text, postcode text, statutoryapril2010 text, statutoryjuly2016 text, libtype text, closed text,
   yearclosed text, new text, replacement text, notes text, hours text, staffhours text, email text, url text
@@ -394,7 +394,7 @@ create table raw
 3.  Import the data.
 
 ```
-copy raw from 'librariesraw.csv' delimiter ',' csv;
+copy libraries_raw from 'librariesraw.csv' delimiter ',' csv;
 ```
 
 ## Table: Authorities.
@@ -415,7 +415,7 @@ create table authorities
 ```
 insert into authorities(name)
 select distinct trim(both from authority)
-from raw order by trim(both from authority);
+from libraries_raw order by trim(both from authority);
 ```
 
 Then to have a dataset that we can reliably merge from data elsewhere we're going to add the authority codes used in datasets like those published by the Office for National Statistics, and Ordnance Survey.  That data can come from the authority boundaries.
@@ -424,15 +424,28 @@ Then to have a dataset that we can reliably merge from data elsewhere we're goin
 
 ```
 update authorities a
-set a.code = (
+set code = (
 	select code from regions r
 	where regexp_replace(r.name,' City| London Boro| \(B\)| District|City of | County', '','g') = a.name)
 where a.code is null;
 ```
 
-That will still leave around 10 with no matching code.  The reason for this will be authorities in the taskforce dataset that are named irregularly (e.g. *Bath and NE Somerset* instead of *Bath and North East Somerset*).
+That will still leave 10 with no matching code.  The reason for this will be authorities in the taskforce dataset that are named irregularly (e.g. *Bath and NE Somerset* instead of *Bath and North East Somerset*).
 
 4.  Edit the table manually to fill in the missing values.
+
+```
+update authorities set code = '' where name = 'Bath and NE Somerset';
+update authorities set code = '' where name = 'Brighton and Hove';
+update authorities set code = '' where name = 'City of London';
+update authorities set code = '' where name = 'Durham';
+update authorities set code = '' where name = 'Herefordshire';
+update authorities set code = '' where name = 'Leicester City';
+update authorities set code = '' where name = 'Southend on Sea';
+update authorities set code = '' where name = 'St Helens';
+update authorities set code = '' where name = 'Stockton on Tees';
+update authorities set code = '' where name = 'Stoke on Trent';
+```
 
 ## Get all the LSOAs for each authority
 
