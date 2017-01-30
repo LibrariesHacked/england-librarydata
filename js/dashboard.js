@@ -199,9 +199,9 @@
             $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
             // These stats shown at the library types widget
             $('#divTotalCount p #spLibTotal').text(stats.libraries);
-            $('#divTotalCount p #spLibChange').html('<span class="badge badge' + (stats.statutoryChange >= 0 ? '-default">+' : '-danger">') + stats.statutoryChange + '</span>');
+            $('#divTotalCount p #spLibChange').html('<span class="badge badge' + (stats.libsChange >= 0 ? '-default">+' : '-danger">') + stats.libsChange + '</span>');
             $('#divStatutoryCount p #spStatTotal').text(stats.statutory2016);
-            $('#divStatutoryCount p #spStatChange').html('<span class="badge badge' + (stats.libsChange >= 0 ? '-default">+' : '-danger">') + stats.libsChange + '</span>');
+            $('#divStatutoryCount p #spStatChange').html('<span class="badge badge' + (stats.statutoryChange >= 0 ? '-default">+' : '-danger">') + stats.statutoryChange + '</span>');
             typeDonut.update();
         };
 

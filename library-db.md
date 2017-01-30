@@ -807,7 +807,7 @@ alter table libraries_catchments cluster on cuix_librariescatchments_id_code;
 2.  Create the catchment areas for current open and statutory libraries.
 
 ```
-insert into 
+insert into libraries_catchments
 select library_id, oa_code from ( select
 (select id from (select l.id, round(cast((ST_Distance(ST_Transform(l.geom, 27700), ST_SetSRID(ST_Centroid(ob.geom), 27700))  / 1609.34) as numeric), 1) as distance 
 			from libraries l 
