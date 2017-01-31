@@ -435,16 +435,16 @@ That will still leave 10 with no matching code.  The reason for this will be aut
 4.  Edit the table manually to fill in the missing values.
 
 ```
-update authorities set code = '' where name = 'Bath and NE Somerset';
-update authorities set code = '' where name = 'Brighton and Hove';
-update authorities set code = '' where name = 'City of London';
-update authorities set code = '' where name = 'Durham';
-update authorities set code = '' where name = 'Herefordshire';
-update authorities set code = '' where name = 'Leicester City';
-update authorities set code = '' where name = 'Southend on Sea';
-update authorities set code = '' where name = 'St Helens';
-update authorities set code = '' where name = 'Stockton on Tees';
-update authorities set code = '' where name = 'Stoke on Trent';
+update authorities set code = 'E06000022' where name = 'Bath and NE Somerset';
+update authorities set code = 'E06000043' where name = 'Brighton and Hove';
+update authorities set code = 'E09000001' where name = 'City of London';
+update authorities set code = 'E06000047' where name = 'Durham';
+update authorities set code = 'E06000019' where name = 'Herefordshire';
+update authorities set code = 'E06000016' where name = 'Leicester City';
+update authorities set code = 'E06000033' where name = 'Southend on Sea';
+update authorities set code = 'E08000013' where name = 'St Helens';
+update authorities set code = 'E06000004' where name = 'Stockton on Tees';
+update authorities set code = 'E06000021' where name = 'Stoke on Trent';
 ```
 
 ## Get all the LSOAs for each authority
@@ -648,16 +648,16 @@ There are some decisions to be made about cleaning up the data from the raw libr
 | CRL | 279 | Libraries operating now as a library with some level of ongoing support from a local authority.  Leave as is. |
 | CL | 406 | Libraries commissioned and funded by a local authority.  Leave as is. |
 | ICL | 34 | Libraries transferred to the management of a non local authority body, either community group or third party, which is OUTSIDE THE LOCAL AUTHORITY NETWORK.  Leave as is. |
-| LAL- | 30 | These appear to be book drops and other non libraries.  Will remove these. |
+| LAL- | 30 | These appear to be book drops and other non-libraries.  Will remove these. |
 | CRL+ | 29 | Seem to be the same as CRL.  Will convert to CRL. |
 
-So that's a set of rules for library type.  Then there is the statutory and non-statutory for 2010 and 2016.  Services completing the data return should indicate whether the library was included as part of their statu
+So that's a set of rules for library type.  Then there is the statutory and non-statutory indicator for 2010 and 2016.  Services completing the data return should indicate (Yes/No) whether the library was included as part of their statutory service both in April 2010 and July 2016.  If the library is new then it should be marked as No in 2010.  There are the following slightly odd responses:
 
 | Issue | Count | Resolution |
 | ------ | ----- | ---------- |
-| Library (not new) marked as statutory in 2016 but not in 2010.  If the libraries are new, they must be documented as such.| 30 | Change statutory 2016 value to false.  |
-| Independent community library marked as statutory in 2016. |  | Change statutory 2016 value to false. |
-| Closed but marked as statutory.  Some may be temporary closures, others indefinite. | Change statutory 2016 value to false. |
+| Library (not new) marked as statutory in 2016 but not in 2010.  Some of these appear to be libraries that haven't changed status. | 30 | Change statutory 2016 value to No.  |
+| Independent community library marked as statutory in 2016.  If these are supported by the authority, would expect them to be marked as CRL. | 1 | Change statutory 2016 value to No. |
+| Closed but marked as statutory in 2016.  Some may be temporary closures, others indefinite. | 9 | Change statutory 2016 value to No. |
 
 3. Clean up the data.
 
@@ -672,9 +672,9 @@ update libraries set statutory2016 = 'f' where statutory2010 = 'f' and new = 'f'
 
 ## Geocoding the libraries
 
-Although (most) of the libraries have some address data (either a full address or postcode), we need coordinates in order to do some of the geographic profiling, and match libraries to particuar output areas.  To do this, we'll need to use a geocoding service such as Open Street Map.  Where we can't get geocodes, we can always fall back on postcodes, for which we have the centre coordinates (centroid).
+Although (most) of the libraries have some address data (either a full address or postcode), we need coordinates in order to do some of the geographic profiling, and match libraries to particuar areas.  To do this, we'll need to use a geocoding service such as Open Street Map.  Where we can't get geocoordinates, we can always fall back on postcodes, for which we have the centre coordinates (centroids).  That is a little less accurate though as a postcode can span over a wide area.
 
-1.  Export the libraries data to geocode it.  While doing this, create a bounding box to limit the area that we wish to search within.  This should give the geocoder more to go on, and reduce the number of false matches.
+1.  Export the libraries data to geocode it.  While doing this, create a bounding box to limit the area that we wish to search within.  This should give the geocoder more to go on, and reduce the number of false matches, which we won't otherwise be able to check.
 
 ```
 copy (
@@ -684,11 +684,14 @@ copy (
 	on a.id = l.authority_id
 	join regions r
 	on r.code = a.code
-) to 'librariesgeo.csv' delimiter ',' csv header;
+) to '/data/libraries/librariesaddresses.csv' delimiter ',' csv header;
 ```
 
 4.  We're then going to run this through a geocoder.
 
+There is a python script in the scripts directory of this project that will take the output of the above query (librariesgeo.csv), and geocode it using Open Street Map.
+
+Run that file, which will take about an hour.  It will produce another file (librariesgeo.csv).
 
 5.  Create a table to store the locations.
 
@@ -816,24 +819,31 @@ create unique index cuix_librariescatchments_id_code on libraries_catchments usi
 alter table libraries_catchments cluster on cuix_librariescatchments_id_code;
 ```
 
-
 2.  Create the catchment areas for current open and statutory libraries.
 
 ```
 insert into libraries_catchments
-select library_id, oa_code from ( select
-(select id from (select l.id, round(cast((ST_Distance(ST_Transform(l.geom, 27700), ST_SetSRID(ST_Centroid(ob.geom), 27700))  / 1609.34) as numeric), 1) as distance 
+select
+	(select 
+		id from (
+			select l.id, round(cast((ST_Distance(ST_Transform(l.geom, 27700), ST_SetSRID(ST_Centroid(ob.geom), 27700))  / 1609.34) as numeric), 1) as distance 
 			from libraries l 
 			join authorities a on a.id = l.authority_id 
-			join authorities_oas ao on ao.oa_code = ob.oa11cd 
+			join authorities_oas ao 
+			on ao.oa_code = ob.oa11cd 
 			where l.statutory2016 = 't'
 			and l.closed is null
-			order by distance limit 1) as ab) as library_id,
-ob.oa11cd as oa_code
-from oa_boundaries ob ) as oas
-join libraries lib
-on lib.id = oas.library_id
-where lib.closed is null
+			order by distance limit 1
+		) as ab) 
+	as library_id,
+	ob.oa11cd as oa_code
+from oa_boundaries ob
+
+-- alternative work in progress
+SELECT 
+ob.oa11cd,
+(select l.id from libraries l order by ST_Transform(l.geom, 27700) <-> ST_SetSRID(ob.geom, 27700) limit 1)
+FROM oa_boundaries ob
 ```
 
 3.  Add the catchment areas for closed libraries.
@@ -867,6 +877,11 @@ create table libraries_catchments_xauth (
 create unique index cuix_librariescatchmentsxauth_id_code on libraries_catchments_xauth using btree (library_id, oa_code);
 alter table libraries_catchments_xauth cluster on cuix_librariescatchmentsxauth_id_code;
 ```
+
+5.  Add a cross authority analysis for open libraries
+
+
+
 
 5.  Export a file to show distances.
 
