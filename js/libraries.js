@@ -84,53 +84,55 @@
         return distances;
     },
     getDeprivationIndicesByLibrary: function (authority, library) {
-        return { Multiple: 0, Crime: 0, Income: 0, Health: 0, Education: 0, Housing: 0 };
+        return { multiple: 0, employment: 0, education: 0, adultskills: 0, health: 0, services: 0 };
     },
-    getDeprivationIndicesByAuthority: function (authority) {
-        var depIndices = { Multiple: [], Crime: [], Income: [], Health: [], Education: [] };
-        $.each(this.getAuthorityListSorted(), function (i, a) {
-            if (a.name == authority || !authority) {
-                $.each(a.libraries, function (y, l) {
-                    if (l.type == libType) {
-                        depIndices.Multiple.push(l.imd_decile);
-                        depIndices.Income.push(l.income_decile);
-                        depIndices.Crime.push(l.crime_decile);
-                        depIndices.Health.push(l.health_decile);
-                        depIndices.Education.push(l.education_decile);
-                    }
-                });
-            }
-        });
-        return depIndices;
-    },
+    ///////////////////////////////////////////////////////////////////////////
+    // Function: getDeprivationIndicesByAuthorityAndLibType
+    // Input:
+    // Output: 
+    // 
+    ////////////////////////////////////////////////////////////////////////////
     getDeprivationIndicesByAuthorityAndLibType: function (authority, libType) {
-        var depIndices = { Multiple: [], Income: [], Education: [], Health: []};
+        var depIndices = { multiple: 0, employment: 0, education: 0, adultskills: 0, health: 0, services: 0 };
+        var count = 0;
         $.each(this.getAuthoritiesWithLibraries(), function (i, a) {
             if (a.name == authority || !authority) {
                 $.each(a.libraries, function (y, l) {
                     if (l.type == libType) {
-                        depIndices.Multiple.push(l.imd_decile);
-                        depIndices.Income.push(l.income_decile);
-                        depIndices.Education.push(l.education_decile);
-                        depIndices.Health.push(l.health_decile);
+                        count++;
+                        depIndices.multiple += l.multiple;
+                        depIndices.employment += l.employment;
+                        depIndices.education += l.education;
+                        depIndices.adultskills += l.adultskills;
+                        depIndices.health += l.health;
+                        depIndices.services += l.services;
                     }
                 });
             }
         });
+        $.each(Object.keys(depIndices), function (i, k) { depIndices[k] = (depIndices[k] / count).toFixed(0); });
         return depIndices;
     },
+    ///////////////////////////////////////////////////////////////////
+    // Function: getDeprivationIndicesAveragesByAuthority
+    // Input: authority name
+    // Output: Object of deprivation indices averages for the authority.
+    ///////////////////////////////////////////////////////////////////
     getDeprivationIndicesAveragesByAuthority: function (authority) {
-        var depIndices = { Multiple: [], Crime: [], Income: [], Health: [], Education: [], Housing: [] };
+        var depIndices = { multiple: 0, employment: 0, education: 0, adultskills: 0, health: 0, services: 0 };
+        var count = 0;
         $.each(this.getAuthorities(), function (i, a) {
             if (a.name && (a.name == authority || !authority)) {
-                depIndices.Multiple.push(a.imd);
-                depIndices.Income.push(a.income);
-                depIndices.Crime.push(a.crime);
-                depIndices.Health.push(a.health);
-                depIndices.Education.push(a.education);
-                depIndices.Housing.push(a.housing);
+                count++;
+                depIndices.multiple += parseFloat(a.multiple);
+                depIndices.employment += parseFloat(a.employment);
+                depIndices.education += parseFloat(a.education);
+                depIndices.adultskills += parseFloat(a.adultskills);
+                depIndices.health += parseFloat(a.health);
+                depIndices.services += parseFloat(a.services);
             }
         });
+        $.each(Object.keys(depIndices), function (i, k) { depIndices[k] = (depIndices[k] / count).toFixed(0); });
         return depIndices;
     },
     getAuthoritiesDataTable: function () {
@@ -151,6 +153,12 @@
         });
         return datatable;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLibrariesDataTable
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLibrariesDataTable: function () {
         var datatable = [];
         var authorities = this.getLibrariesByAuthority();
@@ -162,11 +170,12 @@
                     l.type,
                     l.closed_year,
                     l.notes,
-                    l.imd_decile,
-                    l.crime_decile,
-                    l.education_decile,
-                    l.income_decile,
-                    l.health_decile
+                    l.multiple,
+                    l.employment,
+                    l.education,
+                    l.adultskills,
+                    l.health,
+                    l.services
                 ]);
             });
         });
@@ -250,16 +259,6 @@
         var authorities = this.authorities;
         return authorities;
     },
-    //getAuthoritiesWithStories: function () {
-    //    var authorities = this.authorities;
-    //    var changes = this.getStoriesGroupedByLocation('changes');
-    //    var local = this.getStoriesGroupedByLocation('local');
-    //    $.each(authorities, function (x, y) {
-    //        if (changes[y.name]) authorities[x]['changes'] = changes[y.name];
-    //        if (local[y.name]) authorities[x]['local'] = local[y.name];
-    //    }.bind(this));
-    //    return authorities;
-    //},
     getAuthoritiesWithStories: function () {
         var changes = this.getStoriesGroupedByLocation('changes');
         var local = this.getStoriesGroupedByLocation('local');

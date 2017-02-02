@@ -93,10 +93,15 @@
             $('#divLibraryDeprivationDetails').append(
                 (library.address ? ('<small class="text-muted">deprivation deciles (1-10) for ' + library.address + '.  lower shows greater deprivation:</small></p>') : '') +
                 '<div class="row">' +
-                '<div class="col col-sm-3"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.imd_decile] + '">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-sm-3"><small class="text-muted">income&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="income deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.income_decile] + '">' + library.income_decile + '</p></div>' +
-                '<div class="col col-sm-3"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education_decile] + '">' + library.education_decile + '</p></div>' +
-                '<div class="col col-sm-3"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health_decile] + '">' + library.health_decile + '</p></div></div>'
+                '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.multiple] + '">' + library.multiple + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + library.employment + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education] + '">' + library.education + '</p></div>' +
+                '</div>' + 
+                '<div class="row">' +
+                '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.adultskills] + '">' + library.adultskills + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health] + '">' + library.health + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.services] + '">' + library.services + '</p></div>' +
+                '</div>'
             );
             updateTooltips();
         });
@@ -190,7 +195,14 @@
         });
         var updateLibTypesDonut = function (libAuthority) {
             typeDonut.config.data.datasets[0].data = [];
-            $.each(Object.keys(config.libStyles), function (t, c) { typeDonut.config.data.datasets[0].data.push(PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c)); });
+            typeDonut.config.data.datasets[0].backgroundColor = [];
+            typeDonut.config.data.labels = [];
+            $.each(Object.keys(config.libStyles), function (t, c) {
+                var count = PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c);
+                if (count > 0) typeDonut.config.data.datasets[0].data.push(count);
+                if (count > 0) typeDonut.config.data.datasets[0].backgroundColor.push(config.libStyles[c].colour);
+                if (count > 0) typeDonut.config.data.labels.push(config.libStyles[c].type);
+            });
             var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
             // These stats shown at the authority selector.
             $('#divNumLibs p').text(stats.libraries);
@@ -450,7 +462,7 @@
         var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
             type: 'horizontalBar',
             data: {
-                labels: ['multiple', 'income', 'education', 'health'],
+                labels: ['multiple', 'employment', 'education'],
                 datasets: []
             },
             options: {
@@ -479,34 +491,32 @@
                 },
                 title: {
                     display: true,
-                    text: 'library locations avg. deprivation, by library type'
+                    text: 'library location average deprivation, by library type'
                 }
             }
         });
         var updateLibTypeStatsBar = function (authority) {
             var authDepStats = PublicLibrariesNews.getDeprivationIndicesAveragesByAuthority(authority);
-            $('#divIMD p, #divCrime p, #divIncome p, #divHealth p, #divEducation p, #divHousing p').removeClass();
-            $('#divIMD p').text((authDepStats.Multiple.sum() / authDepStats.Multiple.length).toFixed(0));
-            $('#divIMD p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Multiple.sum() / authDepStats.Multiple.length).toFixed(0)])
-            $('#divCrime p').text((authDepStats.Crime.sum() / authDepStats.Crime.length).toFixed(0));
-            $('#divCrime p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Crime.sum() / authDepStats.Crime.length).toFixed(0)])
-            $('#divIncome p').text((authDepStats.Income.sum() / authDepStats.Income.length).toFixed(0));
-            $('#divIncome p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Income.sum() / authDepStats.Income.length).toFixed(0)])
-            $('#divHealth p').text((authDepStats.Health.sum() / authDepStats.Health.length).toFixed(0));
-            $('#divHealth p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Health.sum() / authDepStats.Health.length).toFixed(0)])
-            $('#divEducation p').text((authDepStats.Education.sum() / authDepStats.Education.length).toFixed(0));
-            $('#divEducation p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Education.sum() / authDepStats.Education.length).toFixed(0)])
-            $('#divHousing p').text((authDepStats.Housing.sum() / authDepStats.Housing.length).toFixed(0));
-            $('#divHousing p').addClass('lead strong text-' + config.depStatStyles[(authDepStats.Housing.sum() / authDepStats.Housing.length).toFixed(0)])
+            $('#divIMD p, #divEmployment p, #divEducation p, #divAdultSkills p, #divHealth p, #divServices p').removeClass();
+            $('#divIMD p').text(authDepStats.multiple);
+            $('#divIMD p').addClass('lead strong text-' + config.depStatStyles[authDepStats.multiple])
+            $('#divEmployment p').text(authDepStats.employment);
+            $('#divEmployment p').addClass('lead strong text-' + config.depStatStyles[authDepStats.employment])
+            $('#divEducation p').text(authDepStats.education);
+            $('#divEducation p').addClass('lead strong text-' + config.depStatStyles[authDepStats.education])
+            $('#divAdultSkills p').text(authDepStats.adultskills);
+            $('#divAdultSkills p').addClass('lead strong text-' + config.depStatStyles[authDepStats.adultskills])
+            $('#divHealth p').text(authDepStats.health);
+            $('#divHealth p').addClass('lead strong text-' + config.depStatStyles[authDepStats.health])
+            $('#divServices p').text(authDepStats.services);
+            $('#divServices p').addClass('lead strong text-' + config.depStatStyles[authDepStats.services])
             typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
                 var ind = PublicLibrariesNews.getDeprivationIndicesByAuthorityAndLibType(authority, x);
-                if (ind.Multiple.length > 0) {
+                if (ind.multiple.length > 0) {
                     return {
                         label: config.libStyles[x].type,
                         data: $.map(Object.keys(ind), function (i, y) {
-                            var sum = 0;
-                            $.each(ind[i], function (c, v) { sum = sum + parseInt(v) });
-                            return ind[i] == 0 ? '' : (sum / ind[i].length).toFixed(1);
+                            return ind[i] && ind[i] == 0 ? '' : ind[i];
                         }),
                         backgroundColor: config.libStyles[x].colour,
                         borderColor: '#98978B',

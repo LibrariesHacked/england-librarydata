@@ -1,694 +1,1453 @@
-authority,distance,population
-Barking and Dagenham,0,134721
-Barking and Dagenham,1,63573
-Barnet,0,203262
-Barnet,1,168537
-Barnet,2,3116
-Barnsley,0,80427
-Barnsley,1,136546
-Barnsley,2,16473
-Barnsley,3,2686
-Barnsley,4,1711
-Bath and NE Somerset,0,61180
-Bath and NE Somerset,1,87969
-Bath and NE Somerset,2,25012
-Bath and NE Somerset,3,5024
-Bath and NE Somerset,4,2836
-Bedford,0,32072
-Bedford,1,68471
-Bedford,2,33300
-Bedford,3,14352
-Bedford,4,9179
-Bedford,5,5131
-Bedford,6,1419
-Bexley,0,63984
-Bexley,1,160080
-Bexley,2,15801
-Birmingham,0,417213
-Birmingham,1,680966
-Birmingham,2,3181
-Blackburn with Darwen,0,36812
-Blackburn with Darwen,1,98030
-Blackburn with Darwen,2,8959
-Blackburn with Darwen,3,2942
-Blackpool,0,65766
-Blackpool,1,73154
-Blackpool,2,1581
-Bolton,0,132120
-Bolton,1,140426
-Bolton,2,7893
-Bournemouth,0,97161
-Bournemouth,1,94229
-Bracknell Forest,0,9568
-Bracknell Forest,1,75488
-Bracknell Forest,2,32969
-Bradford,0,210989
-Bradford,1,270135
-Bradford,2,40187
-Bradford,3,6844
-Brent,0,210561
-Brent,1,110201
-Brighton and Hove,0,118079
-Brighton and Hove,1,162997
-Bristol,0,270851
-Bristol,1,171623
-Bromley,0,125214
-Bromley,1,180641
-Bromley,2,15423
-Buckinghamshire,0,104673
-Buckinghamshire,1,278710
-Buckinghamshire,2,96405
-Buckinghamshire,3,28818
-Buckinghamshire,4,8726
-Buckinghamshire,5,4590
-Bury,0,73579
-Bury,1,113895
-Calderdale,0,75198
-Calderdale,1,110647
-Calderdale,2,16719
-Calderdale,3,4812
-Cambridgeshire,0,130675
-Cambridgeshire,1,295302
-Cambridgeshire,2,127079
-Cambridgeshire,3,54354
-Cambridgeshire,4,20288
-Cambridgeshire,5,8565
-Cambridgeshire,6,3555
-Camden,0,198242
-Camden,1,36604
-Central Bedfordshire,0,48653
-Central Bedfordshire,1,140789
-Central Bedfordshire,2,38444
-Central Bedfordshire,3,32335
-Central Bedfordshire,4,8855
-Cheshire East,0,58887
-Cheshire East,1,213271
-Cheshire East,2,65662
-Cheshire East,3,15161
-Cheshire East,4,12942
-Cheshire East,5,8256
-Cheshire West and Chester,0,111821
-Cheshire West and Chester,1,149841
-Cheshire West and Chester,2,44862
-Cheshire West and Chester,3,21671
-Cheshire West and Chester,4,1987
-Cheshire West and Chester,5,2028
-City of London,0,8072
-Cornwall,0,30780
-Cornwall,1,62990
-Cornwall,2,62483
-Cornwall,3,31380
-Cornwall,4,32596
-Cornwall,5,41971
-Cornwall,6,36421
-Cornwall,7,51706
-Cornwall,8,39941
-Cornwall,9,43963
-Cornwall,10,15992
-Cornwall,11,12496
-Cornwall,12,9817
-Cornwall,13,7472
-Cornwall,14,16454
-Cornwall,15,5849
-Cornwall,16,3932
-Cornwall,17,4710
-Cornwall,18,3049
-Cornwall,19,4877
-Cornwall,20,14829
-Cornwall,21,3138
-Cornwall,22,1504
-Cornwall,23,1611
-Cornwall,25,3243
-Cornwall,26,2131
-Coventry,0,174278
-Coventry,1,160111
-Coventry,2,3039
-Croydon,0,149627
-Croydon,1,226413
-Cumbria,0,144242
-Cumbria,1,181310
-Cumbria,2,63019
-Cumbria,3,28811
-Cumbria,4,30878
-Cumbria,5,20348
-Cumbria,6,13801
-Cumbria,7,1267
-Cumbria,8,6039
-Cumbria,9,2862
-Cumbria,10,3991
-Cumbria,11,1306
-Darlington,0,17237
-Darlington,1,57096
-Darlington,2,16701
-Darlington,3,6967
-Darlington,4,5969
-Derby,0,112605
-Derby,1,139858
-Derbyshire,0,77193
-Derbyshire,1,322373
-Derbyshire,2,151522
-Derbyshire,3,105926
-Derbyshire,4,65464
-Derbyshire,5,23790
-Derbyshire,6,17841
-Derbyshire,7,11863
-Derbyshire,8,1542
-Derbyshire,9,1162
-Derbyshire,10,1128
-Devon,0,156982
-Devon,1,296693
-Devon,2,113282
-Devon,3,86435
-Devon,4,56401
-Devon,5,26119
-Devon,6,8499
-Devon,7,12293
-Devon,8,2146
-Devon,9,4974
-Devon,12,1478
-Doncaster,0,122300
-Doncaster,1,147763
-Doncaster,2,25108
-Doncaster,3,7233
-Doncaster,4,1781
-Dorset,0,102391
-Dorset,1,187563
-Dorset,2,62661
-Dorset,3,30049
-Dorset,4,9691
-Dorset,5,16173
-Dorset,6,6129
-Dorset,7,2187
-Dorset,8,1425
-Dudley,0,128871
-Dudley,1,185392
-Dudley,2,1536
-Durham,0,95852
-Durham,1,173528
-Durham,2,84848
-Durham,3,69532
-Durham,4,55081
-Durham,5,11090
-Durham,6,2428
-Durham,7,6035
-Durham,8,5094
-Durham,9,5903
-Durham,11,1223
-Durham,12,7159
-Ealing,0,172522
-Ealing,1,169596
-East Riding of Yorkshire,0,9112
-East Riding of Yorkshire,1,46093
-East Riding of Yorkshire,2,36382
-East Riding of Yorkshire,3,25990
-East Riding of Yorkshire,4,17230
-East Riding of Yorkshire,5,15943
-East Riding of Yorkshire,6,30563
-East Riding of Yorkshire,7,27634
-East Riding of Yorkshire,8,12435
-East Riding of Yorkshire,9,19391
-East Riding of Yorkshire,10,18438
-East Riding of Yorkshire,11,20855
-East Riding of Yorkshire,12,13484
-East Riding of Yorkshire,13,4358
-East Riding of Yorkshire,14,3850
-East Riding of Yorkshire,15,17767
-East Riding of Yorkshire,16,17590
-East Sussex,0,109095
-East Sussex,1,259409
-East Sussex,2,90583
-East Sussex,3,42898
-East Sussex,4,23606
-East Sussex,5,14175
-Enfield,0,192849
-Enfield,1,128045
-Enfield,2,3680
-Essex,0,327008
-Essex,1,756407
-Essex,2,197737
-Essex,3,107003
-Essex,4,36015
-Essex,5,7783
-Gateshead,0,92231
-Gateshead,1,94553
-Gateshead,2,13721
-Gloucestershire,0,164030
-Gloucestershire,1,298772
-Gloucestershire,2,68450
-Gloucestershire,3,34617
-Gloucestershire,4,21940
-Gloucestershire,5,10483
-Gloucestershire,6,11357
-Gloucestershire,7,1583
-Gloucestershire,8,1848
-Greenwich,0,170373
-Greenwich,1,98305
-Hackney,0,200255
-Hackney,1,62895
-Halton,0,32951
-Halton,1,70598
-Halton,2,21315
-Halton,3,1490
-Hammersmith and Fulham,0,132555
-Hammersmith and Fulham,1,45810
-Hampshire,0,168422
-Hampshire,1,626520
-Hampshire,2,277167
-Hampshire,3,119654
-Hampshire,4,78961
-Hampshire,5,36832
-Hampshire,6,21371
-Hampshire,7,15018
-Hampshire,8,2191
-Haringey,0,127751
-Haringey,1,139790
-Harrow,0,120435
-Harrow,1,125576
-Hartlepool,0,10175
-Hartlepool,1,44260
-Hartlepool,2,23523
-Hartlepool,3,11050
-Hartlepool,4,3582
-Havering,0,91806
-Havering,1,144512
-Havering,2,9656
-Herefordshire,0,32317
-Herefordshire,1,65748
-Herefordshire,2,16934
-Herefordshire,3,25268
-Herefordshire,4,20242
-Herefordshire,5,20014
-Herefordshire,6,6594
-Herefordshire,7,1999
-Hertfordshire,0,256634
-Hertfordshire,1,712823
-Hertfordshire,2,143531
-Hertfordshire,3,30646
-Hertfordshire,4,9453
-Hertfordshire,5,1679
-Hillingdon,0,134622
-Hillingdon,1,154974
-Hillingdon,2,3094
-Hounslow,0,122970
-Hounslow,1,142598
-Isle of Wight,0,36840
-Isle of Wight,1,68048
-Isle of Wight,2,23992
-Isle of Wight,3,9013
-Isle of Wight,4,1212
-Islington,0,200452
-Islington,1,20578
-Kensington and Chelsea,0,124603
-Kensington and Chelsea,1,31587
-Kent,0,409123
-Kent,1,753088
-Kent,2,183305
-Kent,3,110018
-Kent,4,42044
-Kent,5,12776
-Kingston upon Hull,0,105080
-Kingston upon Hull,1,149605
-Kingston upon Hull,2,3025
-Kingston upon Thames,0,84382
-Kingston upon Thames,1,83320
-Kingston upon Thames,2,2256
-Kirklees,0,112861
-Kirklees,1,291361
-Kirklees,2,25047
-Kirklees,3,1751
-Knowsley,0,47300
-Knowsley,1,91524
-Knowsley,2,7583
-Lambeth,0,192233
-Lambeth,1,125983
-Lancashire,0,324929
-Lancashire,1,653684
-Lancashire,2,143397
-Lancashire,3,34495
-Lancashire,4,13745
-Lancashire,5,5688
-Lancashire,6,1294
-Lancashire,7,6080
-Lancashire,8,1423
-Leeds,0,335689
-Leeds,1,399026
-Leeds,2,24335
-Leeds,3,7349
-Leicester City,0,186830
-Leicester City,1,150823
-Leicestershire,0,135218
-Leicestershire,1,270131
-Leicestershire,2,128714
-Leicestershire,3,74079
-Leicestershire,4,38783
-Leicestershire,5,10491
-Leicestershire,6,8432
-Leicestershire,7,2057
-Lewisham,0,178634
-Lewisham,1,113299
-Lincolnshire,0,94836
-Lincolnshire,1,193719
-Lincolnshire,2,73461
-Lincolnshire,3,54252
-Lincolnshire,4,75794
-Lincolnshire,5,44799
-Lincolnshire,6,67565
-Lincolnshire,7,63679
-Lincolnshire,8,39504
-Lincolnshire,9,19163
-Lincolnshire,10,2509
-Lincolnshire,11,2235
-Liverpool,0,242815
-Liverpool,1,230258
-Luton,0,105819
-Luton,1,105143
-Manchester,0,222699
-Manchester,1,294306
-Manchester,2,3210
-Medway,0,102238
-Medway,1,159900
-Medway,2,2791
-Medway,3,9086
-Merton,0,90086
-Merton,1,115216
-Middlesbrough,0,69148
-Middlesbrough,1,68024
-Middlesbrough,2,1947
-Milton Keynes,0,38699
-Milton Keynes,1,176895
-Milton Keynes,2,37101
-Milton Keynes,3,3904
-Milton Keynes,4,2646
-Newcastle upon Tyne,0,157948
-Newcastle upon Tyne,1,127619
-Newcastle upon Tyne,2,4268
-Newham,0,233558
-Newham,1,90764
-Norfolk,0,173252
-Norfolk,1,347665
-Norfolk,2,126777
-Norfolk,3,84354
-Norfolk,4,66571
-Norfolk,5,42877
-Norfolk,6,27524
-Norfolk,7,6405
-Norfolk,8,2285
-North East Lincolnshire,0,63345
-North East Lincolnshire,1,91269
-North East Lincolnshire,2,4115
-North East Lincolnshire,3,1075
-North Lincolnshire,0,59896
-North Lincolnshire,1,62589
-North Lincolnshire,2,21179
-North Lincolnshire,3,8346
-North Lincolnshire,4,10475
-North Lincolnshire,5,5201
-North Lincolnshire,6,1561
-North Somerset,0,62060
-North Somerset,1,109089
-North Somerset,2,32483
-North Somerset,4,2792
-North Tyneside,0,95432
-North Tyneside,1,107312
-North Yorkshire,0,95803
-North Yorkshire,1,148683
-North Yorkshire,2,71195
-North Yorkshire,3,60003
-North Yorkshire,4,69748
-North Yorkshire,5,44988
-North Yorkshire,6,30223
-North Yorkshire,7,17843
-North Yorkshire,8,14658
-North Yorkshire,9,13347
-North Yorkshire,10,10741
-North Yorkshire,11,8692
-North Yorkshire,12,15576
-North Yorkshire,13,1433
-Northamptonshire,0,153590
-Northamptonshire,1,411521
-Northamptonshire,2,66387
-Northamptonshire,3,46762
-Northamptonshire,4,26063
-Northamptonshire,5,5941
-Northamptonshire,6,4128
-Northumberland,0,5381
-Northumberland,1,36211
-Northumberland,2,86838
-Northumberland,3,47935
-Northumberland,4,14579
-Northumberland,5,13797
-Northumberland,6,13432
-Northumberland,7,2973
-Northumberland,8,7047
-Northumberland,9,10574
-Northumberland,10,10334
-Northumberland,11,9080
-Northumberland,12,21050
-Northumberland,13,8898
-Northumberland,14,6971
-Northumberland,15,3961
-Northumberland,16,1756
-Northumberland,18,5741
-Northumberland,19,4867
-Northumberland,20,3423
-Northumberland,21,1139
-Nottingham,0,191559
-Nottingham,1,124217
-Nottinghamshire,0,267095
-Nottinghamshire,1,408443
-Nottinghamshire,2,79227
-Nottinghamshire,3,28622
-Nottinghamshire,4,9577
-Nottinghamshire,5,6918
-Oldham,0,84610
-Oldham,1,138221
-Oldham,2,5934
-Oxfordshire,0,170667
-Oxfordshire,1,335907
-Oxfordshire,2,84128
-Oxfordshire,3,52116
-Oxfordshire,4,18472
-Oxfordshire,5,11226
-Peterborough,0,53311
-Peterborough,1,116947
-Peterborough,2,14818
-Peterborough,3,1484
-Peterborough,4,3901
-Plymouth,0,131151
-Plymouth,1,130395
-Poole,0,54506
-Poole,1,90686
-Poole,2,4917
-Portsmouth,0,127803
-Portsmouth,1,76502
-Portsmouth,2,4780
-Reading,0,72583
-Reading,1,86686
-Reading,2,1556
-Redbridge,0,169057
-Redbridge,1,123998
-Redcar and Cleveland,0,46550
-Redcar and Cleveland,1,65491
-Redcar and Cleveland,2,19366
-Redcar and Cleveland,3,3635
-Richmond upon Thames,0,105687
-Richmond upon Thames,1,87898
-Rochdale,0,100313
-Rochdale,1,107072
-Rochdale,2,5577
-Rotherham,0,84925
-Rotherham,1,155366
-Rotherham,2,18268
-Rotherham,3,1511
-Rutland,0,5718
-Rutland,1,10486
-Rutland,2,8510
-Rutland,3,7416
-Rutland,4,3783
-Rutland,6,2109
-Salford,0,115024
-Salford,1,125317
-Salford,2,1699
-Sandwell,0,174905
-Sandwell,1,143282
-Sefton,0,97578
-Sefton,1,163139
-Sefton,2,12814
-Sheffield,0,238604
-Sheffield,1,312089
-Sheffield,2,7848
-Sheffield,3,3480
-Sheffield,4,1728
-Shropshire,0,60227
-Shropshire,1,120971
-Shropshire,2,42046
-Shropshire,3,35355
-Shropshire,4,13874
-Shropshire,5,18931
-Shropshire,6,9799
-Shropshire,7,5108
-Shropshire,8,1577
-Shropshire,10,2233
-Slough,0,71379
-Slough,1,73196
-Solihull,0,80681
-Solihull,1,116778
-Solihull,2,10838
-Solihull,3,1593
-Somerset,0,119277
-Somerset,1,223815
-Somerset,2,83519
-Somerset,3,68250
-Somerset,4,36649
-Somerset,5,8356
-Somerset,6,1743
-South Gloucestershire,0,95430
-South Gloucestershire,1,137818
-South Gloucestershire,2,21662
-South Gloucestershire,3,7784
-South Gloucestershire,4,8862
-South Tyneside,0,48345
-South Tyneside,1,93308
-South Tyneside,2,7087
-Southampton,0,17661
-Southampton,1,81097
-Southampton,2,135516
-Southampton,3,11016
-Southend on Sea,0,64996
-Southend on Sea,1,112935
-Southwark,0,244688
-Southwark,1,57850
-St Helens,0,57783
-St Helens,1,102701
-St Helens,2,16704
-Staffordshire,0,186979
-Staffordshire,1,461669
-Staffordshire,2,109985
-Staffordshire,3,51693
-Staffordshire,4,33964
-Staffordshire,5,12708
-Staffordshire,6,6318
-Stockport,0,110704
-Stockport,1,173104
-Stockport,2,2947
-Stockton on Tees,0,80739
-Stockton on Tees,1,101621
-Stockton on Tees,2,8910
-Stockton on Tees,3,2849
-Stoke on Trent,0,98042
-Stoke on Trent,1,151566
-Suffolk,0,168649
-Suffolk,1,315703
-Suffolk,2,102690
-Suffolk,3,71456
-Suffolk,4,52325
-Suffolk,5,18987
-Suffolk,6,2532
-Suffolk,7,6170
-Sunderland,0,124216
-Sunderland,1,109764
-Sunderland,2,37598
-Sunderland,3,5311
-Surrey,0,281806
-Surrey,1,656740
-Surrey,2,153017
-Surrey,3,54658
-Surrey,4,12758
-Surrey,5,2277
-Sutton,0,103179
-Sutton,1,93168
-Swindon,0,111944
-Swindon,1,94735
-Swindon,2,7515
-Swindon,3,1605
-Tameside,0,104103
-Tameside,1,111938
-Tameside,2,4730
-Telford and Wrekin,0,47452
-Telford and Wrekin,1,106278
-Telford and Wrekin,2,8553
-Telford and Wrekin,3,5926
-Telford and Wrekin,4,1231
-Thurrock,0,51927
-Thurrock,1,97068
-Thurrock,2,12969
-Thurrock,3,1306
-Torbay,0,27468
-Torbay,1,89081
-Torbay,2,16435
-Tower Hamlets,0,192066
-Tower Hamlets,1,91949
-Trafford,0,108216
-Trafford,1,121200
-Trafford,2,3042
-Wakefield,0,98864
-Wakefield,1,201258
-Wakefield,2,26916
-Wakefield,3,4341
-Walsall,0,102725
-Walsall,1,165064
-Walsall,2,3184
-Waltham Forest,0,169249
-Waltham Forest,1,98771
-Wandsworth,0,206809
-Wandsworth,1,105336
-Warrington,0,68023
-Warrington,1,121061
-Warrington,2,15901
-Warrington,3,1443
-Warwickshire,0,87708
-Warwickshire,1,289700
-Warwickshire,2,94915
-Warwickshire,3,47262
-Warwickshire,4,18804
-Warwickshire,5,13205
-West Berkshire,0,26833
-West Berkshire,1,79037
-West Berkshire,2,26427
-West Berkshire,3,13206
-West Berkshire,4,3902
-West Berkshire,5,4669
-West Berkshire,7,1658
-West Sussex,0,206826
-West Sussex,1,409624
-West Sussex,2,121032
-West Sussex,3,55681
-West Sussex,4,27873
-West Sussex,5,7362
-Westminster,0,214624
-Westminster,1,18668
-Wigan,0,97455
-Wigan,1,207821
-Wigan,2,15699
-Wiltshire,0,89599
-Wiltshire,1,219196
-Wiltshire,2,52689
-Wiltshire,3,50738
-Wiltshire,4,31067
-Wiltshire,5,29015
-Wiltshire,6,7777
-Wiltshire,7,1314
-Windsor and Maidenhead,0,54012
-Windsor and Maidenhead,1,87062
-Windsor and Maidenhead,2,4659
-Windsor and Maidenhead,3,1667
-Wirral,0,160395
-Wirral,1,157754
-Wirral,2,2765
-Wokingham,0,45419
-Wokingham,1,106604
-Wokingham,2,7074
-Wolverhampton,0,102108
-Wolverhampton,1,150879
-Worcestershire,0,94969
-Worcestershire,1,317830
-Worcestershire,2,81395
-Worcestershire,3,36529
-Worcestershire,4,29960
-Worcestershire,5,9953
-Worcestershire,6,2829
-York,0,63065
-York,1,110576
-York,2,26643
-York,3,2531
-York,5,1624
+authority,population,distance
+Barking and Dagenham,24482,0.0
+Barking and Dagenham,114468,0.5
+Barking and Dagenham,53052,1.0
+Barking and Dagenham,8194,1.5
+Barking and Dagenham,1783,2.0
+Barnet,52152,0.0
+Barnet,237950,0.5
+Barnet,84764,1.0
+Barnet,4254,1.5
+Barnet,571,2.0
+Barnsley,24542,0.0
+Barnsley,110699,0.5
+Barnsley,67975,1.0
+Barnsley,25294,1.5
+Barnsley,5032,2.0
+Barnsley,1864,2.5
+Barnsley,2818,3.0
+Barnsley,720,4.0
+Barnsley,375,5.0
+Bath and NE Somerset,17143,0.0
+Bath and NE Somerset,77980,0.5
+Bath and NE Somerset,33793,1.0
+Bath and NE Somerset,22682,1.5
+Bath and NE Somerset,12310,2.0
+Bath and NE Somerset,6477,2.5
+Bath and NE Somerset,3977,3.0
+Bath and NE Somerset,2384,3.5
+Bath and NE Somerset,1355,4.0
+Bath and NE Somerset,1861,4.5
+Bath and NE Somerset,1670,5.0
+Bath and NE Somerset,286,5.5
+Bath and NE Somerset,646,6.0
+Bath and NE Somerset,1290,6.5
+Bath and NE Somerset,482,7.0
+Bath and NE Somerset,354,7.5
+Bath and NE Somerset,184,8.5
+Bedford,8932,0.0
+Bedford,58737,0.5
+Bedford,46228,1.0
+Bedford,17867,1.5
+Bedford,5836,2.0
+Bedford,3754,2.5
+Bedford,3680,3.0
+Bedford,4576,3.5
+Bedford,4129,4.0
+Bedford,1371,4.5
+Bedford,3656,5.0
+Bedford,1369,5.5
+Bedford,509,6.0
+Bedford,968,6.5
+Bedford,2005,7.0
+Bedford,268,7.5
+Bedford,675,8.0
+Bedford,341,8.5
+Bedford,571,9.0
+Bedford,385,9.5
+Bedford,395,10.5
+Bexley,14276,0.0
+Bexley,94511,0.5
+Bexley,101138,1.0
+Bexley,32057,1.5
+Bexley,160,2.0
+Birmingham,109007,0.0
+Birmingham,655167,0.5
+Birmingham,305402,1.0
+Birmingham,39317,1.5
+Birmingham,2414,2.0
+Blackburn with Darwen,9132,0.0
+Blackburn with Darwen,67838,0.5
+Blackburn with Darwen,44591,1.0
+Blackburn with Darwen,18056,1.5
+Blackburn with Darwen,3358,2.0
+Blackburn with Darwen,930,3.5
+Blackburn with Darwen,1046,4.0
+Blackburn with Darwen,1085,4.5
+Blackburn with Darwen,810,5.0
+Blackpool,19999,0.0
+Blackpool,86213,0.5
+Blackpool,31465,1.0
+Blackpool,1901,1.5
+Bolton,22666,0.0
+Bolton,109015,0.5
+Bolton,94295,1.0
+Bolton,38518,1.5
+Bolton,14479,2.0
+Bolton,2646,2.5
+Bournemouth,35111,0.0
+Bournemouth,132283,0.5
+Bournemouth,26860,1.0
+Bournemouth,262,1.5
+Bracknell Forest,18437,0.0
+Bracknell Forest,68286,0.5
+Bracknell Forest,27741,1.0
+Bracknell Forest,2763,1.5
+Bracknell Forest,1469,2.0
+Bracknell Forest,286,2.5
+Bradford,79020,0.0
+Bradford,289212,0.5
+Bradford,121826,1.0
+Bradford,21155,1.5
+Bradford,7395,2.0
+Bradford,7363,2.5
+Bradford,3758,3.0
+Bradford,593,3.5
+Bradford,479,4.5
+Bradford,375,5.0
+Brent,35570,0.0
+Brent,158116,0.5
+Brent,99126,1.0
+Brent,28137,1.5
+Brent,3063,2.0
+Brighton and Hove,34894,0.0
+Brighton and Hove,170334,0.5
+Brighton and Hove,72004,1.0
+Brighton and Hove,8044,1.5
+Bristol,92210,0.0
+Bristol,299813,0.5
+Bristol,56408,1.0
+Bristol,897,1.5
+Bromley,31201,0.0
+Bromley,172512,0.5
+Bromley,92841,1.0
+Bromley,19674,1.5
+Bromley,7367,2.0
+Bromley,917,2.5
+Bromley,345,3.0
+Buckinghamshire,39082,0.0
+Buckinghamshire,184036,0.5
+Buckinghamshire,136913,1.0
+Buckinghamshire,62689,1.5
+Buckinghamshire,34944,2.0
+Buckinghamshire,29050,2.5
+Buckinghamshire,13609,3.0
+Buckinghamshire,4255,3.5
+Buckinghamshire,4261,4.0
+Buckinghamshire,6870,4.5
+Buckinghamshire,4039,5.0
+Buckinghamshire,3564,5.5
+Buckinghamshire,1829,6.0
+Buckinghamshire,923,6.5
+Buckinghamshire,1399,7.0
+Buckinghamshire,287,7.5
+Buckinghamshire,650,8.0
+Bury,21939,0.0
+Bury,114431,0.5
+Bury,43327,1.0
+Bury,7289,1.5
+Bury,898,2.0
+Calderdale,35131,0.0
+Calderdale,120041,0.5
+Calderdale,35467,1.0
+Calderdale,10156,1.5
+Calderdale,4342,2.0
+Calderdale,1466,2.5
+Calderdale,708,3.0
+Calderdale,728,3.5
+Calderdale,363,4.0
+Cambridgeshire,47812,0.0
+Cambridgeshire,223510,0.5
+Cambridgeshire,125446,1.0
+Cambridgeshire,59363,1.5
+Cambridgeshire,43007,2.0
+Cambridgeshire,32491,2.5
+Cambridgeshire,21867,3.0
+Cambridgeshire,20129,3.5
+Cambridgeshire,15353,4.0
+Cambridgeshire,12102,4.5
+Cambridgeshire,9600,5.0
+Cambridgeshire,8747,5.5
+Cambridgeshire,7829,6.0
+Cambridgeshire,5959,6.5
+Cambridgeshire,4583,7.0
+Cambridgeshire,3176,7.5
+Cambridgeshire,2399,8.0
+Cambridgeshire,768,8.5
+Cambridgeshire,929,9.0
+Cambridgeshire,1156,9.5
+Cambridgeshire,154,10.0
+Cambridgeshire,563,10.5
+Cambridgeshire,295,11.0
+Camden,61259,0.0
+Camden,165049,0.5
+Camden,14751,1.0
+Central Bedfordshire,24928,0.0
+Central Bedfordshire,91589,0.5
+Central Bedfordshire,60940,1.0
+Central Bedfordshire,25881,1.5
+Central Bedfordshire,16368,2.0
+Central Bedfordshire,15116,2.5
+Central Bedfordshire,15524,3.0
+Central Bedfordshire,8291,3.5
+Central Bedfordshire,2692,4.0
+Central Bedfordshire,2876,4.5
+Central Bedfordshire,1182,5.0
+Central Bedfordshire,3872,5.5
+Central Bedfordshire,1634,6.0
+Central Bedfordshire,2845,6.5
+Central Bedfordshire,284,7.0
+Cheshire East,21797,0.0
+Cheshire East,125539,0.5
+Cheshire East,106104,1.0
+Cheshire East,58244,1.5
+Cheshire East,20093,2.0
+Cheshire East,12083,2.5
+Cheshire East,9586,3.0
+Cheshire East,5576,3.5
+Cheshire East,2253,4.0
+Cheshire East,3435,4.5
+Cheshire East,3942,5.0
+Cheshire East,1856,5.5
+Cheshire East,1283,6.0
+Cheshire East,2155,6.5
+Cheshire East,576,7.0
+Cheshire East,589,7.5
+Cheshire East,281,8.5
+Cheshire West and Chester,39309,0.0
+Cheshire West and Chester,152259,0.5
+Cheshire West and Chester,66950,1.0
+Cheshire West and Chester,31219,1.5
+Cheshire West and Chester,18253,2.0
+Cheshire West and Chester,12690,2.5
+Cheshire West and Chester,6231,3.0
+Cheshire West and Chester,3019,3.5
+Cheshire West and Chester,343,4.0
+Cheshire West and Chester,1446,4.5
+Cheshire West and Chester,1083,5.0
+Cheshire West and Chester,1115,5.5
+City of London,7367,0.0
+City of London,1393,0.5
+Cornwall,55367,0.0
+Cornwall,175860,0.5
+Cornwall,96425,1.0
+Cornwall,48993,1.5
+Cornwall,50331,2.0
+Cornwall,38367,2.5
+Cornwall,24729,3.0
+Cornwall,23692,3.5
+Cornwall,13118,4.0
+Cornwall,10501,4.5
+Cornwall,4521,5.0
+Cornwall,2013,5.5
+Cornwall,1933,6.0
+Cornwall,1465,6.5
+Cornwall,1787,7.0
+Cornwall,302,7.5
+Coventry,53425,0.0
+Coventry,219090,0.5
+Coventry,64457,1.0
+Coventry,7142,1.5
+Coventry,1271,2.0
+Croydon,41228,0.0
+Croydon,219808,0.5
+Croydon,100751,1.0
+Croydon,16310,1.5
+Croydon,934,2.0
+Cumbria,69384,0.0
+Cumbria,205649,0.5
+Cumbria,70456,1.0
+Cumbria,33759,1.5
+Cumbria,26226,2.0
+Cumbria,19292,2.5
+Cumbria,19347,3.0
+Cumbria,14716,3.5
+Cumbria,9162,4.0
+Cumbria,7946,4.5
+Cumbria,5063,5.0
+Cumbria,5511,5.5
+Cumbria,4439,6.0
+Cumbria,3105,6.5
+Cumbria,972,7.0
+Cumbria,1995,7.5
+Cumbria,439,8.0
+Cumbria,399,8.5
+Cumbria,136,9.0
+Darlington,2559,0.0
+Darlington,33001,0.5
+Darlington,31644,1.0
+Darlington,17503,1.5
+Darlington,7612,2.0
+Darlington,1069,2.5
+Darlington,2877,3.0
+Darlington,3921,3.5
+Darlington,1551,4.0
+Darlington,2107,4.5
+Darlington,895,5.0
+Darlington,299,5.5
+Darlington,351,6.0
+Derby,33712,0.0
+Derby,164355,0.5
+Derby,52455,1.0
+Derby,3729,1.5
+Derbyshire,63859,0.0
+Derbyshire,280076,0.5
+Derbyshire,190776,1.0
+Derbyshire,93903,1.5
+Derbyshire,48815,2.0
+Derbyshire,35810,2.5
+Derbyshire,23521,3.0
+Derbyshire,9458,3.5
+Derbyshire,13338,4.0
+Derbyshire,8419,4.5
+Derbyshire,3547,5.0
+Derbyshire,2213,5.5
+Derbyshire,4088,6.0
+Derbyshire,1862,6.5
+Derbyshire,1050,7.0
+Derbyshire,406,7.5
+Derbyshire,1224,8.5
+Devon,73059,0.0
+Devon,238536,0.5
+Devon,132650,1.0
+Devon,84480,1.5
+Devon,43796,2.0
+Devon,33712,2.5
+Devon,29504,3.0
+Devon,29254,3.5
+Devon,21328,4.0
+Devon,18763,4.5
+Devon,15551,5.0
+Devon,8673,5.5
+Devon,8744,6.0
+Devon,8859,6.5
+Devon,7986,7.0
+Devon,4676,7.5
+Devon,5022,8.0
+Devon,2611,8.5
+Devon,2540,9.0
+Devon,756,9.5
+Devon,350,10.0
+Devon,817,11.0
+Devon,322,11.5
+Devon,272,12.0
+Devon,344,12.5
+Devon,255,14.0
+Devon,217,14.5
+Doncaster,40441,0.0
+Doncaster,172051,0.5
+Doncaster,49302,1.0
+Doncaster,21336,1.5
+Doncaster,8707,2.0
+Doncaster,7674,2.5
+Doncaster,1733,3.0
+Doncaster,1558,3.5
+Doncaster,1167,4.0
+Doncaster,326,4.5
+Doncaster,518,5.0
+Dorset,33895,0.0
+Dorset,140729,0.5
+Dorset,85680,1.0
+Dorset,44813,1.5
+Dorset,24728,2.0
+Dorset,14506,2.5
+Dorset,16532,3.0
+Dorset,15015,3.5
+Dorset,11960,4.0
+Dorset,8360,4.5
+Dorset,5680,5.0
+Dorset,4209,5.5
+Dorset,4916,6.0
+Dorset,2298,6.5
+Dorset,3822,7.0
+Dorset,3102,7.5
+Dorset,340,8.5
+Dudley,35162,0.0
+Dudley,187092,0.5
+Dudley,87031,1.0
+Dudley,6820,1.5
+Dudley,359,2.0
+Durham,57596,0.0
+Durham,205896,0.5
+Durham,118886,1.0
+Durham,65422,1.5
+Durham,30194,2.0
+Durham,13720,2.5
+Durham,7740,3.0
+Durham,1816,3.5
+Durham,2471,4.0
+Durham,2377,4.5
+Durham,1579,5.0
+Durham,2247,5.5
+Durham,1782,6.0
+Durham,1070,6.5
+Durham,2905,7.0
+Durham,235,7.5
+Durham,668,8.0
+Durham,634,8.5
+Durham,221,9.0
+Durham,256,10.5
+Durham,129,11.0
+Durham,839,11.5
+Durham,118,12.0
+Durham,176,12.5
+Durham,272,13.0
+Durham,148,15.0
+Durham,298,15.5
+Ealing,57956,0.0
+Ealing,227781,0.5
+Ealing,53345,1.0
+Ealing,3232,1.5
+Ealing,745,2.0
+East Riding of Yorkshire,37454,0.0
+East Riding of Yorkshire,127145,0.5
+East Riding of Yorkshire,65429,1.0
+East Riding of Yorkshire,15592,1.5
+East Riding of Yorkshire,15292,2.0
+East Riding of Yorkshire,11206,2.5
+East Riding of Yorkshire,12620,3.0
+East Riding of Yorkshire,11085,3.5
+East Riding of Yorkshire,9494,4.0
+East Riding of Yorkshire,8643,4.5
+East Riding of Yorkshire,5531,5.0
+East Riding of Yorkshire,7620,5.5
+East Riding of Yorkshire,5345,6.0
+East Riding of Yorkshire,1611,6.5
+East Riding of Yorkshire,1392,7.0
+East Riding of Yorkshire,901,8.0
+East Riding of Yorkshire,325,9.5
+East Sussex,42091,0.0
+East Sussex,195617,0.5
+East Sussex,138345,1.0
+East Sussex,59641,1.5
+East Sussex,21256,2.0
+East Sussex,18475,2.5
+East Sussex,15965,3.0
+East Sussex,14152,3.5
+East Sussex,9062,4.0
+East Sussex,8346,4.5
+East Sussex,7372,5.0
+East Sussex,4182,5.5
+East Sussex,2387,6.0
+East Sussex,3740,6.5
+East Sussex,1987,7.0
+East Sussex,722,8.0
+East Sussex,724,8.5
+Enfield,70211,0.0
+Enfield,218003,0.5
+Enfield,34486,1.0
+Enfield,2085,1.5
+Enfield,1531,2.0
+Enfield,2117,2.5
+Essex,132524,0.0
+Essex,602289,0.5
+Essex,358795,1.0
+Essex,118944,1.5
+Essex,67884,2.0
+Essex,42868,2.5
+Essex,41596,3.0
+Essex,30945,3.5
+Essex,21118,4.0
+Essex,10629,4.5
+Essex,6802,5.0
+Essex,3185,5.5
+Essex,2067,6.0
+Essex,689,6.5
+Essex,198,7.0
+Essex,2103,7.5
+Essex,515,8.0
+Gateshead,21932,0.0
+Gateshead,95664,0.5
+Gateshead,56176,1.0
+Gateshead,25752,1.5
+Gateshead,1172,2.0
+Gateshead,300,2.5
+Gloucestershire,52063,0.0
+Gloucestershire,239778,0.5
+Gloucestershire,132761,1.0
+Gloucestershire,48602,1.5
+Gloucestershire,32438,2.0
+Gloucestershire,30558,2.5
+Gloucestershire,21012,3.0
+Gloucestershire,16899,3.5
+Gloucestershire,16998,4.0
+Gloucestershire,8281,4.5
+Gloucestershire,6383,5.0
+Gloucestershire,3945,5.5
+Gloucestershire,1164,6.0
+Gloucestershire,1214,6.5
+Gloucestershire,374,7.0
+Gloucestershire,776,7.5
+Gloucestershire,2414,8.0
+Gloucestershire,697,8.5
+Gloucestershire,597,9.0
+Gloucestershire,208,9.5
+Greenwich,52491,0.0
+Greenwich,165275,0.5
+Greenwich,48692,1.0
+Greenwich,8345,1.5
+Hackney,63316,0.0
+Hackney,204767,0.5
+Hackney,926,1.0
+Halton,6242,0.0
+Halton,48380,0.5
+Halton,37428,1.0
+Halton,23568,1.5
+Halton,6430,2.0
+Halton,3464,2.5
+Halton,837,3.0
+Halton,179,3.5
+Hammersmith and Fulham,30239,0.0
+Hammersmith and Fulham,118381,0.5
+Hammersmith and Fulham,29202,1.0
+Hammersmith and Fulham,619,1.5
+Hammersmith and Fulham,969,2.0
+Hampshire,94850,0.0
+Hampshire,459366,0.5
+Hampshire,360774,1.0
+Hampshire,177623,1.5
+Hampshire,78183,2.0
+Hampshire,58577,2.5
+Hampshire,29570,3.0
+Hampshire,32375,3.5
+Hampshire,22114,4.0
+Hampshire,11726,4.5
+Hampshire,7365,5.0
+Hampshire,5642,5.5
+Hampshire,4435,6.0
+Hampshire,4298,6.5
+Hampshire,2199,7.0
+Hampshire,1599,7.5
+Hampshire,1449,8.0
+Hampshire,581,8.5
+Hampshire,317,9.0
+Haringey,53225,0.0
+Haringey,194127,0.5
+Haringey,25512,1.0
+Harrow,23406,0.0
+Harrow,112531,0.5
+Harrow,87684,1.0
+Harrow,20373,1.5
+Harrow,3136,2.0
+Hartlepool,11356,0.0
+Hartlepool,50656,0.5
+Hartlepool,23269,1.0
+Hartlepool,5005,1.5
+Hartlepool,1605,2.0
+Hartlepool,602,3.5
+Havering,27513,0.0
+Havering,145100,0.5
+Havering,66300,1.0
+Havering,8954,1.5
+Havering,705,2.0
+Havering,513,2.5
+Herefordshire,13435,0.0
+Herefordshire,35189,0.5
+Herefordshire,19061,1.0
+Herefordshire,17068,1.5
+Herefordshire,18961,2.0
+Herefordshire,16457,2.5
+Herefordshire,8460,3.0
+Herefordshire,7140,3.5
+Herefordshire,13253,4.0
+Herefordshire,8968,4.5
+Herefordshire,10110,5.0
+Herefordshire,4789,5.5
+Herefordshire,7123,6.0
+Herefordshire,4282,6.5
+Herefordshire,1538,7.0
+Herefordshire,1503,7.5
+Herefordshire,146,8.0
+Herefordshire,167,8.5
+Herefordshire,449,9.0
+Hertfordshire,88712,0.0
+Hertfordshire,450646,0.5
+Hertfordshire,367297,1.0
+Hertfordshire,148575,1.5
+Hertfordshire,55720,2.0
+Hertfordshire,19251,2.5
+Hertfordshire,8440,3.0
+Hertfordshire,10186,3.5
+Hertfordshire,9961,4.0
+Hertfordshire,4908,4.5
+Hertfordshire,2475,5.0
+Hertfordshire,168,5.5
+Hillingdon,44664,0.0
+Hillingdon,188913,0.5
+Hillingdon,59277,1.0
+Hillingdon,4344,1.5
+Hillingdon,212,2.0
+Hillingdon,325,2.5
+Hounslow,40858,0.0
+Hounslow,189680,0.5
+Hounslow,38232,1.0
+Isle of Wight,12905,0.0
+Isle of Wight,47659,0.5
+Isle of Wight,28083,1.0
+Isle of Wight,14117,1.5
+Isle of Wight,11182,2.0
+Isle of Wight,7680,2.5
+Isle of Wight,5991,3.0
+Isle of Wight,5578,3.5
+Isle of Wight,2595,4.0
+Isle of Wight,753,4.5
+Isle of Wight,1119,5.0
+Isle of Wight,557,5.5
+Isle of Wight,1176,6.0
+Islington,69460,0.0
+Islington,155091,0.5
+Islington,3141,1.0
+Kensington and Chelsea,44060,0.0
+Kensington and Chelsea,105608,0.5
+Kensington and Chelsea,8043,1.0
+Kent,175940,0.0
+Kent,645030,0.5
+Kent,330682,1.0
+Kent,140764,1.5
+Kent,77498,2.0
+Kent,50389,2.5
+Kent,40812,3.0
+Kent,28954,3.5
+Kent,14846,4.0
+Kent,15434,4.5
+Kent,2526,5.0
+Kent,1715,5.5
+Kent,129,6.0
+Kingston upon Hull,29506,0.0
+Kingston upon Hull,153305,0.5
+Kingston upon Hull,64961,1.0
+Kingston upon Hull,11223,1.5
+Kingston upon Thames,24358,0.0
+Kingston upon Thames,120990,0.5
+Kingston upon Thames,22457,1.0
+Kingston upon Thames,4698,1.5
+Kingston upon Thames,1022,2.0
+Kirklees,38979,0.0
+Kirklees,186130,0.5
+Kirklees,141782,1.0
+Kirklees,51655,1.5
+Kirklees,11137,2.0
+Kirklees,3333,2.5
+Kirklees,1305,3.0
+Knowsley,8822,0.0
+Knowsley,56612,0.5
+Knowsley,57547,1.0
+Knowsley,20518,1.5
+Knowsley,2190,2.0
+Knowsley,267,2.5
+Knowsley,1275,3.0
+Lambeth,43695,0.0
+Lambeth,192479,0.5
+Lambeth,83510,1.0
+Lambeth,4747,1.5
+Lancashire,129128,0.0
+Lancashire,540742,0.5
+Lancashire,280816,1.0
+Lancashire,103056,1.5
+Lancashire,55757,2.0
+Lancashire,28039,2.5
+Lancashire,14229,3.0
+Lancashire,14924,3.5
+Lancashire,11751,4.0
+Lancashire,3439,4.5
+Lancashire,4645,5.0
+Lancashire,1152,5.5
+Lancashire,806,6.0
+Lancashire,569,6.5
+Lancashire,303,7.0
+Lancashire,377,7.5
+Lancashire,939,8.0
+Lancashire,196,9.0
+Lancashire,408,9.5
+Lancashire,160,10.5
+Lancashire,255,11.5
+Leeds,77878,0.0
+Leeds,397218,0.5
+Leeds,220919,1.0
+Leeds,47696,1.5
+Leeds,14721,2.0
+Leeds,7340,2.5
+Leeds,4371,3.0
+Leeds,3655,3.5
+Leeds,262,5.0
+Leicester City,60869,0.0
+Leicester City,216925,0.5
+Leicester City,60693,1.0
+Leicester City,4140,1.5
+Leicestershire,37176,0.0
+Leicestershire,214120,0.5
+Leicestershire,164572,1.0
+Leicestershire,89431,1.5
+Leicestershire,39162,2.0
+Leicestershire,25767,2.5
+Leicestershire,23970,3.0
+Leicestershire,15510,3.5
+Leicestershire,12855,4.0
+Leicestershire,11857,4.5
+Leicestershire,10863,5.0
+Leicestershire,12900,5.5
+Leicestershire,4227,6.0
+Leicestershire,1294,6.5
+Leicestershire,2067,7.0
+Leicestershire,1226,7.5
+Leicestershire,2362,8.0
+Leicestershire,922,8.5
+Leicestershire,822,9.5
+Leicestershire,354,10.0
+Leicestershire,227,10.5
+Leicestershire,442,11.5
+Leicestershire,1925,12.5
+Leicestershire,906,13.0
+Leicestershire,352,13.5
+Lewisham,53937,0.0
+Lewisham,214943,0.5
+Lewisham,28445,1.0
+Lincolnshire,25371,0.0
+Lincolnshire,135044,0.5
+Lincolnshire,109011,1.0
+Lincolnshire,51455,1.5
+Lincolnshire,32727,2.0
+Lincolnshire,29385,2.5
+Lincolnshire,43896,3.0
+Lincolnshire,41156,3.5
+Lincolnshire,30184,4.0
+Lincolnshire,32340,4.5
+Lincolnshire,27892,5.0
+Lincolnshire,22597,5.5
+Lincolnshire,21448,6.0
+Lincolnshire,27161,6.5
+Lincolnshire,23261,7.0
+Lincolnshire,23159,7.5
+Lincolnshire,21862,8.0
+Lincolnshire,15394,8.5
+Lincolnshire,7437,9.0
+Lincolnshire,7489,9.5
+Lincolnshire,3353,10.0
+Lincolnshire,988,10.5
+Lincolnshire,1046,11.5
+Lincolnshire,438,12.0
+Lincolnshire,486,12.5
+Lincolnshire,286,13.0
+Lincolnshire,1139,13.5
+Lincolnshire,660,14.0
+Liverpool,50089,0.0
+Liverpool,258975,0.5
+Liverpool,120483,1.0
+Liverpool,40367,1.5
+Liverpool,8666,2.0
+Luton,27622,0.0
+Luton,132957,0.5
+Luton,48109,1.0
+Luton,5475,1.5
+Luton,547,2.0
+Manchester,51801,0.0
+Manchester,288386,0.5
+Manchester,150512,1.0
+Manchester,34001,1.5
+Manchester,5366,2.0
+Manchester,226,2.5
+Medway,33279,0.0
+Medway,152522,0.5
+Medway,69765,1.0
+Medway,8390,1.5
+Medway,2485,2.0
+Medway,3981,2.5
+Medway,1532,3.0
+Medway,1624,3.5
+Medway,2546,4.0
+Medway,368,5.0
+Merton,27671,0.0
+Merton,130062,0.5
+Merton,44675,1.0
+Merton,2157,1.5
+Middlesbrough,23246,0.0
+Middlesbrough,81281,0.5
+Middlesbrough,31024,1.0
+Middlesbrough,3528,1.5
+Middlesbrough,430,2.5
+Milton Keynes,13441,0.0
+Milton Keynes,73203,0.5
+Milton Keynes,90025,1.0
+Milton Keynes,65980,1.5
+Milton Keynes,13039,2.0
+Milton Keynes,1792,2.5
+Milton Keynes,822,3.0
+Milton Keynes,1421,3.5
+Milton Keynes,1800,4.0
+Milton Keynes,239,4.5
+Newcastle upon Tyne,30327,0.0
+Newcastle upon Tyne,180877,0.5
+Newcastle upon Tyne,69040,1.0
+Newcastle upon Tyne,7852,1.5
+Newcastle upon Tyne,2096,2.0
+Newcastle upon Tyne,488,2.5
+Newcastle upon Tyne,1199,3.0
+Newcastle upon Tyne,1004,3.5
+Newham,67349,0.0
+Newham,242833,0.5
+Newham,22635,1.0
+Norfolk,69307,0.0
+Norfolk,311497,0.5
+Norfolk,146377,1.0
+Norfolk,56746,1.5
+Norfolk,47198,2.0
+Norfolk,52842,2.5
+Norfolk,40428,3.0
+Norfolk,31096,3.5
+Norfolk,25411,4.0
+Norfolk,23029,4.5
+Norfolk,19435,5.0
+Norfolk,12219,5.5
+Norfolk,13016,6.0
+Norfolk,9066,6.5
+Norfolk,9422,7.0
+Norfolk,3830,7.5
+Norfolk,3314,8.0
+Norfolk,2797,8.5
+Norfolk,2737,9.0
+Norfolk,1777,9.5
+Norfolk,2483,10.0
+Norfolk,639,10.5
+Norfolk,312,11.5
+North East Lincolnshire,6320,0.0
+North East Lincolnshire,42586,0.5
+North East Lincolnshire,49080,1.0
+North East Lincolnshire,29967,1.5
+North East Lincolnshire,18138,2.0
+North East Lincolnshire,6916,2.5
+North East Lincolnshire,2576,3.0
+North East Lincolnshire,3250,3.5
+North East Lincolnshire,737,4.0
+North Lincolnshire,18362,0.0
+North Lincolnshire,78240,0.5
+North Lincolnshire,29666,1.0
+North Lincolnshire,9049,1.5
+North Lincolnshire,9091,2.0
+North Lincolnshire,5923,2.5
+North Lincolnshire,6841,3.0
+North Lincolnshire,4828,3.5
+North Lincolnshire,4983,4.0
+North Lincolnshire,1235,4.5
+North Lincolnshire,1232,5.0
+North Lincolnshire,370,6.0
+North Somerset,21848,0.0
+North Somerset,97556,0.5
+North Somerset,50602,1.0
+North Somerset,17715,1.5
+North Somerset,11554,2.0
+North Somerset,4811,2.5
+North Somerset,2870,3.0
+North Somerset,491,3.5
+North Somerset,611,4.0
+North Somerset,624,4.5
+North Somerset,638,5.0
+North Somerset,624,5.5
+North Tyneside,35940,0.0
+North Tyneside,112553,0.5
+North Tyneside,45236,1.0
+North Tyneside,8446,1.5
+North Tyneside,319,2.0
+North Yorkshire,47014,0.0
+North Yorkshire,202645,0.5
+North Yorkshire,93485,1.0
+North Yorkshire,41672,1.5
+North Yorkshire,31294,2.0
+North Yorkshire,24255,2.5
+North Yorkshire,24246,3.0
+North Yorkshire,22388,3.5
+North Yorkshire,24319,4.0
+North Yorkshire,18853,4.5
+North Yorkshire,13075,5.0
+North Yorkshire,12497,5.5
+North Yorkshire,12197,6.0
+North Yorkshire,7200,6.5
+North Yorkshire,8102,7.0
+North Yorkshire,4553,7.5
+North Yorkshire,4546,8.0
+North Yorkshire,3512,8.5
+North Yorkshire,2522,9.0
+North Yorkshire,1314,9.5
+North Yorkshire,1097,10.0
+North Yorkshire,285,10.5
+North Yorkshire,728,11.0
+North Yorkshire,256,12.0
+North Yorkshire,222,12.5
+Northamptonshire,61611,0.0
+Northamptonshire,276135,0.5
+Northamptonshire,196966,1.0
+Northamptonshire,67140,1.5
+Northamptonshire,25976,2.0
+Northamptonshire,19133,2.5
+Northamptonshire,19362,3.0
+Northamptonshire,18716,3.5
+Northamptonshire,10686,4.0
+Northamptonshire,9591,4.5
+Northamptonshire,4739,5.0
+Northamptonshire,5269,5.5
+Northamptonshire,2571,6.0
+Northamptonshire,1246,6.5
+Northamptonshire,465,7.5
+Northamptonshire,987,8.0
+Northamptonshire,825,8.5
+Northamptonshire,950,9.0
+Northamptonshire,326,9.5
+Northamptonshire,332,10.5
+Northumberland,37247,0.0
+Northumberland,130472,0.5
+Northumberland,65414,1.0
+Northumberland,17505,1.5
+Northumberland,9775,2.0
+Northumberland,8203,2.5
+Northumberland,5876,3.0
+Northumberland,5474,3.5
+Northumberland,6018,4.0
+Northumberland,4592,4.5
+Northumberland,4194,5.0
+Northumberland,2401,5.5
+Northumberland,3008,6.0
+Northumberland,2619,6.5
+Northumberland,1880,7.0
+Northumberland,2107,7.5
+Northumberland,1956,8.0
+Northumberland,1397,8.5
+Northumberland,863,9.5
+Northumberland,705,10.0
+Northumberland,1111,10.5
+Northumberland,419,11.0
+Northumberland,714,11.5
+Northumberland,982,12.0
+Northumberland,331,12.5
+Nottingham,57571,0.0
+Nottingham,196807,0.5
+Nottingham,58251,1.0
+Nottingham,6272,1.5
+Nottinghamshire,98619,0.0
+Nottinghamshire,401429,0.5
+Nottinghamshire,173864,1.0
+Nottinghamshire,67413,1.5
+Nottinghamshire,24898,2.0
+Nottinghamshire,12150,2.5
+Nottinghamshire,7224,3.0
+Nottinghamshire,4950,3.5
+Nottinghamshire,4944,4.0
+Nottinghamshire,4928,4.5
+Nottinghamshire,2173,5.0
+Nottinghamshire,1251,5.5
+Nottinghamshire,1180,6.0
+Nottinghamshire,706,6.5
+Nottinghamshire,119,7.0
+Oldham,23462,0.0
+Oldham,124432,0.5
+Oldham,72138,1.0
+Oldham,9470,1.5
+Oldham,783,2.0
+Oldham,538,2.5
+Oxfordshire,47936,0.0
+Oxfordshire,214577,0.5
+Oxfordshire,158753,1.0
+Oxfordshire,47960,1.5
+Oxfordshire,27797,2.0
+Oxfordshire,27159,2.5
+Oxfordshire,27715,3.0
+Oxfordshire,21026,3.5
+Oxfordshire,23076,4.0
+Oxfordshire,16680,4.5
+Oxfordshire,15500,5.0
+Oxfordshire,13348,5.5
+Oxfordshire,10239,6.0
+Oxfordshire,5098,6.5
+Oxfordshire,6788,7.0
+Oxfordshire,7092,7.5
+Oxfordshire,1569,8.0
+Oxfordshire,206,8.5
+Oxfordshire,1181,9.0
+Oxfordshire,1656,9.5
+Oxfordshire,1455,10.0
+Oxfordshire,999,10.5
+Peterborough,13720,0.0
+Peterborough,101307,0.5
+Peterborough,59129,1.0
+Peterborough,5832,1.5
+Peterborough,2687,2.0
+Peterborough,2360,2.5
+Peterborough,1215,3.0
+Peterborough,1913,3.5
+Peterborough,179,4.0
+Peterborough,575,4.5
+Peterborough,319,5.0
+Peterborough,682,5.5
+Peterborough,539,6.0
+Peterborough,1268,6.5
+Peterborough,1706,7.0
+Peterborough,252,8.0
+Peterborough,297,8.5
+Plymouth,44929,0.0
+Plymouth,167931,0.5
+Plymouth,42437,1.0
+Plymouth,7415,1.5
+Poole,22470,0.0
+Poole,96657,0.5
+Poole,24810,1.0
+Poole,4528,1.5
+Poole,2112,2.0
+Portsmouth,41552,0.0
+Portsmouth,140364,0.5
+Portsmouth,23810,1.0
+Portsmouth,5110,1.5
+Portsmouth,922,2.0
+Reading,19274,0.0
+Reading,101464,0.5
+Reading,30917,1.0
+Reading,10084,1.5
+Redbridge,56870,0.0
+Redbridge,203479,0.5
+Redbridge,35198,1.0
+Redbridge,1246,1.5
+Redcar and Cleveland,24389,0.0
+Redcar and Cleveland,71306,0.5
+Redcar and Cleveland,25472,1.0
+Redcar and Cleveland,7426,1.5
+Redcar and Cleveland,3758,2.0
+Redcar and Cleveland,2052,2.5
+Redcar and Cleveland,872,3.0
+Richmond upon Thames,36873,0.0
+Richmond upon Thames,137745,0.5
+Richmond upon Thames,19339,1.0
+Richmond upon Thames,773,1.5
+Rochdale,31797,0.0
+Rochdale,141990,0.5
+Rochdale,36985,1.0
+Rochdale,2702,1.5
+Rochdale,408,2.0
+Rochdale,313,3.5
+Rotherham,22763,0.0
+Rotherham,127594,0.5
+Rotherham,67364,1.0
+Rotherham,31679,1.5
+Rotherham,9184,2.0
+Rotherham,1415,2.5
+Rotherham,787,3.0
+Rutland,3054,0.0
+Rutland,12998,0.5
+Rutland,3419,1.0
+Rutland,1573,1.5
+Rutland,3511,2.0
+Rutland,3315,2.5
+Rutland,1541,3.0
+Rutland,1793,3.5
+Rutland,2989,4.0
+Rutland,835,4.5
+Rutland,1253,5.0
+Rutland,332,5.5
+Rutland,1143,6.5
+Rutland,290,7.0
+Salford,39555,0.0
+Salford,160584,0.5
+Salford,42987,1.0
+Salford,2364,1.5
+Salford,124,2.0
+Sandwell,45554,0.0
+Sandwell,216502,0.5
+Sandwell,53789,1.0
+Sandwell,3610,1.5
+Sefton,14371,0.0
+Sefton,83846,0.5
+Sefton,88244,1.0
+Sefton,41875,1.5
+Sefton,20000,2.0
+Sefton,11025,2.5
+Sefton,10288,3.0
+Sefton,4058,3.5
+Sheffield,26606,0.0
+Sheffield,191947,0.5
+Sheffield,186600,1.0
+Sheffield,100877,1.5
+Sheffield,30132,2.0
+Sheffield,23164,2.5
+Sheffield,8786,3.0
+Sheffield,727,3.5
+Sheffield,393,4.0
+Sheffield,157,4.5
+Sheffield,348,5.0
+Shropshire,27284,0.0
+Shropshire,95523,0.5
+Shropshire,55935,1.0
+Shropshire,23960,1.5
+Shropshire,14299,2.0
+Shropshire,21249,2.5
+Shropshire,11613,3.0
+Shropshire,9129,3.5
+Shropshire,13457,4.0
+Shropshire,7094,4.5
+Shropshire,9431,5.0
+Shropshire,4251,5.5
+Shropshire,4703,6.0
+Shropshire,3069,6.5
+Shropshire,2927,7.0
+Shropshire,2811,7.5
+Shropshire,2357,8.0
+Shropshire,363,8.5
+Shropshire,486,9.0
+Shropshire,132,10.0
+Shropshire,550,10.5
+Shropshire,536,12.0
+Shropshire,221,14.5
+Slough,13758,0.0
+Slough,70146,0.5
+Slough,54169,1.0
+Slough,4297,1.5
+Slough,1925,2.0
+Slough,1439,2.5
+Solihull,26080,0.0
+Solihull,99628,0.5
+Solihull,57978,1.0
+Solihull,20263,1.5
+Solihull,4511,2.0
+Solihull,406,2.5
+Solihull,968,3.0
+Solihull,611,3.5
+Somerset,46590,0.0
+Somerset,181122,0.5
+Somerset,99113,1.0
+Somerset,51428,1.5
+Somerset,36453,2.0
+Somerset,32653,2.5
+Somerset,26583,3.0
+Somerset,23048,3.5
+Somerset,17178,4.0
+Somerset,10043,4.5
+Somerset,11234,5.0
+Somerset,6323,5.5
+Somerset,2565,6.0
+Somerset,272,6.5
+Somerset,376,7.0
+Somerset,239,8.5
+Somerset,170,9.5
+South Gloucestershire,26490,0.0
+South Gloucestershire,140396,0.5
+South Gloucestershire,55047,1.0
+South Gloucestershire,19731,1.5
+South Gloucestershire,9639,2.0
+South Gloucestershire,6588,2.5
+South Gloucestershire,2123,3.0
+South Gloucestershire,2620,3.5
+South Gloucestershire,4316,4.0
+South Gloucestershire,2688,4.5
+South Gloucestershire,434,5.0
+South Gloucestershire,2333,5.5
+South Gloucestershire,1340,6.0
+South Gloucestershire,916,6.5
+South Tyneside,20735,0.0
+South Tyneside,86358,0.5
+South Tyneside,39303,1.0
+South Tyneside,2156,1.5
+South Tyneside,119,2.0
+Southampton,15731,0.0
+Southampton,118008,0.5
+Southampton,78848,1.0
+Southampton,29457,1.5
+Southampton,7119,2.0
+Southampton,374,2.5
+Southend on Sea,16317,0.0
+Southend on Sea,96469,0.5
+Southend on Sea,61966,1.0
+Southend on Sea,3950,1.5
+Southwark,76530,0.0
+Southwark,219645,0.5
+Southwark,12726,1.0
+St Helens,22218,0.0
+St Helens,100577,0.5
+St Helens,47985,1.0
+St Helens,6705,1.5
+St Helens,127,2.0
+Staffordshire,60411,0.0
+Staffordshire,318486,0.5
+Staffordshire,219437,1.0
+Staffordshire,79745,1.5
+Staffordshire,50950,2.0
+Staffordshire,35645,2.5
+Staffordshire,32417,3.0
+Staffordshire,25564,3.5
+Staffordshire,11792,4.0
+Staffordshire,9804,4.5
+Staffordshire,7302,5.0
+Staffordshire,4717,5.5
+Staffordshire,789,6.0
+Staffordshire,1874,6.5
+Staffordshire,1062,7.5
+Staffordshire,807,8.0
+Staffordshire,1091,8.5
+Staffordshire,669,9.0
+Stockport,37034,0.0
+Stockport,169877,0.5
+Stockport,77703,1.0
+Stockport,3122,1.5
+Stockport,997,2.0
+Stockton on Tees,22059,0.0
+Stockton on Tees,110806,0.5
+Stockton on Tees,45007,1.0
+Stockton on Tees,9015,1.5
+Stockton on Tees,2922,2.0
+Stockton on Tees,2016,2.5
+Stockton on Tees,1232,3.0
+Stockton on Tees,1509,3.5
+Stockton on Tees,237,4.0
+Stoke on Trent,11043,0.0
+Stoke on Trent,81969,0.5
+Stoke on Trent,81110,1.0
+Stoke on Trent,43824,1.5
+Stoke on Trent,18433,2.0
+Stoke on Trent,11073,2.5
+Stoke on Trent,3977,3.0
+Stoke on Trent,219,3.5
+Suffolk,63695,0.0
+Suffolk,262352,0.5
+Suffolk,145675,1.0
+Suffolk,65345,1.5
+Suffolk,46326,2.0
+Suffolk,32945,2.5
+Suffolk,35777,3.0
+Suffolk,28742,3.5
+Suffolk,17969,4.0
+Suffolk,17111,4.5
+Suffolk,12234,5.0
+Suffolk,5676,5.5
+Suffolk,3756,6.0
+Suffolk,2955,6.5
+Suffolk,1031,7.0
+Suffolk,306,7.5
+Sunderland,21902,0.0
+Sunderland,135248,0.5
+Sunderland,91888,1.0
+Sunderland,26221,1.5
+Sunderland,1891,2.0
+Surrey,92112,0.0
+Surrey,446218,0.5
+Surrey,313615,1.0
+Surrey,137658,1.5
+Surrey,80399,2.0
+Surrey,36404,2.5
+Surrey,22704,3.0
+Surrey,12864,3.5
+Surrey,13305,4.0
+Surrey,6049,4.5
+Surrey,3866,5.0
+Surrey,1714,5.5
+Surrey,540,6.0
+Surrey,1050,6.5
+Surrey,311,7.0
+Sutton,25056,0.0
+Sutton,131456,0.5
+Sutton,36057,1.0
+Sutton,5168,1.5
+Sutton,1748,2.0
+Sutton,660,2.5
+Swindon,33203,0.0
+Swindon,130252,0.5
+Swindon,40094,1.0
+Swindon,8387,1.5
+Swindon,1754,2.0
+Swindon,1952,2.5
+Swindon,591,3.0
+Swindon,927,3.5
+Tameside,18846,0.0
+Tameside,105409,0.5
+Tameside,74226,1.0
+Tameside,22765,1.5
+Tameside,133,2.0
+Tameside,313,2.5
+Telford and Wrekin,15446,0.0
+Telford and Wrekin,86324,0.5
+Telford and Wrekin,43961,1.0
+Telford and Wrekin,14608,1.5
+Telford and Wrekin,3980,2.0
+Telford and Wrekin,2053,2.5
+Telford and Wrekin,821,3.0
+Telford and Wrekin,1083,4.0
+Telford and Wrekin,599,4.5
+Telford and Wrekin,799,5.0
+Telford and Wrekin,461,5.5
+Telford and Wrekin,688,6.0
+Telford and Wrekin,336,7.0
+Thurrock,22893,0.0
+Thurrock,86663,0.5
+Thurrock,34575,1.0
+Thurrock,15760,1.5
+Thurrock,4267,2.0
+Thurrock,680,3.5
+Thurrock,346,4.0
+Torbay,8764,0.0
+Torbay,49812,0.5
+Torbay,45275,1.0
+Torbay,20819,1.5
+Torbay,7815,2.0
+Torbay,533,2.5
+Torbay,355,3.0
+Tower Hamlets,64897,0.0
+Tower Hamlets,206528,0.5
+Tower Hamlets,23811,1.0
+Trafford,23609,0.0
+Trafford,140690,0.5
+Trafford,59617,1.0
+Trafford,7320,1.5
+Trafford,1805,2.0
+Trafford,247,2.5
+Wakefield,22176,0.0
+Wakefield,126198,0.5
+Wakefield,92461,1.0
+Wakefield,46410,1.5
+Wakefield,23689,2.0
+Wakefield,15334,2.5
+Wakefield,4461,3.0
+Wakefield,1681,3.5
+Wakefield,623,4.0
+Wakefield,726,4.5
+Walsall,35232,0.0
+Walsall,167836,0.5
+Walsall,66003,1.0
+Walsall,6427,1.5
+Walsall,597,2.0
+Waltham Forest,38946,0.0
+Waltham Forest,191391,0.5
+Waltham Forest,38400,1.0
+Waltham Forest,2433,1.5
+Wandsworth,72236,0.0
+Wandsworth,216027,0.5
+Wandsworth,26281,1.0
+Warrington,16766,0.0
+Warrington,104906,0.5
+Warrington,60301,1.0
+Warrington,15967,1.5
+Warrington,5988,2.0
+Warrington,3446,2.5
+Warrington,321,3.0
+Warwickshire,31220,0.0
+Warwickshire,179129,0.5
+Warwickshire,115138,1.0
+Warwickshire,68268,1.5
+Warwickshire,42630,2.0
+Warwickshire,22650,2.5
+Warwickshire,22135,3.0
+Warwickshire,18215,3.5
+Warwickshire,16235,4.0
+Warwickshire,11201,4.5
+Warwickshire,7615,5.0
+Warwickshire,5894,5.5
+Warwickshire,2911,6.0
+Warwickshire,3832,6.5
+Warwickshire,1618,7.0
+Warwickshire,1398,7.5
+Warwickshire,795,8.0
+Warwickshire,647,8.5
+Warwickshire,948,9.0
+Warwickshire,891,10.0
+Warwickshire,632,10.5
+West Berkshire,11605,0.0
+West Berkshire,48388,0.5
+West Berkshire,29110,1.0
+West Berkshire,17616,1.5
+West Berkshire,16370,2.0
+West Berkshire,7670,2.5
+West Berkshire,5295,3.0
+West Berkshire,5318,3.5
+West Berkshire,6159,4.0
+West Berkshire,1863,4.5
+West Berkshire,683,5.0
+West Berkshire,1862,5.5
+West Berkshire,355,6.0
+West Berkshire,662,6.5
+West Berkshire,550,7.0
+West Berkshire,1628,7.5
+West Berkshire,276,8.5
+West Berkshire,276,9.0
+West Berkshire,334,9.5
+West Sussex,67918,0.0
+West Sussex,327569,0.5
+West Sussex,204137,1.0
+West Sussex,88441,1.5
+West Sussex,40282,2.0
+West Sussex,26941,2.5
+West Sussex,25936,3.0
+West Sussex,22287,3.5
+West Sussex,12208,4.0
+West Sussex,6437,4.5
+West Sussex,5698,5.0
+West Sussex,2537,5.5
+West Sussex,2763,6.0
+West Sussex,1439,6.5
+West Sussex,1663,7.0
+Westminster,92737,0.0
+Westminster,144636,0.5
+Westminster,4677,1.0
+Westminster,249,1.5
+Wigan,31489,0.0
+Wigan,147233,0.5
+Wigan,108556,1.0
+Wigan,27682,1.5
+Wigan,6547,2.0
+Wigan,515,2.5
+Wiltshire,37701,0.0
+Wiltshire,165570,0.5
+Wiltshire,103549,1.0
+Wiltshire,55379,1.5
+Wiltshire,24156,2.0
+Wiltshire,21829,2.5
+Wiltshire,17236,3.0
+Wiltshire,16012,3.5
+Wiltshire,13715,4.0
+Wiltshire,10669,4.5
+Wiltshire,6480,5.0
+Wiltshire,5800,5.5
+Wiltshire,3089,6.0
+Wiltshire,3044,6.5
+Wiltshire,1635,7.0
+Wiltshire,229,7.5
+Windsor and Maidenhead,24055,0.0
+Windsor and Maidenhead,92104,0.5
+Windsor and Maidenhead,23133,1.0
+Windsor and Maidenhead,3933,1.5
+Windsor and Maidenhead,2077,2.0
+Windsor and Maidenhead,1171,2.5
+Windsor and Maidenhead,687,3.0
+Windsor and Maidenhead,548,3.5
+Wirral,55863,0.0
+Wirral,214656,0.5
+Wirral,45949,1.0
+Wirral,3779,1.5
+Wirral,653,2.0
+Wokingham,14342,0.0
+Wokingham,75482,0.5
+Wokingham,45955,1.0
+Wokingham,14849,1.5
+Wokingham,3704,2.0
+Wokingham,3864,2.5
+Wokingham,2213,3.0
+Wolverhampton,35272,0.0
+Wolverhampton,167606,0.5
+Wolverhampton,49342,1.0
+Wolverhampton,2186,1.5
+Worcestershire,30636,0.0
+Worcestershire,159899,0.5
+Worcestershire,169203,1.0
+Worcestershire,92180,1.5
+Worcestershire,42110,2.0
+Worcestershire,22175,2.5
+Worcestershire,17510,3.0
+Worcestershire,14342,3.5
+Worcestershire,11975,4.0
+Worcestershire,5894,4.5
+Worcestershire,4081,5.0
+Worcestershire,4311,5.5
+Worcestershire,3043,6.0
+Worcestershire,474,6.5
+Worcestershire,760,7.0
+York,26098,0.0
+York,118654,0.5
+York,40846,1.0
+York,10162,1.5
+York,6085,2.0
+York,1340,2.5
+York,1048,3.0
+York,706,4.0
+York,1180,4.5
+York,737,5.0
