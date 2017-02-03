@@ -93,24 +93,24 @@
     // 
     ////////////////////////////////////////////////////////////////////////////
     getDeprivationIndicesByAuthorityAndLibType: function (authority, libType) {
-        var depIndices = { multiple: 0, employment: 0, education: 0, adultskills: 0, health: 0, services: 0 };
+        var depIndices = { multiple: 0, employment: 0, education: 0 };
         var count = 0;
         $.each(this.getAuthoritiesWithLibraries(), function (i, a) {
             if (a.name == authority || !authority) {
                 $.each(a.libraries, function (y, l) {
                     if (l.type == libType) {
                         count++;
-                        depIndices.multiple += l.multiple;
-                        depIndices.employment += l.employment;
-                        depIndices.education += l.education;
-                        depIndices.adultskills += l.adultskills;
-                        depIndices.health += l.health;
-                        depIndices.services += l.services;
+                        depIndices.multiple += parseFloat(l.multiple);
+                        depIndices.employment += parseFloat(l.employment);
+                        depIndices.education += parseFloat(l.education);
+                        //depIndices.adultskills += parseFloat(l.adultskills);
+                        //depIndices.health += parseFloat(l.health);
+                        //depIndices.services += parseFloat(l.services);
                     }
                 });
             }
         });
-        $.each(Object.keys(depIndices), function (i, k) { depIndices[k] = (depIndices[k] / count).toFixed(0); });
+        $.each(Object.keys(depIndices), function (i, k) { if (depIndices[k] != 0) depIndices[k] = (depIndices[k] / count).toFixed(0); });
         return depIndices;
     },
     ///////////////////////////////////////////////////////////////////

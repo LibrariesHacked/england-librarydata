@@ -26,7 +26,7 @@
         // Run when the authority is changed to update all individual widgets
         var updateAll = function () {
             var auth = $('#selAuthority').find(":selected");
-            $('.sel-auth-name').removeClass('text-dark-gray text-success').addClass((auth.val() ? 'text-success' : 'text-dark-gray' ));
+            $('.sel-auth-name').removeClass('text-dark-gray text-success').addClass((auth.val() ? 'text-success' : 'text-dark-gray'));
             $('.sel-auth-name').text(auth.text());
             updateLibTypesDonut(auth.val());
             updateLibTypeStatsBar(auth.val());
@@ -96,7 +96,7 @@
                 '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.multiple] + '">' + library.multiple + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + library.employment + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education] + '">' + library.education + '</p></div>' +
-                '</div>' + 
+                '</div>' +
                 '<div class="row">' +
                 '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.adultskills] + '">' + library.adultskills + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health] + '">' + library.health + '</p></div>' +
@@ -345,10 +345,11 @@
             var it = stories[storiesOrdered[index]];
             if (it) {
                 var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + storiesOrdered[index] + '">' +
-                '<span class="tag tag-danger tag-pill float-sm-right">1/' + it.stories.length + '</span>' +
+                '<span class="badge badge-pill badge-danger">1/' + it.stories.length + '</span>' +
                 '<div><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p></div>' +
-                (it.stories.length > 1 ? '<p><a id="Location' + index + '" href="#">next item &raquo;</a></p>' : '') +
-                '<p><a class="btn btn-sm btn-outline-danger btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
+                (it.stories.length > 1 ? '<p><a class="btn btn-secondary" id="Location' + index + '" href="#">next item &raquo;</a>&nbsp;</p>' : '') +
+                '<p><a class="btn btn-outline-danger btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
+
                 position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);
                 $('.list-group-item-text').shorten();
                 $('#Location' + index).on('click', clickNextItem);
@@ -515,9 +516,7 @@
                 if (ind.multiple.length > 0) {
                     return {
                         label: config.libStyles[x].type,
-                        data: $.map(Object.keys(ind), function (i, y) {
-                            return ind[i] && ind[i] == 0 ? '' : ind[i];
-                        }),
+                        data: $.map(Object.keys(ind), function (i, y) { return ind[i] && ind[i] == 0 ? '' : ind[i]; }),
                         backgroundColor: config.libStyles[x].colour,
                         borderColor: '#98978B',
                         borderWidth: 1

@@ -79,6 +79,7 @@ copy postcodes FROM 'postcodes.csv' delimiter ',' csv;
 select AddGeometryColumn ('postcodes','geom',27700,'POINT',2);
 -- and update the column to store the coordinates
 update postcodes set geom = ST_SetSRID(ST_MakePoint(eastings, northings), 27700);
+select UpdateGeometrySRID('postcodes', 'geom', 27700);
 
 -- index: uix_postcodes_geom.  a spatial index on the geometry.
 create index ix_postcodes_geom ON postcodes using gist (geom);
@@ -273,6 +274,8 @@ alter table Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boun rena
 -- index: cuix_lsoaboundaries_code.  a unique clustered index on lsoa code.
 create unique index cuix_lsoaboundaries_code on lsoa_boundaries using btree (lsoa11cd);
 alter table lsoa_boundaries cluster on cuix_lsoaboundaries_code;
+-- Set the SRID for the geometry
+select UpdateGeometrySRID('lsoa_boundaries', 'geom', 27700);
 
 -- index: ix_lsoaboundaries_geom.  a spatial index on the lsoa geometry.
 create index ix_lsoaboundaries_geom on lsoa_boundaries using gist (geom);
@@ -677,9 +680,9 @@ So that's a set of rules for library type.  Then there is the statutory and non-
 delete from libraries where type = 'LAL-';
 update libraries set type = 'ICL' where type = 'ICL+';
 update libraries set type = 'CRL' where type = 'CRL+';
-update libraries set statutory2016 = 'f' where libtype = 'ICL';
+update libraries set statutory2016 = 'f' where type = 'ICL';
 update libraries set statutory2016 = 'f' where closed is not null;
-update libraries set statutory2016 = 'f' where statutory2010 = 'f' and new = 'f';
+update libraries set statutory2016 = 'f' where statutory2010 = 'f' and opened_year is not null;
 ```
 
 ## Geocoding the libraries
@@ -691,7 +694,7 @@ Although (most) of the libraries have some address data (either a full address o
 ```
 copy (
 	select 	l.id, l.name, l.address, l.postcode, 
-	case when l.postcode is not null then ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326),10)))
+	case when l.postcode is not null then ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 10)))
 	else ST_AsText(ST_Envelope(ST_Transform(ST_SetSRID(r.geom, 27700), 4326))) end, 
 	l.lat, l.lng
 	from libraries l
@@ -717,7 +720,7 @@ create table librarylocations
   lat numeric,
   lng numeric,
   constraint pk_librarylocations_libraryid primary key (libraryid)
-)
+);
 ```
 
 6.  Import the library locations.
@@ -745,7 +748,7 @@ where ST_Within(
 			select code, geom 
 			from district_borough_unitary_region ) ab 
 		where ab.code = a.code))
-and u.id = ll.libraryid
+and u.id = ll.libraryid;
 ```
 
 8.  Then, fill in any blanks with the postcode values:
@@ -754,7 +757,7 @@ and u.id = ll.libraryid
 update libraries l
 set lat = l.postcodelat,
 lng = l.postcodelng
-where l.lat is null and l.lng is null
+where l.lat is null and l.lng is null;
 ```
 
 9. The create a convenient geometry column.
@@ -773,44 +776,46 @@ create index ix_libraries_geom on libraries using btree (geom);
 1.  Export a CSV.
 
 ```
-copy (
-	select 	l.name,
-		a.id "authority_id",
-		l.address,
-		l.postcode,
-		l.lat,
-		l.lng,
-		l.statutory2010,
-		l.statutory2016,
-		l.type, 
-		l.closed,
-		l.closed_year,
-		l.opened_year,
-		l.replacement,
-		l.notes,
-		l.hours,
-		l.staffhours,
-		l.url,
-		l.email,
-		-- Add the LSOA data
-		ls.lsoa11nm "lsoa_name",
-		ls.lsoa11cd "lsoa_code",
-		-- Add the deprivation data
-		i.imd_decile,
-		i.income_decile,
-		i.education_decile,
-		i.health_decile,
-		i.crime_decile,
-		i.housing_decile,
-		i.environment_decile
-	from libraries l
-	join authorities a
-	on a.id = l.authority_id
-	left outer join lsoa_boundaries ls
-	on ST_Within(ST_Transform(ST_SetSRID(ST_MakePoint(l.lng, l.lat), 4326), 27700), ST_SetSRID(ls.geom, 27700))
-	left outer join imd i
-	on i.lsoa_code = ls.lsoa11cd
-) to 'libraries.csv' delimiter ','csv header;
+copy (select l.name,
+	a.id "authority_id",
+	l.address,
+	l.postcode,
+	l.lat,
+	l.lng,
+	l.statutory2010,
+	l.statutory2016,
+	l.type, 
+	l.closed,
+	l.closed_year,
+	l.opened_year,
+	l.replacement,
+	l.notes,
+	l.hours,
+	l.staffhours,
+	l.url,
+	l.email,
+	-- Add the LSOA data
+	ls.lsoa11nm "lsoa_name",
+	ls.lsoa11cd "lsoa_code",
+	-- Add the deprivation data
+	i.imd_decile as multiple,
+	i.income_decile as income,
+	i.employment_decile as employment,
+	i.education_decile as education,
+	i.children_decile as children,
+	i.health_decile as health,
+	i.adultskills_decile as adultskills,
+	i.crime_decile as crime,
+	i.housing_decile as housing,
+	i.geographical_decile as services,
+	i.environment_decile as environment
+from libraries l
+join authorities a
+on a.id = l.authority_id
+left outer join lsoa_boundaries ls
+on ST_Within(l.geom, ls.geom)
+left outer join imd i
+on i.lsoa_code = ls.lsoa11cd) to 'C:\Development\LibrariesHacked\england-librarydata\data\libraries.csv' delimiter ','csv header;
 ```
 
 ## Distance calculations and catchment areas
@@ -852,7 +857,7 @@ select
 o.oa11cd
 from oa_boundaries o
 join authorities_oas aos
-on aos.oa_code = o.oa11cd
+on aos.oa_code = o.oa11cd;
 ```
 
 3.  Add the catchment areas for closed libraries.
@@ -876,7 +881,7 @@ select ca.library_id, ca.ao11cd from (
 	on aos.oa_code = o.oa11cd) as ca
 join libraries li
 on li.id = ca.library_id
-where li.closed is not null
+where li.closed is not null;
 ```
 
 4.  Add a table for cross authority catchment areas.
@@ -907,7 +912,7 @@ select
 o.oa11cd
 from oa_boundaries o
 join authorities_oas aos
-on aos.oa_code = o.oa11cd
+on aos.oa_code = o.oa11cd;
 ```
 
 6.  Add cross-authority catchment areas for closed libraries
@@ -926,7 +931,7 @@ select ca.library_id, ca.oa11cd from(
 	on aos.oa_code = o.oa11cd) as ca
 join libraries li
 on li.id = ca.library_id
-where li.closed is not null
+where li.closed is not null;
 ```
 
 ## Distance calculations

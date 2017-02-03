@@ -269,11 +269,11 @@
         /////////////////////////////////////////////////////////////
         $('#style-changer li a').on('click', function (e) {
             e.preventDefault();
-            setMapStyles();
+            $('#style-changer li a').removeClass('active');
             selectedAuth = '';
             $(e.target).addClass('active');
             mapType = e.target.dataset.style;
-            $('#style-changer li a').removeClass('active');
+            setMapStyles();
         });
     });
 });
