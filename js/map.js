@@ -144,10 +144,14 @@
                 '<div class="col col-xs-4"><small class="text-muted">staff hours</small><p class="lead text-gray-dark">' + library.staffhours + '</p></div>');
             // Populate the deprivation details.
             $('#sidebar-librarycontent').append('<div class="row">' +
-                '<div class="col col-xs-3"><small class="text-muted">multiple</small><p class="lead text-gray-dark">' + library.imd_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">income</small><p class="lead text-gray-dark">' + library.income_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">education</small><p class="lead text-gray-dark">' + library.education_decile + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-gray-dark">' + library.health_decile + '</p></div></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">multiple</small><p class="lead text-gray-dark">' + library.multiple + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">employment</small><p class="lead text-gray-dark">' + library.employment + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">education</small><p class="lead text-gray-dark">' + library.education + '</p></div>' +
+                '</div>' +
+                '<div class="row">' +
+                '<div class="col col-xs-3"><small class="text-muted">adult skills</small><p class="lead text-gray-dark">' + library.adultskills + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-gray-dark">' + library.health + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">services</small><p class="lead text-gray-dark">' + library.services + '</p></div></div>' +
                 '<p><small class="text-muted strong">these are deprivation deciles (1-10) for the library location.  lower represents greater deprivation.</small></p>');
             sidebar.open('library');
         };

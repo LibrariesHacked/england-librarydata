@@ -207,22 +207,27 @@
         });
     },
     getStatCountsByAuthority: function (authority) {
-        var counts = { statutory2010: 0, statutory2016: 0, libraries: 0, closedLibraries: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0, newLibs: 0, libsChange: 0 };
+        var counts = { statutory2010: 0, statutory2016: 0, libraries: 0, replaced: 0, replacements: 0, closedLibraries: 0, newLibs: 0, libsChange: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0 };
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             if (i != '' && (i == authority || !authority)) {
                 counts.area = counts.area + parseFloat(x.hectares);
                 counts.population = counts.population + parseInt(x.population);
                 $.each(x.libraries, function (y, lib) {
-                    if (lib.statutory2010 == 't') counts.statutory2010 = counts.statutory2010 + 1;
-                    if (lib.statutory2016 == 't') counts.statutory2016 = counts.statutory2016 + 1;
-                    if (lib.type == 'XL' || lib.type == 'XLR') counts.closedLibraries = counts.closedLibraries + 1;
-                    if (lib.type != 'XL' && lib.type != 'XLR') counts.libraries = counts.libraries + 1;
-                    if (lib.type == 'XLR') counts.newLibs = counts.newLibs + 1;
+                    if (lib.statutory2010 == 't') counts.statutory2010++;
+                    if (lib.statutory2016 == 't') counts.statutory2016++;
+                    if (lib.replacement = 't') counts.replacements++;
+                    if (lib.closed == '') counts.libraries++;
+                    if (lib.closed == 'XLR') counts.replaced++;
+                    if (lib.closed != '' && lib.closed != 'XLR') counts.closedLibraries++;
+                    if (lib.opened_year != '' && lib.replacement == 'f') counts.newLibs++;
                 });
-                counts.libsChange = counts.newLibs - counts.closedLibraries;
-                counts.statutoryChange = counts.statutory2016 - counts.statutory2010;
+                // For each library service there MUST be as many replaced libraries as there are replacements.
+                // Authorities have a habit of listing libraries that are new, but not those that are closed.
+                if (counts.replacements > counts.replaced) counts.replaced = counts.replacements;
             }
         });
+        counts.libsChange = counts.newLibs - counts.closedLibraries;
+        counts.statutoryChange = counts.statutory2016 - counts.statutory2010;
         counts.peoplePerLibrary = counts.population / counts.libraries;
         counts.areaPerLibrary = counts.area / counts.libraries;
         return counts;

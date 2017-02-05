@@ -4,8 +4,8 @@ These are instructions to set up a spatial database using the Libraries Taskforc
 
 ## Pre-requisites
 
-1.  A [Postgres](https://www.postgresql.org/) database server.  These instructions completed with version 9.6.1.
-2.  A [PostGIS](http://postgis.net/install/) database server.  These instructions completed with version 2.3.2.
+1.  A [PostgreSQL](https://www.postgresql.org/) database server.  These instructions completed with version 9.6.1.
+2.  A [PostGIS](http://postgis.net/install/) database server (extensions for PostgreSQL).  These instructions completed with version 2.3.2.
 
 ## Database setup
 
@@ -118,6 +118,9 @@ insert into regions
 (select name, area_code, code, hectares, area, geom from county_region
 union
 select name, area_code, code, hectares, area, geom from district_borough_unitary_region);
+
+-- geometry: set srid.
+select UpdateGeometrySRID('regions', 'geom', 27700)
 
 -- get rid of the old tables
 drop table county_region;
@@ -300,6 +303,7 @@ alter table Lower_Layer_Super_Output_Areas_December_2011_Population_Weighted_Cen
 -- index: cuix_lsoapopulationweighted_code.
 create unique index cuix_lsoapopulationweighted_code on lsoa_population_weighted using btree (lsoa11cd);
 alter table lsoa_population_weighted cluster on cuix_lsoapopulationweighted_code;
+select UpdateGeometrySRID('lsoa_population_weighted', 'geom', 27700);
 
 -- index: ix_lsoapopulationweighted_geom.
 create index ix_lsoapopulationweighted_geom on lsoa_population_weighted using gist (geom);
@@ -595,7 +599,7 @@ copy (
 		from (
 			select 'Feature' As type, ST_AsGeoJSON(lg.geom)::json As geometry, row_to_json((select 1 from (select authority_id, name, code, hectares, population) As l)) as properties
 			from (
-				select a.id as authority_id, a.name as name, r.code as code, r.hectares as hectares, p.population as population, ST_SimplifyPreserveTopology(ST_Transform(ST_SetSRID(geom, 27700), 4326), 0.002) as Geom 
+				select a.id as authority_id, a.name as name, r.code as code, r.hectares as hectares, p.population as population, ST_SimplifyPreserveTopology(ST_Transform(geom, 4326), 0.002) as geom 
 				from authorities a
 				join regions r
 				on a.code = r.code
@@ -682,7 +686,7 @@ update libraries set type = 'ICL' where type = 'ICL+';
 update libraries set type = 'CRL' where type = 'CRL+';
 update libraries set statutory2016 = 'f' where type = 'ICL';
 update libraries set statutory2016 = 'f' where closed is not null;
-update libraries set statutory2016 = 'f' where statutory2010 = 'f' and opened_year is not null;
+update libraries set statutory2010 = 'f' where statutory2010 = 'f' and opened_year is not null;
 ```
 
 ## Geocoding the libraries
@@ -695,7 +699,7 @@ Although (most) of the libraries have some address data (either a full address o
 copy (
 	select 	l.id, l.name, l.address, l.postcode, 
 	case when l.postcode is not null then ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 10)))
-	else ST_AsText(ST_Envelope(ST_Transform(ST_SetSRID(r.geom, 27700), 4326))) end, 
+	else ST_AsText(ST_Envelope(ST_Transform(r.geom, 4326))) end, 
 	l.lat, l.lng
 	from libraries l
 	join authorities a
@@ -741,12 +745,9 @@ join authorities a
 on a.id = l.authority_id
 where ST_Within(
 	ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700), 
-	(select ST_SetSRID(geom, 27700) 
+	(select geom 
 		from (	select code, geom 
-			from county_region 
-			union 
-			select code, geom 
-			from district_borough_unitary_region ) ab 
+			from regions ) ab 
 		where ab.code = a.code))
 and u.id = ll.libraryid;
 ```
@@ -815,7 +816,7 @@ on a.id = l.authority_id
 left outer join lsoa_boundaries ls
 on ST_Within(l.geom, ls.geom)
 left outer join imd i
-on i.lsoa_code = ls.lsoa11cd) to 'C:\Development\LibrariesHacked\england-librarydata\data\libraries.csv' delimiter ','csv header;
+on i.lsoa_code = ls.lsoa11cd) to 'data\libraries\libraries.csv' delimiter ','csv header;
 ```
 
 ## Distance calculations and catchment areas
@@ -936,10 +937,10 @@ where li.closed is not null;
 
 ## Distance calculations
 
-1.  Export a file to show distances.
+1.  Export a file to show distances for authorities.
 
 ```
-copy (select a.name as authority, sum(op.all_ages) as population, round(round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric) * 2, 0) /2, 1) as distance
+copy (select a.id as authority, sum(op.all_ages) as population, round(round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric) * 2, 0) /2, 1) as distance
 from libraries_catchments lc
 join libraries l
 on l.id = lc.library_id
@@ -953,4 +954,20 @@ join oa_boundaries oab
 on oab.oa11cd = lc.oa_code
 where l.closed is null
 group by authority, distance) to 'data\libraries\distances.csv' delimiter ','csv header;
+```
+
+2.  Export a file to show distances within the catchment for each library.
+
+```
+copy (select l.id, 
+sum(op.all_ages) as population, 
+round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric), 1) as distance
+from libraries_catchments lc
+join libraries l
+on l.id = lc.library_id
+join oa_boundaries oab
+on oab.oa11cd = lc.oa_code
+join oa_population op
+on op.oa = lc.oa_code
+group by l.id, distance) to 'data\libraries\librariesdistances.csv' delimiter ','csv header;
 ```
