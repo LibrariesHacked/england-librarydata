@@ -120,7 +120,7 @@ union
 select name, area_code, code, hectares, area, geom from district_borough_unitary_region);
 
 -- geometry: set srid.
-select UpdateGeometrySRID('regions', 'geom', 27700)
+select UpdateGeometrySRID('regions', 'geom', 27700);
 
 -- get rid of the old tables
 drop table county_region;
@@ -186,7 +186,7 @@ shp2pgsql "Output_Area_December_2011_Full_Clipped_Boundaries_in_England_and_Wale
 alter table "output_area_december_2011_full_clipped_boundaries_in_england_an" rename to oa_boundaries
 
 -- geometry: set srid.
-select UpdateGeometrySRID('oa_boundaries', 'geom', 27700)
+select UpdateGeometrySRID('oa_boundaries', 'geom', 27700);
 
 -- index: cuix_oaboundaries_code.  a unique clustered index on output area code.
 create unique index cuix_oaboundaries_code on oa_boundaries using btree (oa11cd);
@@ -209,6 +209,7 @@ create index ix_oaboundaries_geom on oa_boundaries using gist (geom);
 - [Census Output Area Estimates - East Midlands](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesintheeastmidlandsregionofengland)
 - [Census Output Area Estimates - West Midlands](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthewestmidlandsregionofengland)
 - [Census Output Area Estimates - North East](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthenortheastregionofengland)
+- [Census Output Area Estimates - Wales](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinwales)
 
 These files are in Excel format but the second worksheet in each one can be converted to CSV to get at the data.  Copies of all the CSVs are held in this project in the **data/ons** folder.
 
@@ -423,6 +424,13 @@ create table authorities
   id serial, name text, code character varying(9), 
   constraint pk_authority primary key (id)
 );
+
+-- index: cuix_authorities_id. clustered index on the authority code.
+create unique index cuix_authorities_id on authorities USING btree (id);
+alter table authorities cluster on cuix_authorities_id;
+
+-- index: uix_authorities_code.
+create unique index uix_authorities_code on authorities USING btree (code);
 ```
 
 2.  Insert all the unique authority names from the raw library data.
@@ -579,7 +587,7 @@ copy (
 		on p.code = a.code
 		join authorities_lsoas ls
 		on ls.code = r.code
-		join imd i
+		join lsoa_imd i
 		on i.lsoa_code = ls.lsoa_code
 		join lsoa_population lsp
 		on lsp.code = ls.lsoa_code
@@ -597,19 +605,17 @@ copy (
 	from (
 		select 'FeatureCollection' As type, array_to_json(array_agg(f)) as features
 		from (
-			select 'Feature' As type, ST_AsGeoJSON(lg.geom)::json As geometry, row_to_json((select 1 from (select authority_id, name, code, hectares, population) As l)) as properties
+			select 'Feature' As type, ST_AsGeoJSON(lg.geom)::json As geometry, row_to_json((select l from (select authority_id, name, code) As l)) as properties
 			from (
-				select a.id as authority_id, a.name as name, r.code as code, r.hectares as hectares, p.population as population, ST_SimplifyPreserveTopology(ST_Transform(geom, 4326), 0.002) as geom 
+				select a.id as authority_id, a.name as name, r.code as code, ST_SimplifyPreserveTopology(ST_Transform(geom, 4326), 0.002) as geom 
 				from authorities a
 				join regions r
 				on a.code = r.code
-				join population p
-				on p.code = a.code
 				order by a.name
 			) As lg
 		) As f
 	)  As fc
-) To 'authoritiesgeo.json'
+) To 'authorities_geo.json'
 ```
 
 ## Create libraries table
@@ -621,7 +627,7 @@ copy (
 create table libraries
 (
   id serial, name text, authority_id integer, address text,
-  postcode character varying(8), postcodelat numeric, postcodelng numeric,
+  postcode character varying(8), postcode_easting numeric, postcode_northing numeric,
   lat numeric, lng numeric,
   type character varying(4),
   closed character varying(4), closed_year text,
@@ -631,6 +637,13 @@ create table libraries
   email text, url text,
   constraint pk_library primary key (id)
 );
+
+-- index: cuix_libraries_id_authid.
+create unique index cuix_libraries_id_authid on libraries using btree (id, authority_id);
+alter table libraries cluster on cuix_libraries_id_authid;
+
+-- index: uix_libraries_authid.
+create index uix_libraries_authid on libraries using btree (authority_id);
 ```
 
 2.  Take data from lots of tables and put it into the libraries table.
@@ -640,20 +653,20 @@ create table libraries
 insert into libraries(
 	name, authority_id, address, postcode, postcode_easting, postcode_northing, type, closed, closed_year, statutory2010, 
 	statutory2016, opened_year, replacement, notes, hours, staffhours, email, url)
-select	trim(r.library), a.id, trim(r.address), p.postcode,
+select trim(both from r.library), a.id, trim(both from r.address), p.postcode,
 	p.eastings, p.northings, trim(both from r.libtype),
-	r.closed,
-	r.yearclosed,
+	trim(both from r.closed),
+	trim(both from r.yearclosed),
 	case when lower(trim(both from r.statutoryapril2010)) = 'yes' then true else false end,
 	case when lower(trim(both from r.statutoryjuly2016)) = 'yes' then true else false end,
-	r.new,
-	case when lower(replacement) not like 'no%' and replacement != '' then true else false end,
-	r.notes, r.hours, r.staffhours, r.email, r.url
-from raw r
+	trim(both from r.new),
+	case when lower(trim(both from replacement)) not like 'no%' and trim(both from replacement) != '' then true else false end,
+	trim(both from r.notes), trim(both from r.hours), trim(both from r.staffhours), trim(both from r.email), trim(both from r.url)
+from libraries_raw r
 join authorities a
-on a.name = r.authority
+on a.name = trim(both from r.authority)
 left outer join postcodes p
-on replace(r.postcode, ' ', '') = replace(p.postcode, ' ', '')
+on replace(upper(r.postcode), ' ', '') = replace(p.postcode, ' ', '')
 order by r.authority, r.library;
 ```
 
