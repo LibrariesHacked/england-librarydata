@@ -13,7 +13,7 @@
     //////////////////////////////////////////////
     // LOAD.  Load the data
     //////////////////////////////////////////////
-    PublicLibrariesNews.loadData(2, false, true, true, true, function () {
+    PublicLibrariesNews.loadData(2, true, false, true, true, function () {
 
         //////////////////////////////////////////////
         // 1. Widget: Select area
@@ -61,7 +61,9 @@
         $('#selLibraryDetailsLibrary').change(function () {
             clearLibraryDetails();
             var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
+
             if (lib == '') return;
+            updateLibDistancesLine(null, lib);
             var library = PublicLibrariesNews.getLibraryById(lib);
             var libStyle = config.libStyles[library.type].cssClass;
 
@@ -150,13 +152,17 @@
             }
         });
 
-        var updateLibDistancesLine = function (authority) {
-            var distances = PublicLibrariesNews.getDistancesByAuthority(authority);
+        var updateLibDistancesLine = function (authority, library) {
+            if (library) {
+                var distances = PublicLibrariesNews.getDistancesByLibrary(library);
+            } else {
+                var distances = PublicLibrariesNews.getDistancesByAuthority(authority);
+            }
             var totalDistance = 0, population = 0;
             $.each(distances, function (i, x) {
                 totalDistance = (totalDistance + (i * x));
                 population = population + x;
-            })
+            });
             distanceLine.config.data.labels = $.map(distances, function (x, y) { if (y != 'undefined') return y; });
             distanceLine.config.data.datasets[0].data = $.map(distances, function (x, y) { return Math.round((x / population) * 100); });
             distanceLine.update();
@@ -347,7 +353,7 @@
                 var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + storiesOrdered[index] + '">' +
                 '<span class="badge badge-pill badge-danger">1/' + it.stories.length + '</span>' +
                 '<div><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p></div>' +
-                (it.stories.length > 1 ? '<p><a class="btn btn-secondary" id="Location' + index + '" href="#">next item &raquo;</a>&nbsp;</p>' : '') +
+                (it.stories.length > 1 ? '<p><a class="btn btn-secondary" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '') +
                 '<p><a class="btn btn-outline-danger btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
 
                 position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);

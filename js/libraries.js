@@ -1,31 +1,45 @@
 ﻿var PublicLibrariesNews = {
-    locationsUrl: '/data/pln/plnlocations.json',
-    dataUrl: '/data/pln/pln_YY_M_TYPE.json',
-    authGeoUrl: '/data/libraries/authoritiesgeo.json',
-    authUrl: '/data/libraries/authorities.csv',
-    authTwitterUrl: '/data/twitter/authorities.json',
-    libTwitterUrl: '/data/twitter/libraries.json',
+    ///////////////////////////////////////////////////////////////////////
+    // URLS
+    ///////////////////////////////////////////////////////////////////////
+    librariesNewsDataUrl: '/data/pln/pln_YY_M_TYPE.json',
+    librariesNewsLocationsUrl: '/data/pln/plnlocations.json',
+    authoritiesUrl: '/data/libraries/authorities.csv',
+    authoritiesGeoUrl: '/data/libraries/authorities_geo.json',
+    authoritiesTwitterUrl: '/data/twitter/authorities.json',
+    authoritiesDistancesUrl: '/data/libraries/authorities_distances.csv',
     librariesUrl: '/data/libraries/libraries.csv',
-    distancesUrl: 'data/libraries/distances.csv',
-    authoritiesGeo: null,
+    librariesTwitterUrl: '/data/twitter/libraries.json',
+    librariesDistancesUrl: '/data/libraries/libraries_distances.csv',
+    ///////////////////////////////////////////////////////////////////////
+    // Data Storage
+    ///////////////////////////////////////////////////////////////////////
     authorities: null,
-    libraries: null,
+    authoritiesGeo: null,
     authoritiesTwitter: null,
+    authoritiesDistances: {},
+    libraries: null,
     librariesTwitter: null,
+    librariesDistances: {},
     locations: {},
     stories: { changes: {}, local: {} },
-    distances: {},
-    loadData: function (months, authGeo, auth, libraries, twitter, callback) {
-        // Need to work out which files to load.  Filenames are in the form PLN_2015_11_changes
+    ///////////////////////////////////////////////////////////////////////////
+    // Function: loadData
+    // Input:
+    // Output: 
+    // 
+    ////////////////////////////////////////////////////////////////////////////
+    loadData: function (months, auth, authGeo, libraries, twitter, callback) {
         var urls = [];
-        if (authGeo) urls.push(['', '', 'authgeo', this.authGeoUrl]);
-        if (auth) urls.push(['', '', 'authorities', this.authUrl]);
+        if (auth) urls.push(['', '', 'authorities', this.authoritiesUrl]);
+        if (authGeo) urls.push(['', '', 'authgeo', this.authoritiesGeoUrl]);
         if (libraries) urls.push(['', '', 'libraries', this.librariesUrl]);
         if (twitter) {
-            urls.push(['', '', 'authtwitter', this.authTwitterUrl]);
-            urls.push(['', '', 'libtwitter', this.libTwitterUrl]);
+            urls.push(['', '', 'authtwitter', this.authoritiesTwitterUrl]);
+            urls.push(['', '', 'libtwitter', this.librariesTwitterUrl]);
         }
-        urls.push(['', '', 'distances', this.distancesUrl]);
+        urls.push(['', '', 'authorities_distances', this.authoritiesDistancesUrl]);
+        urls.push(['', '', 'libraries_distances', this.librariesDistancesUrl]);
 
         for (x = 0; x <= months ; x++) {
             var date = moment().subtract(x, 'months');
@@ -35,48 +49,73 @@
                 if (!this.stories[type][year]) this.stories[type][year] = {};
                 if (!this.stories[type][year][month]) {
                     this.stories[type][year][month] = {};
-                    urls.push([month, year, type, this.dataUrl.replace('YY', year).replace('M', month).replace('TYPE', type)]);
+                    urls.push([month, year, type, this.librariesNewsDataUrl.replace('YY', year).replace('M', month).replace('TYPE', type)]);
                 }
             }
         }
-        if (Object.keys(this.locations).length == 0) urls.push(['', '', 'locations', this.locationsUrl]);
+        if (Object.keys(this.locations).length == 0) urls.push(['', '', 'locations', this.librariesNewsLocationsUrl]);
         var requests = [];
         var getUrlFailSafe = function (url) {
             var dfd = jQuery.Deferred();
-            $.ajax(url).always(function (res) {
-                dfd.resolve(res);
-            });
+            $.ajax(url).always(function (res) { dfd.resolve(res); });
             return dfd.promise();
         };
-        for (i = 0; i < urls.length; i++) {
-            requests.push(getUrlFailSafe(urls[i][3]));
-        }
+        for (i = 0; i < urls.length; i++) requests.push(getUrlFailSafe(urls[i][3]));
         $.when.apply($, requests).always(function () {
             $.each(arguments, function (i, data) {
-                var month = urls[i][0];
-                var year = urls[i][1];
-                var type = urls[i][2];
+                var month = urls[i][0], year = urls[i][1], type = urls[i][2];
                 if ((type == 'changes' || type == 'local') && !data.status) this.stories[type][year][month] = data;
                 if (type == 'locations') this.locations = data;
-                if (type == 'libraries') this.libraries = Papa.parse(data, { header: true }).data;
-                if (type == 'authgeo') this.authoritiesGeo = data;
-                if (type == 'authorities') this.authorities = Papa.parse(data, { header: true }).data;
-                if (type == 'distances') this.distances = Papa.parse(data, { header: true }).data;
+                if (type == 'libraries') this.libraries = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
+                if (type == 'libraries_distances') this.librariesDistances = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
+                if (type == 'authgeo') this.authorities = data;
+                if (type == 'authorities') this.authorities = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
+                if (type == 'authorities_distances') this.authoritiesDistances = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
                 if (type == 'authtwitter') this.authoritiesTwitter = data;
                 if (type == 'libtwitter') this.librariesTwitter = data;
             }.bind(this));
             callback();
         }.bind(this));
     },
+    ///////////////////////////////////////////////////////////////////////////
+    // Function: getTweetsSortedByDate
+    // Input:
+    // Output: 
+    // 
+    ////////////////////////////////////////////////////////////////////////////
     getTweetsSortedByDate: function () {
         return $.map($.merge(this.authoritiesTwitter, this.librariesTwitter), function (t, i) {
             if (t[3]) return { name: t[0], account: t[1], type: t[2], description: t[3], website: t[4], following: t[6], favourites: t[8], followers: t[5], tweets: t[7], dateAccount: t[9], avatar: t[10], latest: t[11], latestDate: t[12] }
         }).sort(function (a, b) { return moment(b[12]) - moment(a[12]) });
     },
+    ///////////////////////////////////////////////////////////////////////////
+    // Function: getDistancesByAuthority
+    // Input:
+    // Output: 
+    // 
+    ////////////////////////////////////////////////////////////////////////////
     getDistancesByAuthority: function (authority) {
         var distances = {};
-        $.each(this.distances, function (i, d) {
-            if (d.authority == authority || !authority) {
+        var authId = 0;
+        $.each(this.authorities, function (i, a) { if (a.name == authority) authId = a.authority_id });
+        $.each(this.authoritiesDistances, function (i, d) {
+            if (d.authority == authId || authId == 0) {
+                if (!distances[d.distance]) distances[d.distance] = 0;
+                distances[d.distance] = distances[d.distance] + parseInt(d.population);
+            }
+        });
+        return distances;
+    },
+    ///////////////////////////////////////////////////////////////////////////
+    // Function: getDistancesByLibrary
+    // Input:
+    // Output: 
+    // 
+    ////////////////////////////////////////////////////////////////////////////
+    getDistancesByLibrary: function (library) {
+        var distances = {};
+        $.each(this.librariesDistances, function (i, d) {
+            if (d.id == library || !library) {
                 if (!distances[d.distance]) distances[d.distance] = 0;
                 distances[d.distance] = distances[d.distance] + parseInt(d.population);
             }
@@ -201,7 +240,7 @@
     getLibrariesListSorted: function (authority) {
         var libraries = this.getLibrariesByAuthority();
         return $.map(this.authorities, function (i, x) {
-            if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function (y, z) {return { id: y.id, name: y.name } });
+            if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function (y, z) { return { id: y.id, name: y.name } });
         }).sort(function (a, b) {
             return a.name.localeCompare(b.name);
         });
