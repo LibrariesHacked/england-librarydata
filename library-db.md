@@ -781,6 +781,72 @@ update libraries set opened_year = '2012' where authority_id = 129 and name = 'H
 update libraries set opened_year = '2014' where authority_id = 149 and name = 'Wednesfield Library' and opened_year is not null;
 
 -- correct invalid postcodes
+"Central";"Barnsley" "S70 2JF" to S70 2SR
+"Paulton (The Hub)";"Bath and NE Somerset""BS29 7QG" to BS39 7QG
+"Shard End Library";"Birmingham" B34 7AG to B34 7AZ
+"Bingley ";"Bradford" BD16 1AW to BD16 1AJ
+"Keighley ";"Bradford" BD21 3SX to BD21�3RY
+"Preston";"Brent" HA9 8PL to HA9 8PP
+"Town Hall";"Brent" HA9 9HU to HA9 9HP
+"Winslow";"Buckinghamshire" MK18 3RB to MK18 3DL
+"Camomile Street Library";"City of London" EC3A 7EX to EC3A 7AS
+"Appleby Library";"Cumbria" CA16 1QP to CA16 6QN
+"Brampton Library ";"Cumbria" CA8 8NX to CA8 1NW
+"Burton Book Drop";"Cumbria" LA6 7NA to LA6 1NA
+"Consett Library";"Durham" DH8 5AT to DH8 5SD
+"Newton Aycliffe Library";"Durham" DL5 5QG to DL5 5RW
+"Crowborough Library";"East Sussex" TN6 1DH to TN6 1AR
+"Chelmsford library";"Essex" CM1 1LH to CM1 3UP
+"Frinton library";"Essex" C013 9DA to CO13 9DA
+"Alresford ";"Hampshire" S024 9AQ to SO24 9AQ
+"Central Resources Library";"Hertfordshire" AL10 8XG to AL10 8TN
+"Harpenden";"Hertfordshire" AL5 4EN to AL5 4ED
+"Redbourn";"Hertfordshire" AL3 3JQ to AL3 7BP
+"Allington Library";"Kent"  ME6 0PR to ME16 0PR
+"Newington Library";"Kent" CT12 6NB to CT12 6FA
+"Holderness Road Customer Service Centre Library";"Kingston upon Hull" HU9 2AH to HU9 2BN
+"Waterloo";"Lambeth" SE1 7AG to SE1 7AE
+"Garforth library and one stop centre";"Leeds" LS25 1DU to LS25 1EH
+"Farley Community Centre";"Luton"
+"Wigmore";"Luton"
+"Arcadia library and leisure centre";"Manchester"
+"Newbiggin Hall Library";"Newcastle upon Tyne"
+"East Ham Library";"Newham"
+"Diss Library";"Norfolk"
+"Long Ashton ";"North Somerset"
+"Portishead";"North Somerset"
+"Weston-super-Mare ";"North Somerset"
+"Forest Hall";"North Tyneside"
+"Shiremoor";"North Tyneside"
+"Corby";"Northamptonshire"
+"Corby";"Northamptonshire"
+"Daventry";"Northamptonshire"
+"Thrapston";"Northamptonshire"
+"Mansfield Woodhouse ";"Nottinghamshire"
+"Newark ";"Nottinghamshire"
+"Worksop";"Nottinghamshire"
+"Failsworth Library";"Oldham"
+"Littlemore";"Oxfordshire"
+"Old Marston";"Oxfordshire"
+"Peers";"Oxfordshire"
+"Skelton Library";"Redcar and Cleveland"
+"Richmond Information & Reference Library";"Richmond upon Thames"
+"Richmond Local Studies Library & Archive";"Richmond upon Thames"
+"Central Library and Arts Centre";"Rotherham"
+"Highley";"Shropshire"
+"Primrose library";"South Tyneside"
+"Adswood and Bridgehall ";"Stockport"
+"Dialstone Library";"Stockport"
+"Offerton ";"Stockport"
+"Thornaby Central Library and Customer Service Centre";"Stockton on Tees"
+"Park Library";"Swindon"
+"Bethnal Green library";"Tower Hamlets"
+"Wakefield One";"Wakefield"
+"Wakefield (Drury lane)";"Wakefield"
+"Wakefield (Balne Lane)";"Wakefield"
+"Lymm ";"Warrington"
+"Trowbridge";"Wiltshire"
+"Wargrave ";"Wokingham"
 
 
 -- correct addresses with no data
