@@ -785,7 +785,7 @@ update libraries set opened_year = '2014' where authority_id = 149 and name = 'W
 "Paulton (The Hub)";"Bath and NE Somerset""BS29 7QG" to BS39 7QG
 "Shard End Library";"Birmingham" B34 7AG to B34 7AZ
 "Bingley ";"Bradford" BD16 1AW to BD16 1AJ
-"Keighley ";"Bradford" BD21 3SX to BD21�3RY
+"Keighley ";"Bradford" BD21 3SX to BD21 3RY
 "Preston";"Brent" HA9 8PL to HA9 8PP
 "Town Hall";"Brent" HA9 9HU to HA9 9HP
 "Winslow";"Buckinghamshire" MK18 3RB to MK18 3DL
