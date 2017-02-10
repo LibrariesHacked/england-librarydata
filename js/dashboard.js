@@ -469,7 +469,7 @@
         var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
             type: 'horizontalBar',
             data: {
-                labels: ['multiple', 'employment', 'education'],
+                labels: ['multiple'],
                 datasets: []
             },
             options: {

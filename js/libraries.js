@@ -68,7 +68,7 @@
                 if (type == 'locations') this.locations = data;
                 if (type == 'libraries') this.libraries = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
                 if (type == 'libraries_distances') this.librariesDistances = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
-                if (type == 'authgeo') this.authorities = data;
+                if (type == 'authgeo') this.authoritiesGeo = data;
                 if (type == 'authorities') this.authorities = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
                 if (type == 'authorities_distances') this.authoritiesDistances = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
                 if (type == 'authtwitter') this.authoritiesTwitter = data;
@@ -127,12 +127,12 @@
     },
     ///////////////////////////////////////////////////////////////////////////
     // Function: getDeprivationIndicesByAuthorityAndLibType
-    // Input:
+    // Input: authority (e.g. Barnet), library type (e.g. LAL)
     // Output: 
     // 
     ////////////////////////////////////////////////////////////////////////////
     getDeprivationIndicesByAuthorityAndLibType: function (authority, libType) {
-        var depIndices = { multiple: 0, employment: 0, education: 0 };
+        var depIndices = { multiple: 0 };
         var count = 0;
         $.each(this.getAuthoritiesWithLibraries(), function (i, a) {
             if (a.name == authority || !authority) {
@@ -140,8 +140,8 @@
                     if (l.type == libType) {
                         count++;
                         depIndices.multiple += parseFloat(l.multiple);
-                        depIndices.employment += parseFloat(l.employment);
-                        depIndices.education += parseFloat(l.education);
+                        //depIndices.employment += parseFloat(l.employment);
+                        //depIndices.education += parseFloat(l.education);
                         //depIndices.adultskills += parseFloat(l.adultskills);
                         //depIndices.health += parseFloat(l.health);
                         //depIndices.services += parseFloat(l.services);

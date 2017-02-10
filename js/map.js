@@ -218,7 +218,7 @@
     // INIT
     // Load the initial set of data
     /////////////////////////////////////////////////////////////
-    PublicLibrariesNews.loadData(3, true, false, true, true, function () {
+    PublicLibrariesNews.loadData(3, true, true, true, true, function () {
         var authGeo = PublicLibrariesNews.getAuthGeoWithStoriesAndLibraries();
         var onEachFeature = function (feature, layer) {
             layer.on('click', function (e) {

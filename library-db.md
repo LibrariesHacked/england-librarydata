@@ -354,7 +354,7 @@ copy lsoa_population FROM 'lsoa-population-mid2015.csv' delimiter ',' csv header
 
 1.  Download from [Gov.UK statistics](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2015).  Select to download the CSV *File 7: all ranks, deciles and scores for the indices of deprivation, and population denominators*
 
-2.  Create the table to store the data.
+2.  Create a table to store the data.
 
 ```
 -- table: lsoa_imd.  a table to store deprivation statistics.
@@ -683,43 +683,128 @@ There are some decisions to be made about cleaning up the data from the raw libr
 | LAL- | 30 | These appear to be book drops and other non-libraries.  Will remove these. |
 | CRL+ | 29 | Seem to be the same as CRL.  Will convert to CRL. |
 
+Now, what about the closed status?
+
+| Closed type | Count | Description |
+| ----------- | ----- | ----------- |
+|  | 3021 | No closed indicator.  Hopefully they're not closed.  Leave as is. |
+| XL | 119 | Closed library.  Leave as is. |
+| XLR | 114 | Library replaced.  Leave as is. |
+| XLT | 15 | Library temporarily closed.  Leave as is. |
+
+That makes for 248 closed libraries.  Aside from the statuses, there are then some oddities.
+
+| Issue | Count | Resolution |
+| ----- | ----- | ---------- |
+| No closed status but a closed year.  What's going on here?  Set them to closed. | 5 | Set closed status to XL.  Set statutory2016 value to No. |
+| Less replaced libraries than replacements | 114/216 | There are 114 libraries set as replaced.  And 216 libraries marked as replacements.  The likelihood here is that library services have included new libraries but not listed the ones they replaced.  Can't do much about that, except accoutn for it in the dashboard. |
+| Closed status but also library type.  Would like this to always be the case but it is generally not.  | 13 | Remove the library type where the library is closed. |
+
 So that's a set of rules for library type.  Then there is the statutory and non-statutory indicator for 2010 and 2016.  Services completing the data return should indicate (Yes/No) whether the library was included as part of their statutory service both in April 2010 and July 2016.  If the library is new then it should be marked as No in 2010.  There are the following slightly odd responses:
 
 | Issue | Count | Resolution |
 | ------ | ----- | ---------- |
-| Library (not new) marked as statutory in 2016 but not in 2010.  Some of these appear to be libraries that haven't changed status. | 30 | Change statutory 2016 value to No.  |
+| Library, not marked as new or replacement, but marked as statutory in 2016 but not in 2010.  Some of these appear to be libraries that haven't changed status. Others are micro libraries or collections that are replacements for mobile library services. | 31 | Change statutory 2016 value to No.  |
 | Independent community library marked as statutory in 2016.  If these are supported by the authority, would expect them to be marked as CRL. | 1 | Change statutory 2016 value to No. |
-| Closed but marked as statutory in 2016.  Some may be temporary closures, others indefinite. | 9 | Change statutory 2016 value to No. |
+| Have a closed year but marked as statutory in 2016.  Some may be temporary closures, others indefinite. | 6 | Change statutory 2016 value to No. |
+| New, but marked as statutory in 2010.  | 122 | Change statutory 2010 value to No |
+| Have a closed status but marked as statutory in 2016.  | 9 | Change statutory 2016 value to No |
 
-3. Clean up the data.
+Then, there's the closed and opened years.  
+
+| Issue | Count | Resolution |
+| ----- | ----- | ---------- |
+| No closed year, but closed status. | 13 | Set to closed in 2016. |
+| Invalid closed year.  If completed, these should be a year (e.g. 2015).  Some of them are dates like Sep-2015. | 13 | Manually correct.  Could prob do it cleverly but not much point. |
+| Invalid opened year.  If completed, these should be a year (e.g. 2015).  Some of them are dates like Sep-2015. There are 4 occasions that authorities think it's appropriate to put 'Yes' to a question on closed year. | 19 | Manually correct.  Could prob do it cleverly but not much point. |
+
+What about addresses?
+
+| Issue | Count | Resolution |
+| ----- | ----- | ---------- |
+| No address and no postcode | 19 | Must fix these manually. |
+| Invalid postcodes in raw data |  | Must fix manually |
+
+3. Clean up the data.  Run the following scripts to implement the rules above.
 
 ```
+-- library type rules
 delete from libraries where type = 'LAL-';
 update libraries set type = 'ICL' where type = 'ICL+';
 update libraries set type = 'CRL' where type = 'CRL+';
+
+-- closed oddities
+update libraries set closed = 'XL' where closed_year is not null;
+update libraries set type = null where type is not null and closed is not null;
+
+-- statutory indicator rules
+update libraries set statutory2016 = 'f' where statutory2016 = 't' and statutory2010 = 'f' and opened_year is null;
 update libraries set statutory2016 = 'f' where type = 'ICL';
-update libraries set statutory2016 = 'f' where closed is not null;
-update libraries set statutory2010 = 'f' where statutory2010 = 'f' and opened_year is not null;
+update libraries set statutory2010 = 'f' where closed_year is not null and statutory2016 = 't';
+update libraries set statutory2010 = 'f' where opened_year is not null;
+update libraries set statutory2016 = 'f' where closed is not null and statutory2016 = 't';
+
+-- corrections to closed years
+update libraries set closed_year = '2013' where authority_id = 1 and name = 'Castle Green' and closed_year is not null;
+update libraries set closed_year = '2010' where authority_id = 1 and name = 'Fanshawe' and closed_year is not null;
+update libraries set closed_year = '2012' where authority_id = 1 and name = 'Markyate' and closed_year is not null;
+update libraries set closed_year = '2013' where authority_id = 1 and name = 'Rush Green' and closed_year is not null;
+update libraries set closed_year = '2016' where authority_id = 16 and name = 'Cheltenham Road' and closed_year is not null;
+update libraries set closed_year = '2014' where authority_id = 54 and name = 'Rainham Library' and closed_year is not null;
+update libraries set closed_year = '2016' where authority_id = 69 and name = 'Burley library' and closed_year is not null;
+update libraries set closed_year = '2016' where authority_id = 71 and name = 'Barwell' and closed_year is not null;
+update libraries set closed_year = '2016' where authority_id = 111 and name = 'Central library' and closed_year is not null;
+update libraries set closed_year = '2012' where authority_id = 121 and name = 'Dialstone Library' and closed_year is not null;
+update libraries set closed_year = '2014' where authority_id = 149 and name = 'Ashmore Park Library' and closed_year is not null;
+update libraries set closed_year = '2010' where authority_id = 149 and name = 'Wednesfield Library' and closed_year is not null;
+update libraries set closed_year = '2016' where authority_id = 151 and name = 'Haxby' and closed_year is not null;
+
+-- corrections to opened years
+update libraries set opened_year = '2010' where authority_id = 1 and name = 'Dagenham' and opened_year is not null;
+update libraries set opened_year = '2016' where authority_id = 2 and name = 'Grahame Park (now called Colindale)' and opened_year is not null;
+update libraries set opened_year = '2010' where authority_id = 20 and name = 'King Cross' and opened_year is not null;
+update libraries set opened_year = '2016' where authority_id = 44 and name = 'Chopwell Library' and opened_year is not null;
+update libraries set opened_year = '2016' where authority_id = 44 and name = 'Felling Library' and opened_year is not null;
+update libraries set opened_year = '2015' where authority_id = 44 and name = 'Wrekenton Library' and opened_year is not null;
+update libraries set opened_year = '2016' where authority_id = 51 and name = 'Marcus Garvey Library' and opened_year is not null;
+update libraries set opened_year = '2014' where authority_id = 54 and name = 'Rainham Library' and opened_year is not null;
+update libraries set opened_year = '2010' where authority_id = 89 and name = 'Corby' and opened_year is not null;
+update libraries set opened_year = '2015' where authority_id = 89 and name = 'Towcester' and opened_year is not null;
+update libraries set opened_year = '2012' where authority_id = 89 and name = 'Wootton' and opened_year is not null;
+update libraries set opened_year = '2013' where authority_id = 110 and name = 'Craven Arms' and opened_year is not null;
+update libraries set opened_year = '2016' where authority_id = 111 and name = 'Library @ The Curve' and opened_year is not null;
+update libraries set opened_year = '2014' where authority_id = 121 and name = 'Adswood and Bridgehall' and opened_year is not null;
+update libraries set opened_year = '2014' where authority_id = 121 and name = 'Offerton' and opened_year is not null;
+update libraries set opened_year = '2010' where authority_id = 127 and name = 'Library @ The Life Centre' and opened_year is not null;
+update libraries set opened_year = '2013' where authority_id = 127 and name = 'Library @ Westcroft Centre' and opened_year is not null;
+update libraries set opened_year = '2012' where authority_id = 129 and name = 'Hattersley' and opened_year is not null;
+update libraries set opened_year = '2014' where authority_id = 149 and name = 'Wednesfield Library' and opened_year is not null;
+
+-- correct invalid postcodes
+
+
+-- correct addresses with no data
+
+
 ```
 
 ## Geocoding the libraries
 
-Although (most) of the libraries have some address data (either a full address or postcode), we need coordinates in order to do some of the geographic profiling, and match libraries to particuar areas.  To do this, we'll need to use a geocoding service such as Open Street Map.  Where we can't get geocoordinates, we can always fall back on postcodes, for which we have the centre coordinates (centroids).  That is a little less accurate though as a postcode can span over a wide area.
+Although all of the libraries have some address data (either a full address or postcode).  We need coordinates in order to do some of the geographic profiling, and match libraries to particuar areas.  To do this, we'll need to use a geocoding service such as Open Street Map.  Where we can't get geocoordinates, we can always fall back on postcodes, for which we have the centre coordinates (centroids).  That is a little less accurate though as a postcode can span over a wide area.
 
 1.  Export the libraries data to geocode it.  While doing this, create a bounding box to limit the area that we wish to search within.  This should give the geocoder more to go on, and reduce the number of false matches, which we won't otherwise be able to check.
 
 ```
 copy (
 	select 	l.id, l.name, l.address, l.postcode, 
-	case when l.postcode is not null then ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 10)))
-	else ST_AsText(ST_Envelope(ST_Transform(r.geom, 4326))) end, 
-	l.lat, l.lng
+	case when l.postcode is not null then ST_AsText(ST_Envelope(ST_Buffer(ST_Transform(ST_SetSRID(ST_MakePoint(l.postcode_easting, l.postcode_northing), 27700), 4326)::geography, 1609)::geometry))
+	else ST_AsText(ST_Envelope(ST_Transform(r.geom, 4326))) end
 	from libraries l
 	join authorities a
 	on a.id = l.authority_id
 	join regions r
 	on r.code = a.code
-) to '/data/libraries/librariesaddresses.csv' delimiter ',' csv header;
+) to '/data/libraries/libraries_addresses.csv' delimiter ',' csv header;
 ```
 
 4.  We're then going to run this through a geocoder.
