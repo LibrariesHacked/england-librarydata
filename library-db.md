@@ -649,11 +649,17 @@ create index uix_libraries_authid on libraries using btree (authority_id);
 2.  Take data from lots of tables and put it into the libraries table.
 
 ```
+-- correct invalid postcode entries
+update libraries_raw set postcode = 'HU18 1PA' where postcode = 'HU 18 1PA';
+update libraries_raw set postcode = 'NE3234AU' where postcode = 'NE32 34AU';
+update libraries_raw set postcode = 'TA21 8AQ' where postcode = 'TA21  8AQ';
+
 -- table: libraries.  populate the library data.
 insert into libraries(
 	name, authority_id, address, postcode, postcode_easting, postcode_northing, type, closed, closed_year, statutory2010, 
 	statutory2016, opened_year, replacement, notes, hours, staffhours, email, url)
-select trim(both from r.library), a.id, trim(both from r.address), p.postcode,
+select trim(both from r.library), a.id, trim(both from r.address), 
+	coalesce(p.postcode, r.postcode),
 	p.eastings, p.northings, trim(both from r.libtype),
 	trim(both from r.closed),
 	trim(both from r.yearclosed),
@@ -722,8 +728,7 @@ What about addresses?
 
 | Issue | Count | Resolution |
 | ----- | ----- | ---------- |
-| No address and no postcode | 19 | Must fix these manually. |
-| Invalid postcodes in raw data |  | Must fix manually |
+| No postcode or invalid postcode | 97 | Must fix these manually. |
 
 3. Clean up the data.  Run the following scripts to implement the rules above.
 
@@ -780,30 +785,42 @@ update libraries set opened_year = '2013' where authority_id = 127 and name = 'L
 update libraries set opened_year = '2012' where authority_id = 129 and name = 'Hattersley' and opened_year is not null;
 update libraries set opened_year = '2014' where authority_id = 149 and name = 'Wednesfield Library' and opened_year is not null;
 
--- correct invalid postcodes
-"Central";"Barnsley" "S70 2JF" to S70 2SR
-"Paulton (The Hub)";"Bath and NE Somerset""BS29 7QG" to BS39 7QG
-"Shard End Library";"Birmingham" B34 7AG to B34 7AZ
-"Bingley ";"Bradford" BD16 1AW to BD16 1AJ
-"Keighley ";"Bradford" BD21 3SX to BD21 3RY
-"Preston";"Brent" HA9 8PL to HA9 8PP
-"Town Hall";"Brent" HA9 9HU to HA9 9HP
-"Winslow";"Buckinghamshire" MK18 3RB to MK18 3DL
-"Camomile Street Library";"City of London" EC3A 7EX to EC3A 7AS
-"Appleby Library";"Cumbria" CA16 1QP to CA16 6QN
-"Brampton Library ";"Cumbria" CA8 8NX to CA8 1NW
-"Burton Book Drop";"Cumbria" LA6 7NA to LA6 1NA
-"Consett Library";"Durham" DH8 5AT to DH8 5SD
-"Newton Aycliffe Library";"Durham" DL5 5QG to DL5 5RW
-"Crowborough Library";"East Sussex" TN6 1DH to TN6 1AR
-"Chelmsford library";"Essex" CM1 1LH to CM1 3UP
-"Frinton library";"Essex" C013 9DA to CO13 9DA
-"Alresford ";"Hampshire" S024 9AQ to SO24 9AQ
-"Central Resources Library";"Hertfordshire" AL10 8XG to AL10 8TN
-"Harpenden";"Hertfordshire" AL5 4EN to AL5 4ED
-"Redbourn";"Hertfordshire" AL3 3JQ to AL3 7BP
-"Allington Library";"Kent"  ME6 0PR to ME16 0PR
-"Newington Library";"Kent" CT12 6NB to CT12 6FA
+-- fill in missing and invalid postcodes
+update libraries set postcode = 'S70 2SR' where name = 'Central' and authority_id = 3 and postcode = 'S70 2JF';
+update libraries set postcode = 'BS39 7QG' where name = 'Paulton (The Hub)' and authority_id = 4 and postcode = 'BS29 7QG';
+update libraries set postcode = 'B34 7AZ' where name = 'Shard End Library' and authority_id = 7 and postcode = 'B34 7AG';
+update libraries set postcode = 'BD16 1AJ' where name = 'Bingley' and authority_id = 13 and postcode = 'BD16 1AW';
+update libraries set postcode = 'BD21 3RY' where name = 'Keighley' and authority_id = 13 and postcode = 'BD21 3SX';
+update libraries set postcode = 'HA9 8PP' where name = 'Preston' and authority_id = 14 and postcode = 'HA9 8PL';
+update libraries set postcode = 'HA9 9HP' where name = 'Town Hall' and authority_id = 14 and postcode = 'HA9 9HU';
+update libraries set postcode = 'MK18 3DL' where name = 'Winslow' and authority_id = 18 and postcode = 'MK18 3RB';
+update libraries set postcode = '' where name = 'Ramsey Library' and authority_id = 21 and postcode is null;
+update libraries set postcode = 'EC3A 7AS' where name = 'Camomile Street Library' and authority_id = 26 and postcode = 'EC3A 7EX';
+update libraries set postcode = 'CA16 6QN' where name = 'Appleby Library' and authority_id = 30 and postcode = 'CA16 1QP';
+update libraries set postcode = 'CA8 1NW' where name = 'Brampton Library' and authority_id = 30 and postcode = 'CA8 8NX';
+update libraries set postcode = 'LA6 1NA' where name = 'Burton Book Drop' and authority_id = 30 and postcode = 'LA6 7NA';
+update libraries set postcode = '' where name = 'Carcroft' and authority_id = 35 and postcode is null;
+update libraries set postcode = 'DH8 5SD' where name = 'Consett Library' and authority_id = 38 and postcode = 'DH8 5AT';
+update libraries set postcode = 'DL5 5RW' where name = 'Newton Aycliffe Library' and authority_id = 38 and postcode = 'DL5 5QG';
+update libraries set postcode = 'TN6 1AR' where name = 'Crowborough Library' and authority_id = 41 and postcode = 'TN6 1DH';
+update libraries set postcode = 'CM1 3UP' where name = 'Chelmsford library' and authority_id = 43 and postcode = 'CM1 1LH';
+update libraries set postcode = 'CO13 9DA' where name = 'Frinton library' and authority_id = 43 and postcode = 'C013 9DA';
+update libraries set postcode = '' where name = 'East Greenwich Library' and authority_id = 46 and postcode is null;
+update libraries set postcode = '' where name = 'Ferrier Library' and authority_id = 46 and postcode is null;
+update libraries set postcode = 'SO24 9AQ' where name = 'Alresford' and authority_id = 50 and postcode = 'S024 9AQ';
+update libraries set postcode = '' where name = 'Borehamwood' and authority_id = 56 and postcode is null;
+update libraries set postcode = 'AL10 8TN' where name = 'Central Resources Library' and authority_id = 56 and postcode = 'AL10 8XG';
+
+update libraries set postcode = 'AL5 4ED' where name = 'Harpenden' and authority_id = 56 and postcode = 'AL5 4EN';
+update libraries set postcode = 'AL3 7BP' where name = 'Redbourn' and authority_id = 56 and postcode = 'AL3 3JQ';
+update libraries set postcode = 'ME16 0PR' where name = 'Allington Library' and authority_id = 62 and postcode = 'ME6 0PR';
+update libraries set postcode = '' where name = 'Ashford Library' and authority_id = 62 and postcode is null;
+update libraries set postcode = '' where name = 'Edenbridge' and authority_id = 62 and postcode is null;
+update libraries set postcode = 'CT12 6FA' where name = 'Newington Library' and authority_id = 62 and postcode = 'CT12 6NB';
+update libraries set postcode = '' where name = '' and authority_id =  and postcode = '';
+update libraries set postcode = '' where name = '' and authority_id =  and postcode = '';
+update libraries set postcode = '' where name = '' and authority_id =  and postcode = '';
+
 "Holderness Road Customer Service Centre Library";"Kingston upon Hull" HU9 2AH to HU9 2BN
 "Waterloo";"Lambeth" SE1 7AG to SE1 7AE
 "Garforth library and one stop centre";"Leeds" LS25 1DU to LS25 1EH
