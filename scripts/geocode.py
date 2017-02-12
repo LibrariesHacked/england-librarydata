@@ -3,10 +3,10 @@ import requests
 import json
 import time
 
-with open('.data/libraries_addresses.csv', 'r') as libscsv:
+with open('../data/libraries/libraries_addresses.csv', 'r') as libscsv:
     reader = csv.reader(libscsv, delimiter=',', quotechar='"')
-    next(reader, None)  # skip the headers
-    writer = csv.writer(open('../data/libraries_geocoded.csv', 'w', encoding='utf8', newline=''), delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    next(reader, None) # skip the headers
+    writer = csv.writer(open('../data/libraries/libraries_addresses_geo.csv', 'w', encoding='utf8', newline=''), delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['id', 'lat', 'lng'])
 
     for row in reader: # each row is in the format:  id, name, address, postcode, bbox, lat, lng
@@ -20,11 +20,12 @@ with open('.data/libraries_addresses.csv', 'r') as libscsv:
         address = address.strip().replace(',',' ').replace(' ','+').replace('++','+')
         url = 'http://nominatim.openstreetmap.org/search/' + name + ' ' + address + ' ' + postcode + '?viewbox=' + bboxstr + '&format=json&bounded=1&limit=1'
         print(url)
-        # request are like:  http://nominatim.openstreetmap.org/search/York+Explore+Library+Square+York?viewbox=-1.22371196679726,54.0568663596222,-0.919670778852277,53.8745672170754&format=json&bounded=1&limit=1
-        result = requests.get(url).json()
-        data = result['results']
+        # request are like:  http://nominatim.openstreetmap.org/search/York+Explore+Library+Square+York?viewbox=-1.22371196679726,54.0568663596222,-0.919670778852277,53.8745672170754&format=json&bounded=1&limit=1		result = requests.get(url).json()
+        r = requests.get(url)
+        data = r.json()
+        print(data)
         if len(data) > 0:
-            writer.writerow([id,data[0]['geometry']['location']['lat'],data[0]['geometry']['location']['lng']])
+            writer.writerow([id, data[0]['lat'], data[0]['lon']])
             time.sleep(1) # because the web service is rate limited, wait for a second before moving onto the next one.
         else:
             writer.writerow([id, '', ''])
