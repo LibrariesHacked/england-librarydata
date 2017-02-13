@@ -747,7 +747,7 @@ update libraries set type = null where type is not null and closed is not null;
 update libraries set statutory2016 = 'f' where statutory2016 = 't' and statutory2010 = 'f' and opened_year is null;
 update libraries set statutory2016 = 'f' where type = 'ICL' and statutory2016 = 't';
 update libraries set statutory2010 = 'f' where closed_year is not null and statutory2016 = 't';
-update libraries set statutory2010 = 'f' where opened_year is not null;
+update libraries set statutory2010 = 'f' where opened_year is not null and statutory2010 = 't';
 update libraries set statutory2016 = 'f' where closed is not null and statutory2016 = 't';
 
 -- corrections to closed years
@@ -914,7 +914,7 @@ copy (
 
 2.  Run the addresses through a geocoder.
 
-There is a python script in the scripts directory of this project that will take the output of the above query (libraries_addresses.csv), and geocode it using Open Street Map.  Run that file, which will take about an hour.  It will produce another file (libraries_addresses_geo.csv).  
+There is a python script in the scripts directory of this project that will take the output of the above query (libraries_addresses.csv), and attempt to geocode the library locations using Open Street Map.  Run that file, which will take about an hour.  It will produce another file (libraries_addresses_geo.csv).  
 
 3.  Create a table to store the locations.
 
@@ -931,14 +931,15 @@ create table librarylocations
 4.  Import the library locations.
 
 ```
-copy librarylocations from 'librarylocations.csv' delimiter ',' csv;
+copy librarylocations from 'libraries_addresses_geo.csv' delimiter ',' csv header;
 ```
 
 5.  And update the locations.  This checks that the geocoded value is also within the relevant authority boundary.
 
 ```
 update libraries u
-set lat = ll.lat, lng = ll.lng
+set postcode_easting = ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700)),
+postcode_northing = ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700))
 from librarylocations ll
 join libraries l
 on l.id = ll.libraryid
@@ -953,78 +954,32 @@ where ST_Within(
 and u.id = ll.libraryid;
 ```
 
-6.  Then, fill in any blanks with the postcode values:
-
-```
-update libraries l
-set lat = l.postcodelat,
-lng = l.postcodelng
-where l.lat is null and l.lng is null;
-```
-
-7. The create a convenient geometry column.
+6. The create a convenient geometry column.
 
 ```
 select AddGeometryColumn ('libraries','geom', 27700, 'POINT', 2);
 -- and update the column to store the coordinates
-update libraries set geom = ST_Transform(ST_SetSRID(ST_MakePoint(lng, lat), 4326), 27700);
+update libraries set geom = ST_SetSRID(ST_MakePoint(postcode_easting, postcode_northing), 27700);
+select UpdateGeometrySRID('libraries', 'geom', 27700);
 
 -- index: uix_libraries_geom
 create index ix_libraries_geom on libraries using btree (geom);
 ```
 
-## Export data on libraries.
+## Catchment areas
 
-1.  Export a CSV.
+We are going to create a catchment area for each library.  This will be based upon the nearest library for the population of England.  The makeup of a librry catchment will be the population where that library is their nearest.
 
-```
-copy (select l.name,
-	a.id "authority_id",
-	l.address,
-	l.postcode,
-	l.lat,
-	l.lng,
-	l.statutory2010,
-	l.statutory2016,
-	l.type, 
-	l.closed,
-	l.closed_year,
-	l.opened_year,
-	l.replacement,
-	l.notes,
-	l.hours,
-	l.staffhours,
-	l.url,
-	l.email,
-	-- Add the LSOA data
-	ls.lsoa11nm "lsoa_name",
-	ls.lsoa11cd "lsoa_code",
-	-- Add the deprivation data
-	i.imd_decile as multiple,
-	i.income_decile as income,
-	i.employment_decile as employment,
-	i.education_decile as education,
-	i.children_decile as children,
-	i.health_decile as health,
-	i.adultskills_decile as adultskills,
-	i.crime_decile as crime,
-	i.housing_decile as housing,
-	i.geographical_decile as services,
-	i.environment_decile as environment
-from libraries l
-join authorities a
-on a.id = l.authority_id
-left outer join lsoa_boundaries ls
-on ST_Within(l.geom, ls.geom)
-left outer join imd i
-on i.lsoa_code = ls.lsoa11cd) to 'data\libraries\libraries.csv' delimiter ','csv header;
-```
+It doesn't make sense to create a library catchment for libraries other than those that are statutory.  For authorities, it is only useful to have an understanding of the catchment areas for libraries that are fulfilling a statutory duty.  And to include other libraries would affect the catchment areas.
 
-## Distance calculations and catchment areas
+However, it would be useful to have an idea of the demographics around other (e.g. Independent Community) libraries.  Therefore, these scripts will:
 
-It'd also be good to do some distance analysis, such as how far people have to travel to their nearest library.  What we need for that is to create a catchment area for each library from census output areas.  
+- Create library catchment areas for current statutory Libraries
+- Create library catchment areas for current non statutory libraries
+- Create library catchment areas for closed statutory libraries in 2010
+- Create library catchment areas for closed non statutory libraries in 2010.
 
-It makes sense to only do this for statutory libraries.  It also makes sense to do it only for open libraries, but then it may also be useful to see what a catchment area was for a closed library.  To do this we need to run a catchment analysis for libraries open in 2010 and one for libraries open in 2016.
+For each of the above there will also be 2 methodologies.  The first will create catchment areas that are limited to the authority that each library is in.  The second will create catchment areas that span over authority boundaries.
 
 1.  Create a table to hold library catchment areas.
 
@@ -1041,7 +996,7 @@ create unique index cuix_librariescatchments_id_code on libraries_catchments usi
 alter table libraries_catchments cluster on cuix_librariescatchments_id_code;
 ```
 
-2.  Create the catchment areas for current open and statutory libraries.
+2.  Create the catchment areas for current statutory libraries.
 
 ```
 insert into libraries_catchments
@@ -1055,18 +1010,42 @@ select
 	and ao.oa_code = o.oa11cd
 	where l.statutory2016 = 't'
 	and l.closed is null
-	order by l.geom <-> o.geom limit 1) as library_id,
+	order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
 o.oa11cd
 from oa_boundaries o
 join authorities_oas aos
 on aos.oa_code = o.oa11cd;
 ```
 
-3.  Add the catchment areas for closed libraries.
+3.  Add the catchment areas for current non-statutory libraries.  This analyses all current libraries and then adds the catchments for those that are non statutory in 2016.
 
 ```
 insert into libraries_catchments
-select ca.library_id, ca.ao11cd from (
+select ca.library_id, ca.oa11cd from (
+	select
+	(select l.id
+		from libraries l
+		join authorities a
+		on a.id = l.authority_id
+		join authorities_oas ao
+		on ao.code  = a.code
+		and ao.oa_code = o.oa11cd
+		where l.closed is null
+		order by l.geom <-> o.geom limit 1) as library_id,
+	o.oa11cd
+	from oa_boundaries o
+	join authorities_oas aos
+	on aos.oa_code = o.oa11cd) as ca
+join libraries li
+on li.id = ca.library_id
+where li.statutory2016 = 'f';
+```
+
+4.  Add the catchment areas for closed libraries that were statutory in 2010.
+
+```
+insert into libraries_catchments
+select ca.library_id, ca.oa11cd from (
 	select
 	(select l.id
 		from libraries l
@@ -1076,7 +1055,7 @@ select ca.library_id, ca.ao11cd from (
 		on ao.code  = a.code
 		and ao.oa_code = o.oa11cd
 		where l.statutory2010 = 't'
-		order by l.geom <-> o.geom limit 1) as library_id,
+		order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
 	o.oa11cd
 	from oa_boundaries o
 	join authorities_oas aos
@@ -1085,6 +1064,44 @@ join libraries li
 on li.id = ca.library_id
 where li.closed is not null;
 ```
+
+5.  Add the catchment areas for closed libraries that weren't statutory in 2010.
+
+```
+insert into libraries_catchments
+select ca.library_id, ca.oa11cd from (
+	select
+	(select l.id
+		from libraries l
+		join authorities a
+		on a.id = l.authority_id
+		join authorities_oas ao
+		on ao.code  = a.code
+		and ao.oa_code = o.oa11cd
+		where l.opened_date is null
+		order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
+	o.oa11cd
+	from oa_boundaries o
+	join authorities_oas aos
+	on aos.oa_code = o.oa11cd) as ca
+join libraries li
+on li.id = ca.library_id
+where li.closed is not null
+and li.statutory2010 = 'f';
+```
+
+
+## Distance analysis
+
+It'd also be good to do some distance analysis, such as how far people have to travel to their nearest library.  What we need for that is to create a catchment area for each library from census output areas.  
+
+It makes sense to only do this for statutory libraries.  It also makes sense to do it only for open libraries, but then it may also be useful to see what a catchment area was for a closed library.  To do this we need to run a catchment analysis for libraries open in 2010 and one for libraries open in 2016.
+
+
+
+
+
+
 
 4.  Add a table for cross authority catchment areas.
 
@@ -1171,4 +1188,51 @@ on oab.oa11cd = lc.oa_code
 join oa_population op
 on op.oa = lc.oa_code
 group by l.id, distance) to 'data\libraries\librariesdistances.csv' delimiter ','csv header;
+```
+
+## Export data on libraries.
+
+1.  Export a CSV.
+
+```
+copy (select l.name,
+	a.id "authority_id",
+	l.address,
+	l.postcode,
+	l.lat,
+	l.lng,
+	l.statutory2010,
+	l.statutory2016,
+	l.type, 
+	l.closed,
+	l.closed_year,
+	l.opened_year,
+	l.replacement,
+	l.notes,
+	l.hours,
+	l.staffhours,
+	l.url,
+	l.email,
+	-- Add the LSOA data
+	ls.lsoa11nm "lsoa_name",
+	ls.lsoa11cd "lsoa_code",
+	-- Add the deprivation data
+	i.imd_decile as multiple,
+	i.income_decile as income,
+	i.employment_decile as employment,
+	i.education_decile as education,
+	i.children_decile as children,
+	i.health_decile as health,
+	i.adultskills_decile as adultskills,
+	i.crime_decile as crime,
+	i.housing_decile as housing,
+	i.geographical_decile as services,
+	i.environment_decile as environment
+from libraries l
+join authorities a
+on a.id = l.authority_id
+left outer join lsoa_boundaries ls
+on ST_Within(l.geom, ls.geom)
+left outer join imd i
+on i.lsoa_code = ls.lsoa11cd) to 'data\libraries\libraries.csv' delimiter ','csv header;
 ```

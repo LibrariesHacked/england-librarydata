@@ -220,6 +220,12 @@
         });
         return datatable;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getNewsDataTable
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getNewsDataTable: function (type) {
         var datatable = [];
         $.each(this.getStoriesGroupedByLocation(type), function (i, a) {
@@ -234,9 +240,21 @@
         });
         return datatable;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthorityListSorted
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAuthorityListSorted: function () {
         return $.map(this.authorities, function (i, x) { return i.name }).sort();
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLibrariesListSorted
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLibrariesListSorted: function (authority) {
         var libraries = this.getLibrariesByAuthority();
         return $.map(this.authorities, function (i, x) {
@@ -245,6 +263,12 @@
             return a.name.localeCompare(b.name);
         });
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getStatCountsByAuthority
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getStatCountsByAuthority: function (authority) {
         var counts = { statutory2010: 0, statutory2016: 0, libraries: 0, replaced: 0, replacements: 0, closedLibraries: 0, newLibs: 0, libsChange: 0, population: 0, area: 0, peoplePerLibrary: 0, areaPerLibrary: 0 };
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
@@ -271,6 +295,12 @@
         counts.areaPerLibrary = counts.area / counts.libraries;
         return counts;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getCountLibrariesByAuthorityType
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getCountLibrariesByAuthorityType: function (authority, type) {
         var count = 0;
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
@@ -278,6 +308,12 @@
         });
         return count;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLibraryById
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLibraryById: function (lib) {
         var library = {};
         $.each(this.libraries, function (i, a) {
@@ -285,6 +321,12 @@
         });
         return library;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLibraryByName
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLibraryByName: function (lib) {
         var library = {};
         $.each(this.libraries, function (i, a) {
@@ -292,6 +334,12 @@
         });
         return library;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: searchByPostcode
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     searchByPostcode: function (postcode, callback) {
         $.get('https://api.postcodes.io/postcodes/' + postcode, function (data) {
             var lat = data.result.latitude;
@@ -299,10 +347,22 @@
             callback({ lat: lat, lng: lng });
         });
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthorities
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAuthorities: function () {
         var authorities = this.authorities;
         return authorities;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthoritiesWithStories
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAuthoritiesWithStories: function () {
         var changes = this.getStoriesGroupedByLocation('changes');
         var local = this.getStoriesGroupedByLocation('local');
@@ -313,6 +373,12 @@
         }.bind(this));
         return authStories;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthoritiesWithLibraries
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAuthoritiesWithLibraries: function () {
         var authorities = {};
         var authorityArray = this.authorities.slice().sort(function (a, b) { return a.name - b.name });
@@ -324,6 +390,12 @@
         }.bind(this));
         return authorities;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthGeoWithStories
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAuthGeoWithStories: function () {
         var authGeoData = this.authoritiesGeo;
         var changes = this.getStoriesGroupedByLocation('changes');
@@ -342,6 +414,12 @@
         }.bind(this));
         return authGeoData;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthGeoWithStoriesAndLibraries
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAuthGeoWithStoriesAndLibraries: function () {
         var authGeoData = this.getAuthGeoWithStories();
         var libs = this.getLibrariesByAuthority();
@@ -390,6 +468,12 @@
         }.bind(this));
         return authGeoData;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLibrariesByAuthority
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLibrariesByAuthority: function () {
         var authLibraries = {};
         $.each(this.libraries, function (i, lib) {
@@ -401,6 +485,12 @@
         }.bind(this));
         return authLibraries;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLibraryLocations
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLibraryLocations: function () {
         var libArray = [];
         $.each(this.libraries, function (i, lib) {
@@ -410,6 +500,12 @@
         }.bind(this));
         return libArray;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAddressCoordinates
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAddressCoordinates: function (address, callback) {
         var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + address + '.json?access_token=' + config.mapBoxToken;
         $.ajax({
@@ -422,6 +518,12 @@
             }
         });
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getRouteToLibrary
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getRouteToLibrary: function (fromLat, fromLng, toLat, toLng, routePref, callback) {
         var url = 'https://api.mapbox.com/directions/v5/mapbox/' + routePref.toLowerCase() + '/' + fromLng + ',' + fromLat + ';' + toLng + ',' + toLat + '?overview=full&steps=true&access_token=' + config.mapBoxToken;
         var lineCoords = [];
@@ -434,6 +536,12 @@
             }
         });
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLatestAuthorityTweet
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLatestAuthorityTweet: function (auth) {
         var tweet = null;
         $.each(this.authoritiesTwitter, function (i, t) {
@@ -441,6 +549,12 @@
         }.bind(this));
         return tweet;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getLatestLibraryTweet
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getLatestLibraryTweet: function (lib) {
         var tweet = null;
         $.each(this.librariesTwitter, function (i, t) {
@@ -448,9 +562,21 @@
         }.bind(this));
         return tweet;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getAllStoriesGroupedByLocation
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getAllStoriesGroupedByLocation: function () {
         return $.extend(this.getStoriesGroupedByLocation('changes'), this.getStoriesGroupedByLocation('local'));
     },
+    /////////////////////////////////////////////////////////////
+    // Function: getStoriesGroupedByLocation
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     getStoriesGroupedByLocation: function (type) {
         var locs = {};
         $.each(this.stories[type], function (i, y) {
@@ -463,6 +589,12 @@
         }.bind(this));
         return locs;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: storyCount
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     storyCount: function (type) {
         var count = 0;
         $.each(this.stories[type], function (i, y) {
@@ -472,6 +604,12 @@
         }.bind(this));
         return count;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: locationsSortedByCount
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     locationsSortedByCount: function () {
         var locsObj = {};
         var locs = [];
@@ -493,13 +631,16 @@
         })
         return locs;
     },
+    /////////////////////////////////////////////////////////////
+    // Function: storyCountByMonth
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
     storyCountByMonth: function () {
-        var data = [];
-        var months = {};
+        var data = [], months = {};
         $.each(this.stories, function (i, t) {
-            // types
             $.each(t, function (x, y) {
-                // years
                 $.each(y, function (z, m) {
                     if (!months[x + '-' + z]) months[x + '-' + z] = {};
                     months[x + '-' + z][i] = m.length;
@@ -508,9 +649,7 @@
         });
         $.each(months, function (x, d) {
             var obj = { month: x };
-            $.each(d, function (k, v) {
-                obj[k] = v;
-            });
+            $.each(d, function (k, v) { obj[k] = v; });
             data.push(obj)
         });
         return data;
