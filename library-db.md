@@ -1127,11 +1127,6 @@ It'd also be good to do some distance analysis, such as how far people have to t
 It makes sense to only do this for statutory libraries.  It also makes sense to do it only for open libraries, but then it may also be useful to see what a catchment area was for a closed library.  To do this we need to run a catchment analysis for libraries open in 2010 and one for libraries open in 2016.
 
 
-
-
-
-
-
 4.  Add a table for cross authority catchment areas.
 
 ```
@@ -1226,8 +1221,9 @@ Now that's pretty much everything done with the libraries data.  Export it, incl
 1.  Export a CSV.
 
 ```
-copy (select l.name,
-	a.id "authority_id",
+copy (select 
+	l.name,
+	a.id as authority_id,
 	l.address,
 	l.postcode,
 	ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(l.postcode_easting, l.postcode_northing), 27700), 4326)) as lat,
@@ -1244,27 +1240,44 @@ copy (select l.name,
 	l.staffhours,
 	l.url,
 	l.email,
-	-- Add the LSOA data
-	ls.lsoa11nm "lsoa_name",
-	ls.lsoa11cd "lsoa_code",
-	-- Add the deprivation data
-	i.imd_decile as multiple,
-	i.income_decile as income,
-	i.employment_decile as employment,
-	i.education_decile as education,
-	i.children_decile as children,
-	i.health_decile as health,
-	i.adultskills_decile as adultskills,
-	i.crime_decile as crime,
-	i.housing_decile as housing,
-	i.geographical_decile as services,
-	i.environment_decile as environment,
-	(select avg(i.imd_decile) from lsoa_imd i join lsoa_oa lso on i.lsoa_code = lso.lsoa_code join libraries_catchments lc on lc.oa_code = lso.oa_code)
+	round(avg(i.imd_decile), 3) as multiple,
+	round(avg(i.income_decile), 3) as income,
+	round(avg(i.employment_decile), 3) as employment,
+	round(avg(i.education_decile), 3) as education,
+	round(avg(i.children_decile), 3) as children,
+	round(avg(i.health_decile), 3) as health,
+	round(avg(i.adultskills_decile), 3) as adultskills,
+	round(avg(i.crime_decile), 3) as crime,
+	round(avg(i.housing_decile), 3) as housing,
+	round(avg(i.geographical_decile), 3) as services,
+	round(avg(i.environment_decile), 3) as environment,
+	sum(oap.all_ages) as population,
+	sum(oap.age_0 + oap.age_1 + oap.age_2 + oap.age_3 + oap.age_4 + oap.age_5 + oap.age_6 + oap.age_7 + oap.age_8 +
+	oap.age_9 + oap.age_10 + oap.age_11 + oap.age_12 + oap.age_13 + oap.age_14 + oap.age_15) as dependent_children,
+	sum(oap.age_16 + oap.age_17 + oap.age_18 + oap.age_19 + oap.age_20 + oap.age_21 + oap.age_22 + oap.age_23 + oap.age_24 +
+	oap.age_25 + oap.age_26 + oap.age_27 + oap.age_28 + oap.age_29 + oap.age_30 + oap.age_31 + oap.age_32 + oap.age_33 + oap.age_34 +
+	oap.age_35 + oap.age_36 + oap.age_37 + oap.age_38 + oap.age_39 + oap.age_40 + oap.age_41 + oap.age_42 + oap.age_43 + oap.age_44 +
+	oap.age_45 + oap.age_46 + oap.age_47 + oap.age_48 + oap.age_49 + oap.age_50 + oap.age_51 + oap.age_52 + oap.age_53 + oap.age_54 +
+	oap.age_55 + oap.age_56 + oap.age_57 + oap.age_58 + oap.age_59 + oap.age_60 + oap.age_61 + oap.age_62 + oap.age_63) as working_age,
+	sum(oap.age_16 + oap.age_17 + oap.age_18 + oap.age_19 + oap.age_20 + oap.age_21 + oap.age_22 + oap.age_23 + oap.age_24 + 
+	oap.age_25 + oap.age_26 + oap.age_27 + oap.age_28 + oap.age_29 + oap.age_30 + oap.age_31 + oap.age_32 + oap.age_33 + oap.age_34 + 
+	oap.age_35 + oap.age_36 + oap.age_37 + oap.age_38 + oap.age_39 + oap.age_40 + oap.age_41 + oap.age_42 + oap.age_43 + oap.age_44 + 
+	oap.age_45 + oap.age_46 + oap.age_47 + oap.age_48 + oap.age_49 + oap.age_50 + oap.age_51 + oap.age_52 + oap.age_53 + oap.age_54 + 
+	oap.age_55 + oap.age_56 + oap.age_57 + oap.age_58 + oap.age_59) as sixteen_fiftynine,
+	sum(oap.age_60 + oap.age_61 + oap.age_62 + oap.age_63 + oap.age_64 + oap.age_65 + oap.age_66 + oap.age_67 + oap.age_68 + 
+	oap.age_69 + oap.age_70 + oap.age_71 + oap.age_72 + oap.age_73 + oap.age_74 + oap.age_75 + oap.age_76 + oap.age_77 + oap.age_78 + 
+	oap.age_80 + oap.age_81 + oap.age_82 + oap.age_83 + oap.age_84 + oap.age_85 + oap.age_86 + oap.age_87 + oap.age_88 + oap.age_89 + oap.age_90) as over_sixty
 from libraries l
 join authorities a
 on a.id = l.authority_id
-left outer join lsoa_boundaries ls
-on ST_Within(l.geom, ls.geom)
+left outer join libraries_catchments lc 
+on lc.library_id = l.id
+left outer join lsoa_oas lso
+on lc.oa_code = lso.oa_code
+left outer join oa_population oap
+on oap.oa = lc.oa_code
 left outer join lsoa_imd i
-on i.lsoa_code = ls.lsoa11cd) to 'data\libraries\libraries.csv' delimiter ','csv header;
+on i.lsoa_code = lso.lsoa_code
+group by l.name, a.id, l.address, l.postcode, lat, lng, l.statutory2010, l.statutory2016, l.type, l.closed, l.closed_year,l.opened_year, l.replacement, l.notes, l.hours, l.staffhours, l.url, l.email
+order by a.id, l.name) to 'data\libraries\libraries.csv' delimiter ','csv header;
 ```
