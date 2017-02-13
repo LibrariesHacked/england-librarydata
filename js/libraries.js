@@ -278,7 +278,7 @@
                 $.each(x.libraries, function (y, lib) {
                     if (lib.statutory2010 == 't') counts.statutory2010++;
                     if (lib.statutory2016 == 't') counts.statutory2016++;
-                    if (lib.replacement = 't') counts.replacements++;
+                    if (lib.replacement == 't') counts.replacements++;
                     if (lib.closed == '') counts.libraries++;
                     if (lib.closed == 'XLR') counts.replaced++;
                     if (lib.closed != '' && lib.closed != 'XLR') counts.closedLibraries++;
@@ -286,7 +286,12 @@
                 });
                 // For each library service there MUST be as many replaced libraries as there are replacements.
                 // Authorities have a habit of listing libraries that are new, but not those that are closed.
-                if (counts.replacements > counts.replaced) counts.replaced = counts.replacements;
+                if (counts.replacements > counts.replaced) {
+                    // Assume that the missing replaced libraries were also statutory
+                    counts.statutory2010 = counts.statutory2010 + (counts.replacements - counts.replaced);
+                    // Correct the count of replaced libraries
+                    counts.replaced = counts.replacements;
+                }
             }
         });
         counts.libsChange = counts.newLibs - counts.closedLibraries;

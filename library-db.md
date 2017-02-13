@@ -471,6 +471,35 @@ update authorities set code = 'E06000004' where name = 'Stockton on Tees';
 update authorities set code = 'E06000021' where name = 'Stoke on Trent';
 ```
 
+## Get all the OAs for each LSOA.
+
+1. Create a table to hold the LSOA/OA lookup.
+
+```
+-- table: lsoa_oas.  stores a lookup to match lsoa code to a code.
+create table lsoa_oas
+(
+  lsoa_code character varying(9), oa_code character varying(9),
+  constraint pk_lsoasoas_code primary key (lsoa_code, oa_code)
+);
+
+-- index: cuix_lsoasoas_lsoa_oa.  unique clustered index on lsoa and oa code.
+create unique index cuix_lsoasoas_lsoa_oa on lsoa_oas using btree (lsoa_code, oa_code);
+alter table lsoa_oas cluster on cuix_lsoasoas_lsoa_oa;
+```
+
+2.  And then insert the data into that table.
+
+```
+-- table:  lsoa_oas.  populate the table.
+insert into lsoa_oas
+select l.lsoa11cd, o.oa11cd
+from lsoa_boundaries l
+join oa_boundaries o
+on ST_Intersects(l.geom, o.geom)
+and ST_Area(ST_Intersection(l.geom, o.geom))/ST_Area(o.geom) > 0.5;
+```
+
 ## Get all the LSOAs for each authority
 
 1.  Create a table to hold the LSOA lookups.
@@ -975,9 +1004,9 @@ It doesn't make sense to create a library catchment for libraries other than tho
 However, it would be useful to have an idea of the demographics around other (e.g. Independent Community) libraries.  Therefore, these scripts will:
 
 - Create library catchment areas for current statutory Libraries
-- Create library catchment areas for current non statutory libraries
+- Create library catchment areas for current non-statutory libraries
 - Create library catchment areas for closed statutory libraries in 2010
-- Create library catchment areas for closed non statutory libraries in 2010.
+- Create library catchment areas for closed non-statutory libraries in 2010.
 
 For each of the above there will also be 2 methodologies.  The first will create catchment areas that are limited to the authority that each library is in.  The second will create catchment areas that span over authority boundaries.
 
@@ -1192,6 +1221,8 @@ group by l.id, distance) to 'data\libraries\librariesdistances.csv' delimiter ',
 
 ## Export data on libraries.
 
+Now that's pretty much everything done with the libraries data.  Export it, including deprivation details for the library catchment (assuming non-cross authority).
+
 1.  Export a CSV.
 
 ```
@@ -1199,8 +1230,8 @@ copy (select l.name,
 	a.id "authority_id",
 	l.address,
 	l.postcode,
-	l.lat,
-	l.lng,
+	ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(l.postcode_easting, l.postcode_northing), 27700), 4326)) as lat,
+	ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(l.postcode_easting, l.postcode_northing), 27700), 4326)) as lng,
 	l.statutory2010,
 	l.statutory2016,
 	l.type, 
@@ -1227,12 +1258,13 @@ copy (select l.name,
 	i.crime_decile as crime,
 	i.housing_decile as housing,
 	i.geographical_decile as services,
-	i.environment_decile as environment
+	i.environment_decile as environment,
+	(select avg(i.imd_decile) from lsoa_imd i join lsoa_oa lso on i.lsoa_code = lso.lsoa_code join libraries_catchments lc on lc.oa_code = lso.oa_code)
 from libraries l
 join authorities a
 on a.id = l.authority_id
 left outer join lsoa_boundaries ls
 on ST_Within(l.geom, ls.geom)
-left outer join imd i
+left outer join lsoa_imd i
 on i.lsoa_code = ls.lsoa11cd) to 'data\libraries\libraries.csv' delimiter ','csv header;
 ```
