@@ -948,19 +948,19 @@ There is a python script in the scripts directory of this project that will take
 3.  Create a table to store the locations.
 
 ```
-create table librarylocations
+create table libraries_locations
 (
   libraryid integer not null,
   lat numeric,
   lng numeric,
-  constraint pk_librarylocations_libraryid primary key (libraryid)
+  constraint pk_librarieslocations_libraryid primary key (libraryid)
 );
 ```
 
 4.  Import the library locations.
 
 ```
-copy librarylocations from 'libraries_addresses_geo.csv' delimiter ',' csv header;
+copy libraries_locations from 'libraries_addresses_geo.csv' delimiter ',' csv header;
 ```
 
 5.  And update the locations.  This checks that the geocoded value is also within the relevant authority boundary.
@@ -1029,7 +1029,7 @@ alter table libraries_catchments cluster on cuix_librariescatchments_id_code;
 
 ```
 insert into libraries_catchments
-select
+select 
 (select l.id
 	from libraries l
 	join authorities a
@@ -1107,7 +1107,7 @@ select ca.library_id, ca.oa11cd from (
 		join authorities_oas ao
 		on ao.code  = a.code
 		and ao.oa_code = o.oa11cd
-		where l.opened_date is null
+		where l.opened_year is null
 		order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
 	o.oa11cd
 	from oa_boundaries o
@@ -1119,6 +1119,16 @@ where li.closed is not null
 and li.statutory2010 = 'f';
 ```
 
+6.  Export library polygons for each catchment area.
+
+```
+select library_id, ST_Union(ST_SnapToGrid(oa.geom, 0.0001)) 
+from libraries_catchments lc
+join oa_boundaries oa
+on oa.oa11cd = lc.oa_code
+group by lc.library_id
+order by library_id;
+```
 
 ## Distance analysis
 

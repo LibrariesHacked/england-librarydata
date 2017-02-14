@@ -36,7 +36,6 @@
             if (auth.val()) skipTwitterToAuthority(auth.val());
             (auth.text().indexOf('tersh') != -1 ? $('#divBetaAlert').removeClass('alert-warning').addClass('alert-danger') : $('#divBetaAlert').removeClass('alert-danger').addClass('alert-warning'));
         };
-
         // EVENT: Change authority
         $('#selAuthority').change(function () { updateAll(); });
 
@@ -74,12 +73,12 @@
             );
 
             // Set up the library details such as closed/open year, type, and notes
-            $('#divLibraryDetails').append('<p>' +
-                (library.type ? ('<span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span> ') : '') +
-                (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement</span> ' : '') +
-                (library.notes ? library.notes : '') +
-                (library.opened_year ? (' opened in ' + library.opened_year) : '') +
-                (library.closed && library.closed_year ? (' closed in ' + library.closed_year) : '') + '</p>'
+            $('#divLibraryDetails').append(
+                (library.type ? ('<p><span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span></p>') : '') +
+                (library.replacement && library.replacement == 't' ? '<p><span class="strong text-muted"> replacement</span></p>' : '') +
+                (library.notes ? '<p>' + library.notes + '</p>' : '') +
+                (library.opened_year ? ('<p>opened in ' + library.opened_year + '</p>') : '') +
+                (library.closed && library.closed_year ? ('<p>closed in ' + library.closed_year + '</p>') : '') + '</p>'
             );
 
             // Populate the hours and statutory details
@@ -93,7 +92,12 @@
 
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append(
-                (library.address ? ('<small class="text-muted">deprivation deciles (1-10) for ' + library.address + '.  lower shows greater deprivation:</small></p>') : '') +
+                (library.address ? ('<small class="text-muted">catchment population around ' + library.address + '.</small></p>') : '') +
+                '<div class="row">' +
+                '<div class="col col-sm-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + numFormat(library.population) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + numFormat(library.population_adults) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + numFormat(library.population_children) + '</p></div>' +
+                '</div>' +
                 '<div class="row">' +
                 '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.multiple] + '">' + library.multiple + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + library.employment + '</p></div>' +
@@ -104,7 +108,7 @@
                 '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health] + '">' + library.health + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.services] + '">' + library.services + '</p></div>' +
                 '</div>'
-            );
+                );
             updateTooltips();
         });
 
@@ -222,7 +226,6 @@
             $('#divStatutoryCount p #spStatChange').html('<span class="badge badge' + (stats.statutoryChange >= 0 ? '-default">+' : '-danger">') + stats.statutoryChange + '</span>');
             typeDonut.update();
         };
-
 
         ///////////////////////////////////////////////////////////////////
         // 5. Find My Library
@@ -400,7 +403,6 @@
         //////////////////////////////////////////////
         var tweets = PublicLibrariesNews.getTweetsSortedByDate();
         var currentlyShowingTwitter = [0, 0];
-
         var addTweet = function (index, position) {
             if (tweets && tweets[index]) {
                 var tweet = tweets[index]
@@ -431,7 +433,6 @@
                 for (x = 0 ; x < 1; x++) addTweet(id + x, 'last');
             }
         };
-
         var updateTwitterSwitchChevrons = function () {
             $('#tweetsSwitch li').attr('class', '');
             if (currentlyShowingTwitter[0] != 0) {
@@ -498,7 +499,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'library location average deprivation, by library type'
+                    text: 'library catchment deprivation by library type'
                 }
             }
         });
@@ -531,7 +532,6 @@
             });
             typeBar.update();
         };
-
         // ONLOAD: First thing to do is update all widgets
         updateAll();
     });
@@ -571,7 +571,7 @@
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
         if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
         if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-        return num.toFixed(0);
+        return num ? num.toFixed(0) : null;
     };
     /////////////////////////////////////////////////////////
     // Helper Function: getMiles
@@ -582,9 +582,7 @@
     // Tooltips
     /////////////////////////////////////////////////////////
     var updateTooltips = function () {
-        $('[data-toggle="tooltip"]').on('click', function (e) {
-            e.preventDefault();
-        }).tooltip();
+        $('[data-toggle="tooltip"]').on('click', function (e) { e.preventDefault(); }).tooltip();
     };
     updateTooltips();
 });
