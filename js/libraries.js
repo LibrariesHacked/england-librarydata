@@ -25,35 +25,35 @@
     stories: { changes: {}, local: {} },
     ///////////////////////////////////////////////////////////////////////////
     // Function: loadData
-    // Input:
-    // Output: 
-    // 
+    // Input: months(number of months stories to load), auth (whether to load authorities
+    // data), authGeo (boolean whether to load geo auth data), libraries (whether to load
+    // libraries data), twitter (whether to load twitter data), callback (the callback 
+    // function)
+    // Output: None. Callback
+    // This function loads the library data into data storage.  Should be run by the
+    // relevant page maing use of this functionality.
     ////////////////////////////////////////////////////////////////////////////
     loadData: function (months, auth, authGeo, libraries, twitter, callback) {
         var urls = [];
+        if (months > 0) urls.push(['', '', 'locations', this.librariesNewsLocationsUrl]);
         if (auth) urls.push(['', '', 'authorities', this.authoritiesUrl]);
-        if (authGeo) urls.push(['', '', 'authgeo', this.authoritiesGeoUrl]);
+        if (auth) urls.push(['', '', 'authorities_distances', this.authoritiesDistancesUrl]);
+        if (authGeo) urls.push(['', '', 'authorities_geo', this.authoritiesGeoUrl]);
         if (libraries) urls.push(['', '', 'libraries', this.librariesUrl]);
-        if (twitter) {
-            urls.push(['', '', 'authtwitter', this.authoritiesTwitterUrl]);
-            urls.push(['', '', 'libtwitter', this.librariesTwitterUrl]);
-        }
-        urls.push(['', '', 'authorities_distances', this.authoritiesDistancesUrl]);
-        urls.push(['', '', 'libraries_distances', this.librariesDistancesUrl]);
+        if (libraries) urls.push(['', '', 'libraries_distances', this.librariesDistancesUrl]);
+        if (twitter) urls.push(['', '', 'authorities_twitter', this.authoritiesTwitterUrl]);
+        if (twitter) urls.push(['', '', 'libraries_twitter', this.librariesTwitterUrl]);
 
         for (x = 0; x <= months ; x++) {
-            var date = moment().subtract(x, 'months');
-            var year = date.year();
-            var month = date.month() + 1;
+            // what's the date to go back to?
+            var date = moment().subtract(x, 'months'), year = date.year(), month = date.month() + 1;
             for (type in this.stories) {
                 if (!this.stories[type][year]) this.stories[type][year] = {};
-                if (!this.stories[type][year][month]) {
-                    this.stories[type][year][month] = {};
-                    urls.push([month, year, type, this.librariesNewsDataUrl.replace('YY', year).replace('M', month).replace('TYPE', type)]);
-                }
+                if (!this.stories[type][year][month]) this.stories[type][year][month] = {};
+                urls.push([month, year, type, this.librariesNewsDataUrl.replace('YY', year).replace('M', month).replace('TYPE', type)]);
             }
         }
-        if (Object.keys(this.locations).length == 0) urls.push(['', '', 'locations', this.librariesNewsLocationsUrl]);
+
         var requests = [];
         var getUrlFailSafe = function (url) {
             var dfd = jQuery.Deferred();
@@ -68,18 +68,18 @@
                 if (type == 'locations') this.locations = data;
                 if (type == 'libraries') this.libraries = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
                 if (type == 'libraries_distances') this.librariesDistances = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
-                if (type == 'authgeo') this.authoritiesGeo = data;
+                if (type == 'libraries_twitter') this.librariesTwitter = data;
                 if (type == 'authorities') this.authorities = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
+                if (type == 'authorities_geo') this.authoritiesGeo = data;
                 if (type == 'authorities_distances') this.authoritiesDistances = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
-                if (type == 'authtwitter') this.authoritiesTwitter = data;
-                if (type == 'libtwitter') this.librariesTwitter = data;
+                if (type == 'authorities_twitter') this.authoritiesTwitter = data;
             }.bind(this));
             callback();
         }.bind(this));
     },
     ///////////////////////////////////////////////////////////////////////////
     // Function: getTweetsSortedByDate
-    // Input:
+    // Input: None
     // Output: 
     // 
     ////////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@
     },
     ///////////////////////////////////////////////////////////////////////////
     // Function: getDistancesByAuthority
-    // Input:
+    // Input: Authority (the name of the authority)
     // Output: 
     // 
     ////////////////////////////////////////////////////////////////////////////
@@ -122,6 +122,12 @@
         });
         return distances;
     },
+    ///////////////////////////////////////////////////////////////////////////
+    // Function: getDeprivationIndicesByLibrary
+    // Input:
+    // Output: 
+    // 
+    ////////////////////////////////////////////////////////////////////////////
     getDeprivationIndicesByLibrary: function (authority, library) {
         return { multiple: 0, employment: 0, education: 0, adultskills: 0, health: 0, services: 0 };
     },
@@ -174,6 +180,11 @@
         $.each(Object.keys(depIndices), function (i, k) { depIndices[k] = (depIndices[k] / count).toFixed(0); });
         return depIndices;
     },
+    ///////////////////////////////////////////////////////////////////
+    // Function: getAuthoritiesDataTable
+    // Input: None
+    // Output:
+    ///////////////////////////////////////////////////////////////////
     getAuthoritiesDataTable: function () {
         var datatable = [];
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
@@ -354,17 +365,16 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getAuthorities
-    // Input: 
+    // Input: None
     // Output: 
     // 
     /////////////////////////////////////////////////////////////
     getAuthorities: function () {
-        var authorities = this.authorities;
-        return authorities;
+        return this.authorities;
     },
     /////////////////////////////////////////////////////////////
     // Function: getAuthoritiesWithStories
-    // Input: 
+    // Input: None
     // Output: 
     // 
     /////////////////////////////////////////////////////////////
@@ -556,8 +566,8 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getLatestLibraryTweet
-    // Input: 
-    // Output: 
+    // Input: Library (library name)
+    // Output: A tweet object with all the tweet information on it.
     // 
     /////////////////////////////////////////////////////////////
     getLatestLibraryTweet: function (lib) {
@@ -596,7 +606,7 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: storyCount
-    // Input: 
+    // Input: Type (the 
     // Output: 
     // 
     /////////////////////////////////////////////////////////////
@@ -611,7 +621,7 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: locationsSortedByCount
-    // Input: 
+    // Input: None
     // Output: 
     // 
     /////////////////////////////////////////////////////////////
@@ -628,17 +638,12 @@
                 }.bind(this));
             }.bind(this));
         }.bind(this));
-        $.each(Object.keys(locsObj), function (i, y) {
-            locs.push(y);
-        });
-        locs.sort(function (a, b) {
-            return locsObj[b].count - locsObj[a].count;
-        })
-        return locs;
+        $.each(Object.keys(locsObj), function (i, y) { locs.push(y); });
+        return locs.sort(function (a, b) { return locsObj[b].count - locsObj[a].count; })
     },
     /////////////////////////////////////////////////////////////
     // Function: storyCountByMonth
-    // Input: 
+    // Input: None
     // Output: 
     // 
     /////////////////////////////////////////////////////////////

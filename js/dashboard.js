@@ -95,18 +95,18 @@
                 (library.address ? ('<small class="text-muted">catchment population around ' + library.address + '.</small></p>') : '') +
                 '<div class="row">' +
                 '<div class="col col-sm-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + numFormat(library.population) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + numFormat(library.population_adults) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + numFormat(library.population_children) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + numFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + numFormat(library.dependent_children) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.multiple] + '">' + library.multiple + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + library.employment + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education] + '">' + library.education + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.multiple] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.adultskills] + '">' + library.adultskills + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health] + '">' + library.health + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.services] + '">' + library.services + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.adultskills] + '">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health] + '">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.services] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
                 '</div>'
                 );
             updateTooltips();
@@ -159,8 +159,12 @@
         var updateLibDistancesLine = function (authority, library) {
             if (library) {
                 var distances = PublicLibrariesNews.getDistancesByLibrary(library);
+                var lib = PublicLibrariesNews.getLibraryById(library);
+                $('#spDistanceTitle').text(lib.name + ' catchment');
+                $('#hLibDistanceSubtitle').text('distance to ' + lib.name + ' within catchment area');
             } else {
                 var distances = PublicLibrariesNews.getDistancesByAuthority(authority);
+                $('#hLibDistanceSubtitle').text('distance to the nearest statutory library');
             }
             var totalDistance = 0, population = 0;
             $.each(distances, function (i, x) {
@@ -190,18 +194,11 @@
             },
             type: "polarArea",
             options: {
-                elements: {
-                    arc: { borderColor: "#98978B", borderWidth: 1 }
-                },
-                legend: {
-                    position: 'bottom'
-                },
+                elements: { arc: { borderColor: "#98978B", borderWidth: 1 } },
+                legend: { position: 'bottom' },
                 startAngle: (-0.3 * Math.PI)
             },
-            title: {
-                display: true,
-                text: 'number of libraries'
-            }
+            title: { display: true, text: 'number of libraries' }
         });
         var updateLibTypesDonut = function (libAuthority) {
             typeDonut.config.data.datasets[0].data = [];
@@ -319,18 +316,11 @@
         /////////////////////////////////////////////////////////////////
         var stories = PublicLibrariesNews.getAuthoritiesWithStories();
         var storiesOrdered = Object.keys(stories).sort(function (a, b) { return stories[b].stories.length - stories[a].stories.length });
-        var currentlyShowing = [0, 0];
         var skipStoriesToAuthority = function (authority) {
-            var id = storiesOrdered.indexOf(authority);
             $('#divNewsStories').hide();
-            if (id != -1) {
+            if (storiesOrdered.indexOf(authority) != -1) {
                 $('#divNewsStories').show();
-                if ((currentlyShowing[1] == id) || (currentlyShowing[0] == id)) return false;
-                currentlyShowing[0] = id;
-                currentlyShowing[1] = id;
-                updateSwitchChevrons();
-                removeLocation('first');
-                for (x = 0 ; x < 1; x++) addLocation(id + x, 'last');
+                addLocation(storiesOrdered.indexOf(authority));
             }
         };
         var setItemDetails = function (item, index) {
@@ -350,157 +340,66 @@
             var index = $(item).data('current') + 1;
             setItemDetails(item, index);
         };
-        var addLocation = function (index, position) {
+        var addLocation = function (index) {
             var it = stories[storiesOrdered[index]];
+            $('#divNews').empty();
             if (it) {
-                var li = '<div href="#" class="list-group-item" data-current="0" data-auth="' + storiesOrdered[index] + '">' +
-                '<span class="badge badge-pill badge-danger">1/' + it.stories.length + '</span>' +
-                '<div><p class="list-group-item-text">' + $('<div/>').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p></div>' +
-                (it.stories.length > 1 ? '<p><a class="btn btn-secondary" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '') +
-                '<p><a class="btn btn-outline-danger btn-pln-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank"><span class="fa fa-external-link"></span>  ' + moment(it.stories[0].date).fromNow() + '</a></p></div>';
-
-                position == 'first' ? $('#newsCounts').prepend(li) : $('#newsCounts').append(li);
+                var li = '<div class="row">' +
+                    '<div class="col col-sm-4"><small class="text-muted">stories&nbsp;</small><p class="lead"><strong>' + it.stories.length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead"><strong>' + it.stories.length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">current&nbsp;</small><p class="lead"><strong>' + it.stories.length + '</strong></p></div>' +
+                    '</div>' +
+                    '<p><a class="alert-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
+                    '<p>' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
+                    (it.stories.length > 1 ? '<p><a data-auth="' + index + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
+                $('#divNews').append(li);
                 $('.list-group-item-text').shorten();
                 $('#Location' + index).on('click', clickNextItem);
             }
         };
-        var removeLocation = function (position) {
-            $('#newsCounts div:' + position).remove();
-        };
-        var updateSwitchChevrons = function () {
-            $('#newsSwitch li').attr('class', '');
-            if (currentlyShowing[0] != 0) {
-                $('#newsSwitch li a').first().html('&laquo; ' + storiesOrdered[currentlyShowing[0] - 1]);
-            } else {
-                $('#newsSwitch li a').first().html('&laquo;');
-                $('#newsSwitch li').first().attr('class', 'disabled');
-            }
-            if (currentlyShowing[1] != storiesOrdered.length - 1) {
-                $('#newsSwitch li a').last().html(storiesOrdered[currentlyShowing[1] + 1] + ' &raquo;');
-            } else {
-                $('#newsSwitch li a').last().html('&raquo;');
-                $('#newsSwitch li').last().attr('class', 'disabled');
-            }
-        };
-        var clickShiftChangeItems = function (e) {
-            e.preventDefault();
-            var id = e.currentTarget.parentNode.parentNode.id;
-            var incr = $(e.target).data('direction');
-            if ((currentlyShowing[1] == storiesOrdered.length - 1) || (currentlyShowing[0] == 0 && incr == -1)) return false;
-            currentlyShowing[0] = currentlyShowing[0] + incr;
-            currentlyShowing[1] = currentlyShowing[1] + incr;
-            updateSwitchChevrons();
-            removeLocation((incr == 1 ? 'first' : 'last'));
-            addLocation(incr == 1 ? currentlyShowing[1] : currentlyShowing[0], (incr == 1 ? 'last' : 'first'));
-        };
-        $('ul.page-story-list li a').on('click', clickShiftChangeItems);
-        // Initial setup: 3 items for changes, 1 for local news (generally longer)
-        updateSwitchChevrons();
-        for (x = 0 ; x < 1; x++) addLocation(x, 'last');
 
         //////////////////////////////////////////////
         // 7. Twitter
         //////////////////////////////////////////////
         var tweets = PublicLibrariesNews.getTweetsSortedByDate();
-        var currentlyShowingTwitter = [0, 0];
-        var addTweet = function (index, position) {
+        var addTweet = function (index) {
             if (tweets && tweets[index]) {
-                var tweet = tweets[index]
-                var li = '<div href="#" class="list-group-item twitter-list" data-current="0" data-auth="' + tweet.account + '">' +
-                    '<div class="container"><div class="row">' +
-                    '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead text-gray-dark">' + numFormat(tweet.tweets) + '</p></div>' +
-                    '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead text-gray-dark">' + numFormat(tweet.followers) + '</p></div>' +
-                    '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead text-gray-dark">' + numFormat(tweet.following) + '</p></div>' +
-                    '</div></div>' +
-                    '<p class="list-group-item-text">' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>' + '</div>';
-                position == 'first' ? $('#tweetsCounts').prepend(li) : $('#tweetsCounts').append(li);
+                var tweet = tweets[index];
+                var tw = '<div class="row">' +
+                    '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + numFormat(tweet.tweets) + '</strong></p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead"><strong>' + numFormat(tweet.followers) + '</strong></p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead"><strong>' + numFormat(tweet.following) + '</strong></p></div>' +
+                    '</div>' +
+                    '<p>' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>';
+                $('#divTweet').append(tw);
             }
-        };
-        var removeTweet = function (position) {
-            $('#tweetsCounts div:first').remove();
         };
         var skipTwitterToAuthority = function (authority) {
             var id = -1;
-            $.each(tweets, function (i, t) { if (t.name.indexOf(authority) != -1) id = i; });
             $('#divTwitter').hide();
-            if (id != -1) {
-                $('#divTwitter').show();
-                if ((currentlyShowingTwitter[1] == id) || (currentlyShowingTwitter[0] == id)) return false;
-                currentlyShowingTwitter[0] = id;
-                currentlyShowingTwitter[1] = id;
-                updateTwitterSwitchChevrons();
-                removeTweet('first');
-                for (x = 0 ; x < 1; x++) addTweet(id + x, 'last');
-            }
+            $.each(tweets, function (i, t) {
+                if (t.name.indexOf(authority) != -1) {
+                    $('#divTweet').empty();
+                    $('#divTwitter').show();
+                    addTweet(i);
+                }
+            });
         };
-        var updateTwitterSwitchChevrons = function () {
-            $('#tweetsSwitch li').attr('class', '');
-            if (currentlyShowingTwitter[0] != 0) {
-                $('#tweetsSwitch li a').first().html('&laquo; @' + tweets[currentlyShowingTwitter[0] - 1].account);
-            } else {
-                $('#tweetsSwitch li a').first().html('&laquo;');
-                $('#tweetsSwitch li').first().attr('class', 'disabled');
-            }
-            if (currentlyShowingTwitter[1] != tweets.length - 1) {
-                $('#tweetsSwitch li a').last().html('@' + tweets[currentlyShowingTwitter[1] + 1].account + ' &raquo;');
-            } else {
-                $('#tweetsSwitch li a').last().html('&raquo;');
-                $('#tweetsSwitch li').last().attr('class', 'disabled');
-            }
-        };
-        var clickShiftChangeTwitterItems = function (e) {
-            e.preventDefault();
-            var id = e.currentTarget.parentNode.parentNode.id;
-            var incr = $(e.target).data('direction');
-            if ((currentlyShowingTwitter[1] == tweets.length - 1) || (currentlyShowingTwitter[0] == 0 && incr == -1)) return false;
-            currentlyShowingTwitter[0] = currentlyShowingTwitter[0] + incr;
-            currentlyShowingTwitter[1] = currentlyShowingTwitter[1] + incr;
-            updateTwitterSwitchChevrons();
-            removeTweet((incr == 1 ? 'first' : 'last'));
-            addTweet(incr == 1 ? currentlyShowingTwitter[1] : currentlyShowingTwitter[0], (incr == 1 ? 'last' : 'first'));
-        };
-        $('ul.page-twitter-list li a').on('click', clickShiftChangeTwitterItems);
-        // Initial setup: 3 items for changes, 1 for local news (generally longer)
-        updateTwitterSwitchChevrons();
-        for (x = 0 ; x < 1; x++) addTweet(x, 'last');
 
         //////////////////////////////////////////////
         // 8. Widget: Area deprivation stats
         //////////////////////////////////////////////
         var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
             type: 'horizontalBar',
-            data: {
-                labels: ['multiple'],
-                datasets: []
-            },
+            data: { labels: ['multiple'], datasets: [] },
             options: {
-                animation: {
-                    animateScale: true
-                },
-                legend: {
-                    position: 'bottom'
-                },
+                animation: { animateScale: true },
+                legend: { position: 'bottom' },
                 scales: {
-                    xAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'deprivation decile (1-10)'
-                        },
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }],
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'deprivation type'
-                        }
-                    }]
+                    xAxes: [{ scaleLabel: { display: true, labelString: 'deprivation decile (1-10)' }, ticks: { beginAtZero: true } }],
+                    yAxes: [{ scaleLabel: { display: true, labelString: 'deprivation type' } }]
                 },
-                title: {
-                    display: true,
-                    text: 'library catchment deprivation by library type'
-                }
+                title: { display: true, text: 'library catchment deprivation by library type' }
             }
         });
         var updateLibTypeStatsBar = function (authority) {
@@ -571,7 +470,7 @@
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
         if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
         if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-        return num ? num.toFixed(0) : null;
+        return num ? parseInt(num).toFixed(0) : null;
     };
     /////////////////////////////////////////////////////////
     // Helper Function: getMiles

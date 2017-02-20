@@ -68,6 +68,10 @@
                         </div>
                     </div>
                 </div>
+                <!-- Widget 7: Tweets -->
+                <div id="divTwitter" class="alert alert-info mb-3">
+                    <div id="divTweet"></div>
+                </div>
                 <!-- Widget 2: Library details -->
                 <div class="card mb-3">
                     <div class="card-block">
@@ -86,26 +90,9 @@
                         <div id="divLibraryDeprivationDetails"></div>
                     </div>
                 </div>
-                <!-- Widget 3: Libraries distance stats -->
-                <div class="card mb-3">
-                    <div class="card-block">
-                        <h4 class="card-title text-muted">distances: <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">distance to the nearest statutory library</h6>
-                    </div>
-                    <div class="card-block">
-                        <div class="row" id="divAuthDistanceStats">
-                            <div id="divDistanceAverage" class="col-sm-4"><small class="text-muted">average&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="average distance in miles for the population to travel"></a></small><p class="lead text-gray-dark"></p></div>
-                            <div id="divDistanceLongest" class="col-sm-4"><small class="text-muted">furthest&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the furthest distance in miles"></a></small><p class="lead text-gray-dark"></p></div>
-                            <div id="divDistancePopOverOne" class="col-sm-4"><small class="text-muted">2 miles.&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="percentage of the population travelling at least 2 miles"></a></small><p class="lead text-gray-dark"></p></div>
-                        </div>
-                    </div>
-                    <div class="card-block">
-                        <div><canvas id="divLibrariesDistancesLineChart" height="250"></canvas></div>
-                    </div>
-                </div>
             </div>
             <div class="col-lg-4 col-md-6">
-                <!-- Widget 4: Library types by authority -->
+                <!-- Widget 3: Library types by authority -->
                 <div class="card mb-3">
                     <div class="card-block">
                         <h4 class="card-title text-muted">library counts: <span class="sel-auth-name"></span></h4>
@@ -122,6 +109,50 @@
                             <canvas id="divLibrariesDonutChart" height="250"></canvas>
                         </div>
                     </div>
+                </div>
+                <!-- Widget 4: Libraries distance stats -->
+                <div class="card mb-3">
+                    <div class="card-block">
+                        <h4 class="card-title text-muted">distances: <span class="sel-auth-name" id="spDistanceTitle"></span></h4>
+                        <h6 class="card-subtitle text-muted" id="hLibDistanceSubtitle">distance to the nearest statutory library</h6>
+                    </div>
+                    <div class="card-block">
+                        <div class="row" id="divAuthDistanceStats">
+                            <div id="divDistanceAverage" class="col-sm-4"><small class="text-muted">average&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="average distance in miles for the population to travel"></a></small><p class="lead text-gray-dark"></p></div>
+                            <div id="divDistanceLongest" class="col-sm-4"><small class="text-muted">furthest&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the furthest distance in miles"></a></small><p class="lead text-gray-dark"></p></div>
+                            <div id="divDistancePopOverOne" class="col-sm-4"><small class="text-muted">2 miles.&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="percentage of the population travelling at least 2 miles"></a></small><p class="lead text-gray-dark"></p></div>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <div><canvas id="divLibrariesDistancesLineChart" height="250"></canvas></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <!-- Widget 6: Public libraries news -->
+                <div id="divNewsStories" class="alert alert-danger card mb-3">
+                    <div id="divNews"></div>
+                </div>
+                <!-- Widget 8: Libraries area stats -->
+                <div class="card mb-3">
+                    <div class="card-block">
+                        <h4 class="card-title text-muted">deprivation: <span class="sel-auth-name"></span></h4>
+                        <h6 class="card-subtitle text-muted">area average deprivation stats</h6>
+                    </div>
+                    <div class="card-block">
+                        <div class="row" id="divAuthDepStats1">
+                            <div id="divIMD" class="stats col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give overall indicator"></a></small><p class="lead text-success"></p></div>
+                            <div id="divEmployment" class="stats col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-success"></p></div>
+                            <div id="divEducation" class="stats col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="children&apos;s education  deprivation for the area"></a></small><p class="lead text-success"></p></div>
+                        </div>
+                        <div class="row">
+                            <div id="divAdultSkills" class="stats col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-success"></p></div>
+                            <div id="divHealth" class="stats col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-success"></p></div>
+                            <div id="divServices" class="stats col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-success"></p></div>
+                        </div>
+                        <p><small class="text-muted">lower represents greater deprivation (1-10).</small></p>
+                    </div>
+                    <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="250"></canvas></div></div>
                 </div>
                 <!-- Widget 5: Find My Library -->
                 <div class="card mb-3">
@@ -189,45 +220,6 @@
                         </div>
                     </div>
                     <div class="card-block" id="divFmlMap"></div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <!-- Widget 6: Public libraries news -->
-                <div id="divNewsStories" class="card mb-3">
-                    <div class="card-block">
-                        <h4 id="hdrNews" class="card-title text-muted"><span class="sel-auth-name"></span> news</h4>
-                        <h6 class="card-subtitle text-muted">stories taken from public libraries news</h6>
-                    </div>
-                    <div id="newsCounts" class="list-group list-group-flush"></div>
-                </div>
-                <!-- Widget 7: Tweets -->
-                <div id="divTwitter" class="card mb-3">
-                    <div class="card-block">
-                        <h4 id="hdrTwitter" class="card-title text-muted"><span class="sel-auth-name"></span> on twitter</h4>
-                        <h6 class="card-subtitle text-muted">what they're saying</h6>
-                    </div>
-                    <div id="tweetsCounts" class="list-group list-group-flush"></div>
-                </div>
-                <!-- Widget 8: Libraries area stats -->
-                <div class="card mb-3">
-                    <div class="card-block">
-                        <h4 class="card-title text-muted">deprivation: <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">area average deprivation stats</h6>
-                    </div>
-                    <div class="card-block">
-                        <div class="row" id="divAuthDepStats1">
-                            <div id="divIMD" class="stats col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give overall indicator"></a></small><p class="lead text-success"></p></div>
-                            <div id="divEmployment" class="stats col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-success"></p></div>
-                            <div id="divEducation" class="stats col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="children&apos;s education  deprivation for the area"></a></small><p class="lead text-success"></p></div>
-                        </div>
-                        <div class="row">
-                            <div id="divAdultSkills" class="stats col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-success"></p></div>
-                            <div id="divHealth" class="stats col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-success"></p></div>
-                            <div id="divServices" class="stats col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-success"></p></div>
-                        </div>
-                        <p><small class="text-muted">lower represents greater deprivation (1-10).</small></p>
-                    </div>
-                    <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="250"></canvas></div></div>
                 </div>
             </div>
         </div>
