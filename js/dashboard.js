@@ -43,22 +43,16 @@
         // 2. Widget: Library details
         //////////////////////////////////////////////
 
-        // Clears down the library details widget
-        var clearLibraryDetails = function () {
-            $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails').empty();
-        };
-
         // Populate the select library control
         var updateLibraryDetailsSelect = function (authority) {
-            clearLibraryDetails();
-            $('#selLibraryDetailsLibrary').empty();
+            $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails, #selLibraryDetailsLibrary').empty();
             $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('select a library'));
             $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.id).text(z.name)) });
         };
 
         // Event: On selecting a library, display that library's details.
         $('#selLibraryDetailsLibrary').change(function () {
-            clearLibraryDetails();
+            $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails').empty();
             var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
 
             if (lib == '') return;
@@ -73,12 +67,13 @@
             );
 
             // Set up the library details such as closed/open year, type, and notes
+            var libType = (library.type ? ('<span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span>') : '');
+            var replacement = (library.replacement && library.replacement == 't' ? ' <span class="strong text-muted">(replacement)</span>' : '');
+            var closed = (library.closed && library.closed_year ? (' <span class="strong text-danger">(' + library.closed_year) + ')</span>' : '');
+            var notes = (library.notes ? '<p>' + library.notes + '</p>' : '');
+
             $('#divLibraryDetails').append(
-                (library.type ? ('<p><span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span></p>') : '') +
-                (library.replacement && library.replacement == 't' ? '<p><span class="strong text-muted"> replacement</span></p>' : '') +
-                (library.notes ? '<p>' + library.notes + '</p>' : '') +
-                (library.opened_year ? ('<p>opened in ' + library.opened_year + '</p>') : '') +
-                (library.closed && library.closed_year ? ('<p>closed in ' + library.closed_year + '</p>') : '') + '</p>'
+                '<p>' + libType + replacement + closed + '</p>' + notes
             );
 
             // Populate the hours and statutory details
@@ -100,7 +95,7 @@
                 '</div>' +
                 '<div class="row">' +
                 '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.multiple] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">employment&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
@@ -323,35 +318,35 @@
                 addLocation(storiesOrdered.indexOf(authority));
             }
         };
-        var setItemDetails = function (item, index) {
-            var authSt = stories[$(item).data('auth')].stories;
+        var setItemDetails = function (auth, index) {
+            var authSt = stories[auth].stories;
             if (index == authSt.length) index = 0;
-            $(item).find('span').text((index + 1) + '/' + authSt.length);
-            $('.list-group-item-text').shorten('destroy');
-            $(item).find('.list-group-item-text').html(authSt[index].text.replace($(item).data('auth') + ' – ', ''));
-            $(item).find('.btn-pln-link').html('<span class="fa fa-external-link"></span>  ' + moment(authSt[index].date).fromNow());
-            $(item).find('.btn-pln-link').attr('href', 'http://www.publiclibrariesnews.com/' + authSt[index].url);
-            $('.list-group-item-text').shorten();
-            $(item).data('current', index);
+            $('#pCntCurrent').text((index + 1));
+            // $('.list-group-item-text').shorten('destroy');
+            $('#pNewsStory').html(authSt[index].text.replace(auth + ' – ', ''));
+            $('#aPlnLink').html(moment(authSt[index].date).fromNow());
+            $('#aPlnLink').attr('href', 'http://www.publiclibrariesnews.com/' + authSt[index].url);
+            // $('.list-group-item-text').shorten();
         };
         var clickNextItem = function (e) {
             e.preventDefault();
-            var item = $(e.currentTarget.parentNode.parentNode);
+            var item = $(e.currentTarget);
             var index = $(item).data('current') + 1;
-            setItemDetails(item, index);
+            setItemDetails($(item).data('auth'), index);
+            $(item).data('current', index);
         };
         var addLocation = function (index) {
             var it = stories[storiesOrdered[index]];
             $('#divNews').empty();
             if (it) {
                 var li = '<div class="row">' +
-                    '<div class="col col-sm-4"><small class="text-muted">stories&nbsp;</small><p class="lead"><strong>' + it.stories.length + '</strong></p></div>' +
-                    '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead"><strong>' + it.stories.length + '</strong></p></div>' +
-                    '<div class="col col-sm-4"><small class="text-muted">current&nbsp;</small><p class="lead"><strong>' + it.stories.length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">stories&nbsp;</small><p class="lead" id="pCntStories"><strong>' + it.stories.length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + it.stories.length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">current&nbsp;</small><p class="lead" id="pCntCurrent"><strong>' + it.stories.length + '</strong></p></div>' +
                     '</div>' +
-                    '<p><a class="alert-link" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
-                    '<p>' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
-                    (it.stories.length > 1 ? '<p><a data-auth="' + index + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
+                    '<p><a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
+                    '<p id="pNewsStory">' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
+                    (it.stories.length > 1 ? '<p><a data-auth="' + storiesOrdered[index] + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
                 $('#divNews').append(li);
                 $('.list-group-item-text').shorten();
                 $('#Location' + index).on('click', clickNextItem);
