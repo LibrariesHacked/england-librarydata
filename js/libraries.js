@@ -80,8 +80,9 @@
     ///////////////////////////////////////////////////////////////////////////
     // Function: getTweetsSortedByDate
     // Input: None
-    // Output: 
-    // 
+    // Output: Object[]
+    // Merges tweets from authorities and libraries and returns an array of 
+    // tweet objects sorted by date.
     ////////////////////////////////////////////////////////////////////////////
     getTweetsSortedByDate: function () {
         return $.map($.merge(this.authoritiesTwitter, this.librariesTwitter), function (t, i) {
@@ -90,9 +91,10 @@
     },
     ///////////////////////////////////////////////////////////////////////////
     // Function: getDistancesByAuthority
-    // Input: Authority (the name of the authority)
-    // Output: 
-    // 
+    // Input: Authority (name)
+    // Output: Object of distances.
+    // For each authority returns an object of distances with each distance as
+    // object key and the associated population e.g. { 1.5: 300)
     ////////////////////////////////////////////////////////////////////////////
     getDistancesByAuthority: function (authority) {
         var distances = {};
@@ -108,9 +110,10 @@
     },
     ///////////////////////////////////////////////////////////////////////////
     // Function: getDistancesByLibrary
-    // Input:
-    // Output: 
-    // 
+    // Input: Library (Id)
+    // Output: Object of distances 
+    // Takes the library Id and returns and object of distances with each distance
+    // as key and the associated population e.g. { 0.7: 4000 }
     ////////////////////////////////////////////////////////////////////////////
     getDistancesByLibrary: function (library) {
         var distances = {};
@@ -124,7 +127,7 @@
     },
     ///////////////////////////////////////////////////////////////////////////
     // Function: getDeprivationIndicesByLibrary
-    // Input:
+    // Input: Authority (name), Library (Id) 
     // Output: 
     // 
     ////////////////////////////////////////////////////////////////////////////
@@ -133,7 +136,7 @@
     },
     ///////////////////////////////////////////////////////////////////////////
     // Function: getDeprivationIndicesByAuthorityAndLibType
-    // Input: authority (e.g. Barnet), library type (e.g. LAL)
+    // Input: Authority (name e.g. Barnet), Library type (e.g. LAL)
     // Output: 
     // 
     ////////////////////////////////////////////////////////////////////////////
@@ -262,17 +265,14 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getLibrariesListSorted
-    // Input: 
-    // Output: 
-    // 
+    // Input: Authority name
+    // Output: An array of objects (libraries) with an id and name
     /////////////////////////////////////////////////////////////
     getLibrariesListSorted: function (authority) {
         var libraries = this.getLibrariesByAuthority();
         return $.map(this.authorities, function (i, x) {
             if (i.name == authority || !authority) return $.map(libraries[i.authority_id], function (y, z) { return { id: y.id, name: y.name } });
-        }).sort(function (a, b) {
-            return a.name.localeCompare(b.name);
-        });
+        }).sort(function (a, b) { return a.name.localeCompare(b.name); });
     },
     /////////////////////////////////////////////////////////////
     // Function: getStatCountsByAuthority
@@ -326,14 +326,17 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getLibraryById
-    // Input: 
-    // Output: 
-    // 
+    // Input: Library Id
+    // Output: The library object
+    // Gets the library object by Id from the libraries data array.
     /////////////////////////////////////////////////////////////
     getLibraryById: function (lib) {
         var library = {};
         $.each(this.libraries, function (i, a) {
-            if (i == lib) library = a;
+            if (a.id == lib) {
+                library = a;
+                return false;
+            }
         });
         return library;
     },
@@ -493,8 +496,6 @@
         var authLibraries = {};
         $.each(this.libraries, function (i, lib) {
             if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
-            // assign an id
-            lib.id = i;
             if (lib.type == '') lib.type = lib.closed;
             if (lib.type != '') authLibraries[lib['authority_id']].push(lib);
         }.bind(this));

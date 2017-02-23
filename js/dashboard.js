@@ -40,7 +40,36 @@
         $('#selAuthority').change(function () { updateAll(); });
 
         //////////////////////////////////////////////
-        // 2. Widget: Library details
+        // 2. Twitter
+        //////////////////////////////////////////////
+        var tweets = PublicLibrariesNews.getTweetsSortedByDate();
+        var addTweet = function (index) {
+            if (tweets && tweets[index]) {
+                var tweet = tweets[index];
+                var tw = '<div class="row">' +
+                    '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + numFormat(tweet.tweets) + '</strong></p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead"><strong>' + numFormat(tweet.followers) + '</strong></p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead"><strong>' + numFormat(tweet.following) + '</strong></p></div>' +
+                    '</div>' +
+                    '<p>' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>';
+                $('#divTweet').append(tw);
+                $('#divTweet a').addClass('alert-link');
+            }
+        };
+        var skipTwitterToAuthority = function (authority) {
+            $('#divTwitter').hide();
+            $.each(tweets, function (i, t) {
+                if (t.name.indexOf(authority) != -1) {
+                    $('#divTweet').empty();
+                    $('#divTwitter').show();
+                    addTweet(i);
+                    return false;
+                }
+            });
+        };
+
+        //////////////////////////////////////////////
+        // 3. Widget: Library details
         //////////////////////////////////////////////
 
         // Populate the select library control
@@ -55,7 +84,13 @@
             $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails').empty();
             var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
 
-            if (lib == '') return;
+            if (lib == '') {
+                var auth = $('#selAuthority').find(":selected");
+                $('.sel-auth-name').text(auth.text());
+                updateLibDistancesLine(auth.val());
+                return;
+            }
+
             updateLibDistancesLine(null, lib);
             var library = PublicLibrariesNews.getLibraryById(lib);
             var libStyle = config.libStyles[library.type].cssClass;
@@ -108,7 +143,50 @@
         });
 
         //////////////////////////////////////////////
-        // 3. Widget: Distance stats
+        // 4. Widget: Library types by authority
+        //////////////////////////////////////////////
+        var typeDonut = new Chart($('#divLibrariesDonutChart'), {
+            data: {
+                datasets: [{
+                    data: [11, 16, 7, 3, 14, 11],
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].colour; })
+                }],
+                labels: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].type; })
+            },
+            type: "polarArea",
+            options: {
+                elements: { arc: { borderColor: "#98978B", borderWidth: 1 } },
+                legend: { position: 'bottom' },
+                startAngle: (-0.3 * Math.PI)
+            },
+            title: { display: true, text: 'number of libraries' }
+        });
+        var updateLibTypesDonut = function (libAuthority) {
+            typeDonut.config.data.datasets[0].data = [];
+            typeDonut.config.data.datasets[0].backgroundColor = [];
+            typeDonut.config.data.labels = [];
+            $.each(Object.keys(config.libStyles), function (t, c) {
+                var count = PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c);
+                if (count > 0) typeDonut.config.data.datasets[0].data.push(count);
+                if (count > 0) typeDonut.config.data.datasets[0].backgroundColor.push(config.libStyles[c].colour);
+                if (count > 0) typeDonut.config.data.labels.push(config.libStyles[c].type);
+            });
+            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
+            // These stats shown at the authority selector.
+            $('#divNumLibs p').text(stats.libraries);
+            $('#divPopulation p').text(numFormat(stats.population));
+            $('#divLibsPerPopulation p').removeClass().addClass('lead ' + (stats.peoplePerLibrary < 20000 ? 'text-gray-dark' : 'text-danger'))
+            $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
+            // These stats shown at the library types widget
+            $('#divTotalCount p #spLibTotal').text(stats.libraries);
+            $('#divTotalCount p #spLibChange').html('<span class="badge badge' + (stats.libsChange >= 0 ? '-default">+' : '-danger">') + stats.libsChange + '</span>');
+            $('#divStatutoryCount p #spStatTotal').text(stats.statutory2016);
+            $('#divStatutoryCount p #spStatChange').html('<span class="badge badge' + (stats.statutoryChange >= 0 ? '-default">+' : '-danger">') + stats.statutoryChange + '</span>');
+            typeDonut.update();
+        };
+
+        //////////////////////////////////////////////
+        // 5. Widget: Distance stats
         //////////////////////////////////////////////
         var distanceLine = new Chart($('#divLibrariesDistancesLineChart'), {
             type: 'line',
@@ -170,141 +248,11 @@
             distanceLine.config.data.datasets[0].data = $.map(distances, function (x, y) { return Math.round((x / population) * 100); });
             distanceLine.update();
             $('#divDistanceAverage p').text((totalDistance / population).toFixed(1) + ' mi.');
-            $('#divDistanceLongest p').text(Object.keys(distances).sort((function (a, b) { return parseInt(b) - parseInt(a) }))[0] + ' mi.');
+            $('#divDistanceLongest p').text(Object.keys(distances).sort((function (a, b) { return parseFloat(b) - parseFloat(a) }))[0] + ' mi.');
             var popOverOne = (($.map(Object.keys(distances), function (x, i) { if (parseInt(x) > 1) return distances[x]; })).sum() / population) * 100;
             $('#divDistancePopOverOne p').removeClass().addClass('lead text-' + (popOverOne > 20 ? 'danger' : 'gray-dark'));
             $('#divDistancePopOverOne p').text(Math.round(popOverOne) + '%');
         };
-
-        //////////////////////////////////////////////
-        // 4. Widget: Library types by authority
-        //////////////////////////////////////////////
-        var typeDonut = new Chart($('#divLibrariesDonutChart'), {
-            data: {
-                datasets: [{
-                    data: [11, 16, 7, 3, 14, 11],
-                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].colour; })
-                }],
-                labels: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].type; })
-            },
-            type: "polarArea",
-            options: {
-                elements: { arc: { borderColor: "#98978B", borderWidth: 1 } },
-                legend: { position: 'bottom' },
-                startAngle: (-0.3 * Math.PI)
-            },
-            title: { display: true, text: 'number of libraries' }
-        });
-        var updateLibTypesDonut = function (libAuthority) {
-            typeDonut.config.data.datasets[0].data = [];
-            typeDonut.config.data.datasets[0].backgroundColor = [];
-            typeDonut.config.data.labels = [];
-            $.each(Object.keys(config.libStyles), function (t, c) {
-                var count = PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c);
-                if (count > 0) typeDonut.config.data.datasets[0].data.push(count);
-                if (count > 0) typeDonut.config.data.datasets[0].backgroundColor.push(config.libStyles[c].colour);
-                if (count > 0) typeDonut.config.data.labels.push(config.libStyles[c].type);
-            });
-            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
-            // These stats shown at the authority selector.
-            $('#divNumLibs p').text(stats.libraries);
-            $('#divPopulation p').text(numFormat(stats.population));
-            $('#divLibsPerPopulation p').removeClass().addClass('lead ' + (stats.peoplePerLibrary < 20000 ? 'text-gray-dark' : 'text-danger'))
-            $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
-            // These stats shown at the library types widget
-            $('#divTotalCount p #spLibTotal').text(stats.libraries);
-            $('#divTotalCount p #spLibChange').html('<span class="badge badge' + (stats.libsChange >= 0 ? '-default">+' : '-danger">') + stats.libsChange + '</span>');
-            $('#divStatutoryCount p #spStatTotal').text(stats.statutory2016);
-            $('#divStatutoryCount p #spStatChange').html('<span class="badge badge' + (stats.statutoryChange >= 0 ? '-default">+' : '-danger">') + stats.statutoryChange + '</span>');
-            typeDonut.update();
-        };
-
-        ///////////////////////////////////////////////////////////////////
-        // 5. Find My Library
-        // Provides a means to enter postcode to find the closest library.
-        // Displays this on a map, and displays configurable route.
-        ///////////////////////////////////////////////////////////////////
-
-        // FUNCTION: setRouteData
-        var setRouteData = function (type) {
-            PublicLibrariesNews.getRouteToLibrary(fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng, fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng, type, function (route) {
-                if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
-                fmlRoute = L.polyline($.map(route.line, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['ICL'].colour, dashArray: [5, 5], weight: 3 });
-                fmlMap.addLayer(fmlRoute);
-                $('#fmlRouteContent #' + type + ' #div' + type + 'Distance p').text(getMiles(route.distance).toFixed(1) + ' mi.');
-                $('#fmlRouteContent #' + type + ' #div' + type + 'Time p').text(moment.duration(route.time * 1000).humanize() + ' ');
-                var stepsHtml = '';
-                $('#div' + type + 'Instructions').empty();
-                $.each(route.steps, function (i, x) {
-                    stepsHtml += x.maneuver.instruction;
-                    if (x.maneuver.type == 'depart' || x.maneuver.type == 'continue') stepsHtml += ' for ' + moment.duration(x.duration, 'seconds').humanize();
-                    stepsHtml += '. ';
-                });
-                $('#div' + type + 'Instructions').append('<p>' + stepsHtml + '</p>');
-                $('#div' + type + 'Instructions p small').shorten({ chars: 30 });
-            });
-        };
-
-        // EVENT: Route type change
-        $('#divFmlContent a[data-toggle="tab"]').on('shown.bs.tab', function (e) { setRouteData($(e.target).attr("href").replace('#', '')) });
-
-        // EVENT: Address autocomplete
-        $('#txtAddress').autocomplete({
-            lookup: function (query, done) {
-                PublicLibrariesNews.getAddressCoordinates(query, function (data) { done({ suggestions: data }) });
-            },
-            onSelect: function (suggestion) {
-                $('#spFmlHome').hide();
-                $('#spFmlSpinning').show();
-
-                // Get the library types
-                var libTypes = [];
-                $.each($('.chb-libtype:checked'), function (i, x) { libTypes.push($(x).val()) });
-
-                // If there are existing markers and route lines, remove them
-                if (fmlLibraryMarker != null) fmlMap.removeLayer(fmlLibraryMarker);
-                if (fmlHomeMarker != null) fmlMap.removeLayer(fmlHomeMarker);
-                if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
-
-                // create marker array
-                var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
-                    if (libTypes.indexOf(l.type) != -1) {
-                        var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ prefix: 'fa', icon: 'book', markerColor: 'green' }) });
-                        marker.name = l.name;
-                        marker.address = l.address;
-                        return marker;
-                    }
-                });
-
-                // If the map hasn't been created, create it.
-                if (fmlMap == null) {
-                    $('#divFmlMap').show();
-                    $('#divFmlContent').show();
-                    fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
-                    L.tileLayer(config.mapTilesStreets).addTo(fmlMap);
-                }
-
-                // Construct closest and home markers
-                fmlLibraryMarker = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(suggestion.data[1], suggestion.data[0]), false).layer;
-                fmlHomeMarker = L.marker([suggestion.data[1], suggestion.data[0]], { icon: L.AwesomeMarkers.icon({ prefix: 'fa', icon: 'home', markerColor: 'red' }) });
-
-                $('#spNearestLibName').removeClass().addClass('text-success');
-                $('#spNearestLibName').text(': ' + fmlLibraryMarker.name);
-
-                // Zoom to user location - this will take a little time so delay other actions.
-                var displayRouteDetails = function () {
-                    fmlMap.off('moveend', displayRouteDetails);
-                    // Add the home and the library marker and the route
-                    fmlMap.addLayer(fmlHomeMarker);
-                    fmlMap.addLayer(fmlLibraryMarker);
-                    $('#spFmlHome').show();
-                    $('#spFmlSpinning').hide();
-                    setRouteData('Walking');
-                };
-                fmlMap.on('moveend', displayRouteDetails);
-                fmlMap.flyToBounds([[fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng], [fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng]]);
-            }
-        });
 
         /////////////////////////////////////////////////////////////////
         // 6. Widgets: Public Libraries News Local and changes stories
@@ -354,35 +302,7 @@
         };
 
         //////////////////////////////////////////////
-        // 7. Twitter
-        //////////////////////////////////////////////
-        var tweets = PublicLibrariesNews.getTweetsSortedByDate();
-        var addTweet = function (index) {
-            if (tweets && tweets[index]) {
-                var tweet = tweets[index];
-                var tw = '<div class="row">' +
-                    '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + numFormat(tweet.tweets) + '</strong></p></div>' +
-                    '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead"><strong>' + numFormat(tweet.followers) + '</strong></p></div>' +
-                    '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead"><strong>' + numFormat(tweet.following) + '</strong></p></div>' +
-                    '</div>' +
-                    '<p>' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>';
-                $('#divTweet').append(tw);
-            }
-        };
-        var skipTwitterToAuthority = function (authority) {
-            var id = -1;
-            $('#divTwitter').hide();
-            $.each(tweets, function (i, t) {
-                if (t.name.indexOf(authority) != -1) {
-                    $('#divTweet').empty();
-                    $('#divTwitter').show();
-                    addTweet(i);
-                }
-            });
-        };
-
-        //////////////////////////////////////////////
-        // 8. Widget: Area deprivation stats
+        // 7. Widget: Area deprivation stats
         //////////////////////////////////////////////
         var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
             type: 'horizontalBar',
@@ -428,6 +348,93 @@
         };
         // ONLOAD: First thing to do is update all widgets
         updateAll();
+    });
+
+    ///////////////////////////////////////////////////////////////////
+    // 8. Find My Library
+    // Provides a means to enter postcode to find the closest library.
+    // Displays this on a map, and displays configurable route.
+    ///////////////////////////////////////////////////////////////////
+
+    // FUNCTION: setRouteData
+    var setRouteData = function (type) {
+        PublicLibrariesNews.getRouteToLibrary(fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng, fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng, type, function (route) {
+            if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
+            fmlRoute = L.polyline($.map(route.line, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['ICL'].colour, dashArray: [5, 5], weight: 3 });
+            fmlMap.addLayer(fmlRoute);
+            $('#fmlRouteContent #' + type + ' #div' + type + 'Distance p').text(getMiles(route.distance).toFixed(1) + ' mi.');
+            $('#fmlRouteContent #' + type + ' #div' + type + 'Time p').text(moment.duration(route.time * 1000).humanize() + ' ');
+            var stepsHtml = '';
+            $('#div' + type + 'Instructions').empty();
+            $.each(route.steps, function (i, x) {
+                stepsHtml += x.maneuver.instruction;
+                if (x.maneuver.type == 'depart' || x.maneuver.type == 'continue') stepsHtml += ' for ' + moment.duration(x.duration, 'seconds').humanize();
+                stepsHtml += '. ';
+            });
+            $('#div' + type + 'Instructions').append('<p>' + stepsHtml + '</p>');
+            $('#div' + type + 'Instructions p small').shorten({ chars: 30 });
+        });
+    };
+
+    // EVENT: Route type change
+    $('#divFmlContent a[data-toggle="tab"]').on('shown.bs.tab', function (e) { setRouteData($(e.target).attr("href").replace('#', '')) });
+
+    // EVENT: Address autocomplete
+    $('#txtAddress').autocomplete({
+        lookup: function (query, done) {
+            PublicLibrariesNews.getAddressCoordinates(query, function (data) { done({ suggestions: data }) });
+        },
+        onSelect: function (suggestion) {
+            $('#spFmlHome').hide();
+            $('#spFmlSpinning').show();
+
+            // Get the library types
+            var libTypes = [];
+            $.each($('.chb-libtype:checked'), function (i, x) { libTypes.push($(x).val()) });
+
+            // If there are existing markers and route lines, remove them
+            if (fmlLibraryMarker != null) fmlMap.removeLayer(fmlLibraryMarker);
+            if (fmlHomeMarker != null) fmlMap.removeLayer(fmlHomeMarker);
+            if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
+
+            // create marker array
+            var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
+                if (libTypes.indexOf(l.type) != -1) {
+                    var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ prefix: 'fa', icon: 'book', markerColor: 'green' }) });
+                    marker.name = l.name;
+                    marker.address = l.address;
+                    return marker;
+                }
+            });
+
+            // If the map hasn't been created, create it.
+            if (fmlMap == null) {
+                $('#divFmlMap').show();
+                $('#divFmlContent').show();
+                fmlMap = L.map('divFmlMap', { zoomControl: false }).setView([52.6, -2.5], 7);
+                L.tileLayer(config.mapTilesStreets).addTo(fmlMap);
+            }
+
+            // Construct closest and home markers
+            fmlLibraryMarker = L.GeometryUtil.closestLayer(fmlMap, librariesArray, L.latLng(suggestion.data[1], suggestion.data[0]), false).layer;
+            fmlHomeMarker = L.marker([suggestion.data[1], suggestion.data[0]], { icon: L.AwesomeMarkers.icon({ prefix: 'fa', icon: 'home', markerColor: 'red' }) });
+
+            $('#spNearestLibName').removeClass().addClass('text-success');
+            $('#spNearestLibName').text(': ' + fmlLibraryMarker.name);
+
+            // Zoom to user location - this will take a little time so delay other actions.
+            var displayRouteDetails = function () {
+                fmlMap.off('moveend', displayRouteDetails);
+                // Add the home and the library marker and the route
+                fmlMap.addLayer(fmlHomeMarker);
+                fmlMap.addLayer(fmlLibraryMarker);
+                $('#spFmlHome').show();
+                $('#spFmlSpinning').hide();
+                setRouteData('Walking');
+            };
+            fmlMap.on('moveend', displayRouteDetails);
+            fmlMap.flyToBounds([[fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng], [fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng]]);
+        }
     });
 
     ///////////////////////

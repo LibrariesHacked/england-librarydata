@@ -1205,7 +1205,7 @@ on op.oa = lc.oa_code
 join oa_boundaries oab
 on oab.oa11cd = lc.oa_code
 where l.closed is null
-group by authority, distance) to 'data\libraries\distances.csv' delimiter ','csv header;
+group by authority, distance) to 'data\libraries\authorities_distances.csv' delimiter ','csv header;
 ```
 
 2.  Export a file to show distances within the catchment for each library.
@@ -1221,7 +1221,7 @@ join oa_boundaries oab
 on oab.oa11cd = lc.oa_code
 join oa_population op
 on op.oa = lc.oa_code
-group by l.id, distance) to 'data\libraries\librariesdistances.csv' delimiter ','csv header;
+group by l.id, distance order by l.id, distance) to 'data\libraries\libraries_distances.csv' delimiter ','csv header;
 ```
 
 ## Export data on libraries.
@@ -1233,6 +1233,7 @@ Now that's pretty much everything done with the libraries data.  Export it, incl
 ```
 copy (select 
 	l.name,
+	l.id,
 	a.id as authority_id,
 	l.address,
 	l.postcode,
@@ -1288,6 +1289,6 @@ left outer join oa_population oap
 on oap.oa = lc.oa_code
 left outer join lsoa_imd i
 on i.lsoa_code = lso.lsoa_code
-group by l.name, a.id, l.address, l.postcode, lat, lng, l.statutory2010, l.statutory2016, l.type, l.closed, l.closed_year,l.opened_year, l.replacement, l.notes, l.hours, l.staffhours, l.url, l.email
-order by a.id, l.name) to 'data\libraries\libraries.csv' delimiter ','csv header;
+group by l.name, l.id, a.id, l.address, l.postcode, lat, lng, l.statutory2010, l.statutory2016, l.type, l.closed, l.closed_year,l.opened_year, l.replacement, l.notes, l.hours, l.staffhours, l.url, l.email
+order by a.id, l.name) to '\data\libraries\libraries.csv' delimiter ','csv header;
 ```
