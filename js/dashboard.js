@@ -268,35 +268,36 @@
         };
         var setItemDetails = function (auth, index) {
             var authSt = stories[auth].stories;
-            if (index == authSt.length) index = 0;
             $('#pCntCurrent').text((index + 1));
-            // $('.list-group-item-text').shorten('destroy');
+            $('#pNewsStory').shorten('destroy');
             $('#pNewsStory').html(authSt[index].text.replace(auth + ' – ', ''));
             $('#aPlnLink').html(moment(authSt[index].date).fromNow());
             $('#aPlnLink').attr('href', 'http://www.publiclibrariesnews.com/' + authSt[index].url);
-            // $('.list-group-item-text').shorten();
+            $('#pNewsStory').shorten();
         };
         var clickNextItem = function (e) {
             e.preventDefault();
             var item = $(e.currentTarget);
             var index = $(item).data('current') + 1;
-            setItemDetails($(item).data('auth'), index);
+            var authSt = stories[$(item).data('auth')].stories;
+            if (index == authSt.length) index = 0;
             $(item).data('current', index);
+            setItemDetails($(item).data('auth'), index);
         };
         var addLocation = function (index) {
             var it = stories[storiesOrdered[index]];
             $('#divNews').empty();
             if (it) {
                 var li = '<div class="row">' +
-                    '<div class="col col-sm-4"><small class="text-muted">stories&nbsp;</small><p class="lead" id="pCntStories"><strong>' + it.stories.length + '</strong></p></div>' +
-                    '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + it.stories.length + '</strong></p></div>' +
-                    '<div class="col col-sm-4"><small class="text-muted">current&nbsp;</small><p class="lead" id="pCntCurrent"><strong>' + it.stories.length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">stories&nbsp;</small><p class="lead" id="pCntStories"><strong>' + $.map(it.stories, function (x, i) { if (x.type == 'local') return 1; }).length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + $.map(it.stories, function(x, i){ if(x.type == 'changes') return 1; }).length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">viewing&nbsp;</small><p class="lead" id="pCntCurrent"><strong>1</strong></p></div>' +
                     '</div>' +
                     '<p><a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
                     '<p id="pNewsStory">' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
                     (it.stories.length > 1 ? '<p><a data-auth="' + storiesOrdered[index] + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
                 $('#divNews').append(li);
-                $('.list-group-item-text').shorten();
+                $('#pNewsStory').shorten();
                 $('#Location' + index).on('click', clickNextItem);
             }
         };

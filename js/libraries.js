@@ -194,7 +194,7 @@
             datatable.push([
                 x.name, // Name
                 x.code, // Code
-                $.map(x.libraries, function (l, y) { if (l.type != 'XL' && l.type != 'XLR') return l.name }).length, // Libraries
+                $.map(x.libraries, function (l, y) { if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') return l.name }).length, // Libraries
                 $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length, // Local authority
                 $.map(x.libraries, function (l, y) { if (l.type == 'LCL') return l.name }).length, // Commissioned
                 $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length, // Community
@@ -378,8 +378,8 @@
     /////////////////////////////////////////////////////////////
     // Function: getAuthoritiesWithStories
     // Input: None
-    // Output: 
-    // 
+    // Output: Object. Authority as key and array of stories
+    // for each authority
     /////////////////////////////////////////////////////////////
     getAuthoritiesWithStories: function () {
         var changes = this.getStoriesGroupedByLocation('changes');
@@ -450,8 +450,8 @@
             $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
                 if (!authGeoData.features[x].properties.libraries[l.type] && l.type != '') authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
                 if ((l.type != '' && l.closed == '') || l.lat != '') authGeoData.features[x].properties.libraries[l.type].libs.push(l);
-                if (l.type != 'XL' && l.type != 'XLR') nonClosedCount = nonClosedCount + 1;
-                if (l.type == 'XL' || l.type == 'XLR') closedCount = closedCount + 1;
+                if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') nonClosedCount = nonClosedCount + 1;
+                if (l.type == 'XL' || l.type == 'XLR' || l.type == 'XLT') closedCount = closedCount + 1;
                 if (l.type == 'LAL') localAuthorityCount = localAuthorityCount + 1;
             });
             authGeoData.features[x].properties['libraryCount'] = nonClosedCount;
@@ -589,8 +589,8 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getStoriesGroupedByLocation
-    // Input: 
-    // Output: 
+    // Input: Story type (local or changes)
+    // Output: Object with location as key.
     // 
     /////////////////////////////////////////////////////////////
     getStoriesGroupedByLocation: function (type) {
@@ -599,7 +599,7 @@
             $.each(y, function (x, m) {
                 $.each(m, function (z, s) {
                     if (!locs[s[0]]) locs[s[0]] = { lat: this.locations[s[0]] ? this.locations[s[0]][0] : 0, lng: this.locations[s[0]] ? this.locations[s[0]][1] : 0, stories: [] };
-                    locs[s[0]].stories.push({ date: s[1], text: s[2], url: s[3] });
+                    locs[s[0]].stories.push({ date: s[1], text: s[2], url: s[3], type: type });
                 }.bind(this));
             }.bind(this));
         }.bind(this));
