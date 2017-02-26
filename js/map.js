@@ -16,12 +16,16 @@
     /////////////////////////////////////////////////////////
     // Helper Functions
     /////////////////////////////////////////////////////////
+
+    // Function: numFormat
     var numFormat = function (num) {
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
         if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
         if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
         return num;
     };
+
+    // Function: hexToRgb
     var hexToRgb = function (hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
@@ -117,14 +121,14 @@
     /////////////////////////////////////////////////////////
     var clickLibrary = function (library) {
         sidebar.close();
-
+        var lib = LibrariesFuncs.getLibraryById(library.id);
         var displayLib = function () {
             map.off('moveend', displayLib);
             $('#liLibrary').removeClass('disabled');
             $('#sidebar-librarycontent').empty();
             $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[library.type].cssClass + '">' + library.name + '</h3>');
             // Display latest tweet
-            var tweet = PublicLibrariesNews.getLatestLibraryTweet(library.name);
+            var tweet = LibrariesFuncs.getLatestLibraryTweet(library.name);
             if (tweet) $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
 
             $('#sidebar-librarycontent').append('<p>' +
@@ -175,7 +179,7 @@
             $('#sidebar-authoritycontent').append('<div class="row"><div class="col-md-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + numFormat(feature.properties.population) + '</p></div><div class="col-md-4"><small class="text-muted">area (hectares)</small><p class="lead text-gray-dark">' + numFormat(feature.properties.hectares) + '</p></div><div class="col-md-4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + numFormat(feature.properties.libraryCount) + '</p></div><//div>');
 
             // Display latest tweet
-            var tweet = PublicLibrariesNews.getLatestAuthorityTweet(feature.properties.name);
+            var tweet = LibrariesFuncs.getLatestAuthorityTweet(feature.properties.name);
             if (tweet) $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="https://twitter.com/' + tweet[1] + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</strong> ' + tweet[11] + '</div>');
 
             // Show libraries group by type
@@ -218,23 +222,15 @@
     // INIT
     // Load the initial set of data
     /////////////////////////////////////////////////////////////
-    PublicLibrariesNews.loadData(3, true, true, true, true, function () {
-        var authGeo = PublicLibrariesNews.getAuthGeoWithStoriesAndLibraries();
+    LibrariesFuncs.loadData(3, true, true, true, true, function () {
+        var authGeo = LibrariesFuncs.getAuthGeoWithStoriesAndLibraries();
         var onEachFeature = function (feature, layer) {
-            layer.on('click', function (e) {
-                clickAuth(e, feature, layer)
-            });
+            layer.on('click', function (e) { clickAuth(e, feature, layer) });
         };
         // Now load in the authority boundaries 
-        authBoundaries = new L.geoJson(null, {
-            onEachFeature: onEachFeature
-        });
-        authBoundaries.bindTooltip(function (layer) {
-            return layer.feature.properties.name;
-        }).addTo(map);
-        $(authGeo.features).each(function (key, data) {
-            authBoundaries.addData(data);
-        });
+        authBoundaries = new L.geoJson(null, { onEachFeature: onEachFeature });
+        authBoundaries.bindTooltip(function (layer) { return layer.feature.properties.name; }).addTo(map);
+        $(authGeo.features).each(function (key, data) { authBoundaries.addData(data); });
         setMapStyles();
 
         sidebar.open('home');

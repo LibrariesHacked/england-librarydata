@@ -1,4 +1,4 @@
-﻿var PublicLibrariesNews = {
+﻿var LibrariesFuncs = {
     ///////////////////////////////////////////////////////////////////////
     // URLS
     ///////////////////////////////////////////////////////////////////////
@@ -148,7 +148,7 @@
                 $.each(a.libraries, function (y, l) {
                     if (l.type == libType) {
                         count++;
-                        depIndices.multiple += parseFloat(l.multiple);
+                        if (l.multiple) depIndices.multiple += parseFloat(l.multiple);
                         //depIndices.employment += parseFloat(l.employment);
                         //depIndices.education += parseFloat(l.education);
                         //depIndices.adultskills += parseFloat(l.adultskills);
@@ -448,6 +448,7 @@
             var localAuthorityCount = 0;
             authGeoData.features[x].properties.libraries = {};
             $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
+                if (l.type == 'XLT') l.type = 'XL';
                 if (!authGeoData.features[x].properties.libraries[l.type] && l.type != '') authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
                 if ((l.type != '' && l.closed == '') || l.lat != '') authGeoData.features[x].properties.libraries[l.type].libs.push(l);
                 if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') nonClosedCount = nonClosedCount + 1;
@@ -497,6 +498,7 @@
         $.each(this.libraries, function (i, lib) {
             if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
             if (lib.type == '') lib.type = lib.closed;
+            if (lib.type == 'XLT') lib.type = 'XL';
             if (lib.type != '') authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;

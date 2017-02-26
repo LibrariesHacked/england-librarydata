@@ -13,14 +13,14 @@
     //////////////////////////////////////////////
     // LOAD.  Load the data
     //////////////////////////////////////////////
-    PublicLibrariesNews.loadData(2, true, false, true, true, function () {
+    LibrariesFuncs.loadData(2, true, false, true, true, function () {
 
         //////////////////////////////////////////////
         // 1. Widget: Select area
         //////////////////////////////////////////////
 
         // Populate the authorities select control
-        $.each(PublicLibrariesNews.getAuthorityListSorted(), function (i, x) { $('#selAuthority').append($("<option></option>").attr("value", x).text(x)); });
+        $.each(LibrariesFuncs.getAuthorityListSorted(), function (i, x) { $('#selAuthority').append($("<option></option>").attr("value", x).text(x)); });
 
         // Function: updateAll
         // Run when the authority is changed to update all individual widgets
@@ -42,7 +42,7 @@
         //////////////////////////////////////////////
         // 2. Twitter
         //////////////////////////////////////////////
-        var tweets = PublicLibrariesNews.getTweetsSortedByDate();
+        var tweets = LibrariesFuncs.getTweetsSortedByDate();
         var addTweet = function (index) {
             if (tweets && tweets[index]) {
                 var tweet = tweets[index];
@@ -76,7 +76,7 @@
         var updateLibraryDetailsSelect = function (authority) {
             $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails, #selLibraryDetailsLibrary').empty();
             $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('select a library'));
-            $.each(PublicLibrariesNews.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.id).text(z.name)) });
+            $.each(LibrariesFuncs.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.id).text(z.name)) });
         };
 
         // Event: On selecting a library, display that library's details.
@@ -92,7 +92,7 @@
             }
 
             updateLibDistancesLine(null, lib);
-            var library = PublicLibrariesNews.getLibraryById(lib);
+            var library = LibrariesFuncs.getLibraryById(lib);
             var libStyle = config.libStyles[library.type].cssClass;
 
             // Set up the links to email and website.
@@ -129,14 +129,14 @@
                 '<div class="col col-sm-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + numFormat(library.dependent_children) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[library.multiple] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.employment] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.education] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.multiple).toFixed(0)] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.employment).toFixed(0)] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.education).toFixed(0)] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.adultskills] + '">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.health] + '">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[library.services] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.adultskills).toFixed(0)] + '">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.health).toFixed(0)] + '">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.services).toFixed(0)] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
                 '</div>'
                 );
             updateTooltips();
@@ -166,12 +166,12 @@
             typeDonut.config.data.datasets[0].backgroundColor = [];
             typeDonut.config.data.labels = [];
             $.each(Object.keys(config.libStyles), function (t, c) {
-                var count = PublicLibrariesNews.getCountLibrariesByAuthorityType(libAuthority, c);
+                var count = LibrariesFuncs.getCountLibrariesByAuthorityType(libAuthority, c);
                 if (count > 0) typeDonut.config.data.datasets[0].data.push(count);
                 if (count > 0) typeDonut.config.data.datasets[0].backgroundColor.push(config.libStyles[c].colour);
                 if (count > 0) typeDonut.config.data.labels.push(config.libStyles[c].type);
             });
-            var stats = PublicLibrariesNews.getStatCountsByAuthority(libAuthority);
+            var stats = LibrariesFuncs.getStatCountsByAuthority(libAuthority);
             // These stats shown at the authority selector.
             $('#divNumLibs p').text(stats.libraries);
             $('#divPopulation p').text(numFormat(stats.population));
@@ -231,12 +231,12 @@
 
         var updateLibDistancesLine = function (authority, library) {
             if (library) {
-                var distances = PublicLibrariesNews.getDistancesByLibrary(library);
-                var lib = PublicLibrariesNews.getLibraryById(library);
+                var distances = LibrariesFuncs.getDistancesByLibrary(library);
+                var lib = LibrariesFuncs.getLibraryById(library);
                 $('#spDistanceTitle').text(lib.name + ' catchment');
                 $('#hLibDistanceSubtitle').text('distance to ' + lib.name + ' within catchment area');
             } else {
-                var distances = PublicLibrariesNews.getDistancesByAuthority(authority);
+                var distances = LibrariesFuncs.getDistancesByAuthority(authority);
                 $('#hLibDistanceSubtitle').text('distance to the nearest statutory library');
             }
             var totalDistance = 0, population = 0;
@@ -257,7 +257,7 @@
         /////////////////////////////////////////////////////////////////
         // 6. Widgets: Public Libraries News Local and changes stories
         /////////////////////////////////////////////////////////////////
-        var stories = PublicLibrariesNews.getAuthoritiesWithStories();
+        var stories = LibrariesFuncs.getAuthoritiesWithStories();
         var storiesOrdered = Object.keys(stories).sort(function (a, b) { return stories[b].stories.length - stories[a].stories.length });
         var skipStoriesToAuthority = function (authority) {
             $('#divNewsStories').hide();
@@ -272,7 +272,7 @@
             $('#pNewsStory').shorten('destroy');
             $('#pNewsStory').html(authSt[index].text.replace(auth + ' – ', ''));
             $('#aPlnLink').html(moment(authSt[index].date).fromNow());
-            $('#aPlnLink').attr('href', 'http://www.publiclibrariesnews.com/' + authSt[index].url);
+            $('#aPlnLink').attr('href', 'http://www.LibrariesFuncs.com/' + authSt[index].url);
             $('#pNewsStory').shorten();
         };
         var clickNextItem = function (e) {
@@ -290,10 +290,10 @@
             if (it) {
                 var li = '<div class="row">' +
                     '<div class="col col-sm-4"><small class="text-muted">stories&nbsp;</small><p class="lead" id="pCntStories"><strong>' + $.map(it.stories, function (x, i) { if (x.type == 'local') return 1; }).length + '</strong></p></div>' +
-                    '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + $.map(it.stories, function(x, i){ if(x.type == 'changes') return 1; }).length + '</strong></p></div>' +
+                    '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + $.map(it.stories, function (x, i) { if (x.type == 'changes') return 1; }).length + '</strong></p></div>' +
                     '<div class="col col-sm-4"><small class="text-muted">viewing&nbsp;</small><p class="lead" id="pCntCurrent"><strong>1</strong></p></div>' +
                     '</div>' +
-                    '<p><a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
+                    '<p><a class="alert-link" id="aPlnLink" href="http://www.LibrariesFuncs.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
                     '<p id="pNewsStory">' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
                     (it.stories.length > 1 ? '<p><a data-auth="' + storiesOrdered[index] + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
                 $('#divNews').append(li);
@@ -319,7 +319,7 @@
             }
         });
         var updateLibTypeStatsBar = function (authority) {
-            var authDepStats = PublicLibrariesNews.getDeprivationIndicesAveragesByAuthority(authority);
+            var authDepStats = LibrariesFuncs.getDeprivationIndicesAveragesByAuthority(authority);
             $('#divIMD p, #divEmployment p, #divEducation p, #divAdultSkills p, #divHealth p, #divServices p').removeClass();
             $('#divIMD p').text(authDepStats.multiple);
             $('#divIMD p').addClass('lead strong text-' + config.depStatStyles[authDepStats.multiple])
@@ -334,7 +334,7 @@
             $('#divServices p').text(authDepStats.services);
             $('#divServices p').addClass('lead strong text-' + config.depStatStyles[authDepStats.services])
             typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
-                var ind = PublicLibrariesNews.getDeprivationIndicesByAuthorityAndLibType(authority, x);
+                var ind = LibrariesFuncs.getDeprivationIndicesByAuthorityAndLibType(authority, x);
                 if (ind.multiple.length > 0) {
                     return {
                         label: config.libStyles[x].type,
@@ -359,7 +359,7 @@
 
     // FUNCTION: setRouteData
     var setRouteData = function (type) {
-        PublicLibrariesNews.getRouteToLibrary(fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng, fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng, type, function (route) {
+        LibrariesFuncs.getRouteToLibrary(fmlHomeMarker._latlng.lat, fmlHomeMarker._latlng.lng, fmlLibraryMarker._latlng.lat, fmlLibraryMarker._latlng.lng, type, function (route) {
             if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
             fmlRoute = L.polyline($.map(route.line, function (ll, i) { return L.latLng([ll[0], ll[1]]); }), { color: config.libStyles['ICL'].colour, dashArray: [5, 5], weight: 3 });
             fmlMap.addLayer(fmlRoute);
@@ -383,7 +383,7 @@
     // EVENT: Address autocomplete
     $('#txtAddress').autocomplete({
         lookup: function (query, done) {
-            PublicLibrariesNews.getAddressCoordinates(query, function (data) { done({ suggestions: data }) });
+            LibrariesFuncs.getAddressCoordinates(query, function (data) { done({ suggestions: data }) });
         },
         onSelect: function (suggestion) {
             $('#spFmlHome').hide();
@@ -399,7 +399,7 @@
             if (fmlRoute != null) fmlMap.removeLayer(fmlRoute);
 
             // create marker array
-            var librariesArray = $.map(PublicLibrariesNews.getLibraryLocations(), function (l, i) {
+            var librariesArray = $.map(LibrariesFuncs.getLibraryLocations(), function (l, i) {
                 if (libTypes.indexOf(l.type) != -1) {
                     var marker = L.marker([l.lat, l.lng], { icon: L.AwesomeMarkers.icon({ prefix: 'fa', icon: 'book', markerColor: 'green' }) });
                     marker.name = l.name;
