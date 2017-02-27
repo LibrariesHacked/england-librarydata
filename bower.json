@@ -1,6 +1,6 @@
 {
-  "name": "public-libraries-news",
-  "homepage": "https://github.com/LibrariesHacked/public-libraries-news",
+  "name": "england-librarydata",
+  "homepage": "https://github.com/LibrariesHacked/england-librarydata",
   "authors": [
     "Libraries Hacked <info@librarieshacked.org>"
   ],
@@ -18,11 +18,8 @@
     "font-awesome": "fontawesome#^4.6.3",
     "moment": "^2.14.1",
     "sidebar-v2": "^0.3.0",
-    "nouislider": "^8.5.1",
     "papaparse": "^4.1.2",
-    "leaflet.locatecontrol": "^0.52.0",
     "leaflet-geometry": "^0.4.0",
-    "leaflet": "v1.0.0-rc.3",
     "chart.js": "npm:chart.js#^2.2.2",
     "datatables.net": "^1.10.12",
     "datatables.net-bs": "^1.10.12",
@@ -35,11 +32,12 @@
     "jquery-shorten-js": "^0.3.1",
     "awesome-bootstrap-checkbox": "v1.0.0-alpha.4",
     "polyline": "^0.2.0",
-    "bootstrap": "v4.0.0-alpha.6"
+    "bootstrap": "v4.0.0-alpha.6",
+    "leaflet": "^1.0.3"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",
-    "leaflet": "v1.0.0-rc.3"
+    "leaflet": "^1.0.3"
   },
   "resolvers": [
     "bower-npm-resolver"

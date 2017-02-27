@@ -6,10 +6,10 @@
     librariesNewsLocationsUrl: '/data/pln/plnlocations.json',
     authoritiesUrl: '/data/libraries/authorities.csv',
     authoritiesGeoUrl: '/data/libraries/authorities_geo.json',
-    authoritiesTwitterUrl: '/data/twitter/authorities.json',
+    authoritiesTwitterUrl: '/data/twitter/authoritiestwitter.json',
     authoritiesDistancesUrl: '/data/libraries/authorities_distances.csv',
     librariesUrl: '/data/libraries/libraries.csv',
-    librariesTwitterUrl: '/data/twitter/libraries.json',
+    librariesTwitterUrl: '/data/twitter/librariestwitter.json',
     librariesDistancesUrl: '/data/libraries/libraries_distances.csv',
     ///////////////////////////////////////////////////////////////////////
     // Data Storage
@@ -576,7 +576,7 @@
     getLatestAuthorityTweet: function (auth) {
         var tweet = null;
         $.each(this.authoritiesTwitter, function (i, t) {
-            if (t[4] && t[0].toLowerCase().replace('county council', '').trim() == auth.toLowerCase().replace('county council', '').trim()) tweet = t;
+            if (t[4] && t[0].toLowerCase().replace('county council', '').trim() == auth.toLowerCase().replace('county council', '').trim()) tweet = { name: t[0], account: t[1], type: t[2], description: t[3], website: t[4], following: t[6], favourites: t[8], followers: t[5], tweets: t[7], dateAccount: t[9], avatar: t[10], latest: t[11], latestDate: t[12] };
         }.bind(this));
         return tweet;
     },

@@ -272,7 +272,7 @@
             $('#pNewsStory').shorten('destroy');
             $('#pNewsStory').html(authSt[index].text.replace(auth + ' – ', ''));
             $('#aPlnLink').html(moment(authSt[index].date).fromNow());
-            $('#aPlnLink').attr('href', 'http://www.LibrariesFuncs.com/' + authSt[index].url);
+            $('#aPlnLink').attr('href', 'http://www.publiclibrariesnews.com/' + authSt[index].url);
             $('#pNewsStory').shorten();
         };
         var clickNextItem = function (e) {
@@ -293,7 +293,7 @@
                     '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + $.map(it.stories, function (x, i) { if (x.type == 'changes') return 1; }).length + '</strong></p></div>' +
                     '<div class="col col-sm-4"><small class="text-muted">viewing&nbsp;</small><p class="lead" id="pCntCurrent"><strong>1</strong></p></div>' +
                     '</div>' +
-                    '<p><a class="alert-link" id="aPlnLink" href="http://www.LibrariesFuncs.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
+                    '<p>public libraries news: <a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
                     '<p id="pNewsStory">' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
                     (it.stories.length > 1 ? '<p><a data-auth="' + storiesOrdered[index] + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
                 $('#divNews').append(li);

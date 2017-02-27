@@ -1,23 +1,28 @@
 ﻿$(function () {
-    jQuery.fn.reverse = [].reverse;
-    /////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////
     // Map - Initialise the map, set center, zoom, etc.
-    /////////////////////////////////////////////////
-    var authBoundaries = null;
+    ////////////////////////////////////////////////////
     var markerArray = L.layerGroup([]);
+    var authBoundaries = null;
     var selectedAuth = '';
-    var mapType = 1;
     var map = L.map('map').setView([52.55, -2.72], 7);
     L.tileLayer(config.mapTilesLight, { attribution: config.mapAttribution }).addTo(map);
     var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
     map.addControl(sidebar);
     var legend = null;
+    var mapType = 1;
 
     /////////////////////////////////////////////////////////
     // Helper Functions
     /////////////////////////////////////////////////////////
 
+    // Function: reverse
+    // Additional reverse function for arrays
+    jQuery.fn.reverse = [].reverse;
+
     // Function: numFormat
+    // Returns a big number in a shortened fashion e.g. 4.5K
     var numFormat = function (num) {
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
         if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -26,6 +31,7 @@
     };
 
     // Function: hexToRgb
+    // Converts a hex colour (e.g. 6699FF) to an RGB object.
     var hexToRgb = function (hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
@@ -87,7 +93,7 @@
         map.removeLayer(markerArray);
         markerArray.clearLayers();
         $.each(Object.keys(libraries), function (i, t) {
-            var style = { radius: 5, stroke: true, color: config.libStyles[t].colour, fill: config.libStyles[t].colour };
+            var style = { radius: 5, stroke: true, weight: 2, color: config.libStyles[t].colour, fill: true, fillColor: config.libStyles[t].colour };
             $.each(libraries[t].libs, function (x, lib) {
                 if (lib.lat && lib.lng) {
                     var m = L.circleMarker([lib.lat, lib.lng], style);
@@ -179,35 +185,45 @@
 
             // Show authority details
             $('#authority .sidebar-title').text(feature.properties.name);
-            $('#sidebar-authoritycontent').append('<div class="row"><div class="col-md-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + numFormat(auth.population) + '</p></div><div class="col-md-4"><small class="text-muted">area (hectares)</small><p class="lead text-gray-dark">' + numFormat(auth.hectares) + '</p></div><div class="col-md-4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + numFormat(feature.properties.libraryCount) + '</p></div><//div>');
+            $('#sidebar-authoritycontent').append(
+                '<div class="row">' +
+                '<div class="col-md-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + numFormat(auth.population) + '</p></div>' +
+                '<div class="col-md-4"><small class="text-muted">area (hectares)</small><p class="lead text-gray-dark">' + numFormat(auth.hectares) + '</p></div>' +
+                '<div class="col-md-4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + numFormat(feature.properties.libraryCount) + '</p></div>' +
+                '<//div>');
 
             // Display latest tweet
             var tweet = LibrariesFuncs.getLatestAuthorityTweet(feature.properties.name);
-            if (tweet) $('#sidebar-authoritycontent').append('<div class="alert alert-dismissible alert-info"><a class="close" href="https://twitter.com/' + tweet[1] + '" target="_blank"><span class="fa fa-twitter"></span></a><strong>' + moment(tweet[12], 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</strong> ' + tweet[11] + '</div>');
+            if (tweet) {
+                var tw = '<div class="alert alert-info mb-3"><div class="row">' +
+                '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + numFormat(tweet.tweets) + '</strong></p></div>' +
+                '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead"><strong>' + numFormat(tweet.followers) + '</strong></p></div>' +
+                '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead"><strong>' + numFormat(tweet.following) + '</strong></p></div>' +
+                '</div>' +
+                '<p>' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p></div>';
+                $('#sidebar-authoritycontent').append(tw);
+            }
 
             // Show libraries group by type
-            $.each(Object.keys(feature.properties.libraries), function (i, k) {
-                var type = $('<div>');
-                var hd = $('<h5>', {
-                    text: config.libStyles[k].type
-                }).appendTo(type);
-                var pa = $('<p>').appendTo(type);
-                var sm = $('<small>').appendTo(pa);
-                $.each(feature.properties.libraries[k].libs, function (x, l) {
-                    $(sm).append((x + 1) + '. ');
-                    $('<a>', {
-                        text: l.name,
-                        title: l.name,
-                        href: '#',
-                        'class': 'text-' + config.libStyles[l.type].cssClass,
-                        click: function () {
-                            clickLibrary(l);
-                            return false;
-                        }
-                    }).appendTo(sm);
-                    $(sm).append(' ');
-                });
-                $('#sidebar-authoritycontent').append(type);
+            $.each(Object.keys(config.libStyles), function (i, k) {
+                if (feature.properties.libraries[k]) {
+                    var type = $('<div>');
+                    var hd = $('<h5>', { text: config.libStyles[k].type }).appendTo(type);
+                    var pa = $('<p>').appendTo(type);
+                    var sm = $('<small>').appendTo(pa);
+                    $.each(feature.properties.libraries[k].libs, function (x, l) {
+                        $(sm).append((x + 1) + '. ');
+                        $('<a>', {
+                            text: l.name,
+                            title: l.name,
+                            href: '#',
+                            class: 'text-' + config.libStyles[l.type].cssClass,
+                            click: function () { clickLibrary(l); return false; }
+                        }).appendTo(sm);
+                        $(sm).append(' ');
+                    });
+                    $('#sidebar-authoritycontent').append(type);
+                }
             });
             addLibrariesToMap(feature.properties.libraries);
             $('#sidebar-newscontent').empty();
