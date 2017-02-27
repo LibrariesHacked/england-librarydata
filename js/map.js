@@ -169,6 +169,9 @@
     var clickAuth = function (e, feature, layer) {
         sidebar.close();
         var displayAuthority = function () {
+
+            var auth = LibrariesFuncs.getAuthorityByName(feature.properties.name);
+
             map.off('moveend', displayAuthority);
             selectedAuth = feature.properties['authority_id'];
             $('#liAuthority').removeClass('disabled');
@@ -176,7 +179,7 @@
 
             // Show authority details
             $('#authority .sidebar-title').text(feature.properties.name);
-            $('#sidebar-authoritycontent').append('<div class="row"><div class="col-md-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + numFormat(feature.properties.population) + '</p></div><div class="col-md-4"><small class="text-muted">area (hectares)</small><p class="lead text-gray-dark">' + numFormat(feature.properties.hectares) + '</p></div><div class="col-md-4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + numFormat(feature.properties.libraryCount) + '</p></div><//div>');
+            $('#sidebar-authoritycontent').append('<div class="row"><div class="col-md-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + numFormat(auth.population) + '</p></div><div class="col-md-4"><small class="text-muted">area (hectares)</small><p class="lead text-gray-dark">' + numFormat(auth.hectares) + '</p></div><div class="col-md-4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + numFormat(feature.properties.libraryCount) + '</p></div><//div>');
 
             // Display latest tweet
             var tweet = LibrariesFuncs.getLatestAuthorityTweet(feature.properties.name);

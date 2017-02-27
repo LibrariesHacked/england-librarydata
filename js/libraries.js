@@ -264,6 +264,19 @@
         return $.map(this.authorities, function (i, x) { return i.name }).sort();
     },
     /////////////////////////////////////////////////////////////
+    // Function: getAuthorityByName
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
+    getAuthorityByName: function (name) {
+        var auth = {};
+        $.each(this.authorities, function (i, a) {
+            if (a.name == name) auth = a;
+        });
+        return auth;
+    },
+    /////////////////////////////////////////////////////////////
     // Function: getLibrariesListSorted
     // Input: Authority name
     // Output: An array of objects (libraries) with an id and name
