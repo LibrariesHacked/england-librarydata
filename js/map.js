@@ -127,46 +127,55 @@
     /////////////////////////////////////////////////////////
     var clickLibrary = function (library) {
         sidebar.close();
-        var lib = LibrariesFuncs.getLibraryById(library.id);
+        //var lib = LibrariesFuncs.getLibraryById(library.id);
         var displayLib = function () {
             map.off('moveend', displayLib);
             $('#liLibrary').removeClass('disabled');
             $('#sidebar-librarycontent').empty();
-            $('#sidebar-librarycontent').append('<h3 class="text-' + config.libStyles[library.type].cssClass + '">' + library.name + '</h3>');
+            $('#library .sidebar-title').text(library.name);
+
             // Display latest tweet
             var tweet = LibrariesFuncs.getLatestLibraryTweet(library.name);
-            if (tweet) $('#sidebar-librarycontent').append('<div class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
+            if (tweet) $('#sidebar-librarycontent').append('<div id="divTweet" class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
+            $('#divTweet a').addClass('alert-link');
 
-            $('#sidebar-librarycontent').append('<p>' +
-                (library.type ? ('<span class="strong text-' + config.libStyles[library.type].cssClass + '">' + config.libStyles[library.type].type + '.</span> ') : '') +
-                (library.replacement && library.replacement == 't' ? '<span class="strong text-muted"> replacement.</span> ' : '') +
-                (library.address ? (' ' + library.address.toLowerCase() + '. ') : '') +
-                (library.notes ? (' ' + library.notes.toLowerCase() + '. ') : '') +
-                (library.opened_year ? ('opened in ' + library.opened_year + '. ') : '') +
-                (library.closed ? ('closed in ' + library.closed_year + '. ') : '') +
-                '</p>');
-            if (library.email) $('#sidebar-librarycontent').append('<a href="mailto:' + library.email + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-envelope"></span>&nbsp;email</a> ');
-            if (library.url) $('#sidebar-librarycontent').append('<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-outline-info btn-sm"><span class="fa fa-external-link"></span>&nbsp;website</a>');
+            // Set up the library details such as closed/open year, type, and notes
+            var libStyle = config.libStyles[library.type].cssClass;
+            var libType = (library.type ? ('<span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span>') : '');
+            var replacement = (library.replacement && library.replacement == 't' ? ' <span class="strong text-muted">(replacement)</span>' : '');
+            var closed = (library.closed && library.closed_year ? (' <span class="strong text-danger">(' + library.closed_year) + ')</span>' : '');
+            var notes = (library.notes ? '<p>' + library.notes + '</p>' : '');
+
+            $('#sidebar-librarycontent').append('<p>' + libType + replacement + closed + '</p>' + notes);
+
+            // Set up the links to email and website.
+            $('#divLibraryLinks').append('<p>' +
+                (library.email ? '<a href="mailto:' + library.email + '" target= "_blank" class="btn btn-secondary" title="email ' + library.name + '"> <span class="fa fa-envelope"></span> email</a > ' : '') +
+                (library.url ? '<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-secondary" title="go to ' + library.name + ' website"><span class="fa fa-external-link"></span>&nbsp;website</a>' : '') + '</p>'
+            );
+
             // Populate the hours and statutory details
             $('#sidebar-librarycontent').append('<div class="row">' +
                 '<div class="col col-xs-4"><small class="text-muted">statutory</small><p class="lead text-gray-dark">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
                 '<div class="col col-xs-4"><small class="text-muted">hours</small><p class="lead text-gray-dark">' + library.hours + '</p></div>' +
                 '<div class="col col-xs-4"><small class="text-muted">staff hours</small><p class="lead text-gray-dark">' + library.staffhours + '</p></div>');
+
             // Populate the deprivation details.
-            $('#sidebar-librarycontent').append('<div class="row">' +
-                '<div class="col col-xs-4"><small class="text-muted">multiple</small><p class="lead text-gray-dark">' + library.multiple + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted">employment</small><p class="lead text-gray-dark">' + library.employment + '</p></div>' +
-                '<div class="col col-xs-4"><small class="text-muted">education</small><p class="lead text-gray-dark">' + library.education + '</p></div>' +
+            $('#sidebar-librarycontent').append(
+                (library.address ? ('<small class="text-muted">catchment population around ' + library.address + '.</small></p>') : '') +
+                '<div class="row">' +
+                '<div class="col col-xs-4"><small class="text-muted">multiple</small><p class="lead text-gray-dark">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">employment</small><p class="lead text-gray-dark">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
+                '<div class="col col-xs-4"><small class="text-muted">education</small><p class="lead text-gray-dark">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
-                '<div class="col col-xs-3"><small class="text-muted">adult skills</small><p class="lead text-gray-dark">' + library.adultskills + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-gray-dark">' + library.health + '</p></div>' +
-                '<div class="col col-xs-3"><small class="text-muted">services</small><p class="lead text-gray-dark">' + library.services + '</p></div></div>' +
-                '<p><small class="text-muted strong">these are deprivation deciles (1-10) for the library location.  lower represents greater deprivation.</small></p>');
+                '<div class="col col-xs-3"><small class="text-muted">adult skills</small><p class="lead text-gray-dark">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">health</small><p class="lead text-gray-dark">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
+                '<div class="col col-xs-3"><small class="text-muted">services</small><p class="lead text-gray-dark">' + parseFloat(library.services).toFixed(0) + '</p></div></div>');
             sidebar.open('library');
         };
         map.on('moveend', displayLib);
-        map.flyTo(L.latLng(library.lat, library.lng), 13);
+        map.flyTo(L.latLng(library.lat, library.lng), 14);
     };
 
     /////////////////////////////////////////////////////////
@@ -195,13 +204,14 @@
             // Display latest tweet
             var tweet = LibrariesFuncs.getLatestAuthorityTweet(feature.properties.name);
             if (tweet) {
-                var tw = '<div class="alert alert-info mb-3"><div class="row">' +
+                var tw = '<div id="divTweet" class="alert alert-info mb-3"><div class="row">' +
                 '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + numFormat(tweet.tweets) + '</strong></p></div>' +
                 '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead"><strong>' + numFormat(tweet.followers) + '</strong></p></div>' +
                 '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead"><strong>' + numFormat(tweet.following) + '</strong></p></div>' +
                 '</div>' +
                 '<p>' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p></div>';
                 $('#sidebar-authoritycontent').append(tw);
+                $('#divTweet a').addClass('alert-link');
             }
 
             // Show libraries group by type
