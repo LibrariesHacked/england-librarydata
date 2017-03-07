@@ -4,16 +4,18 @@ Project to display English libraries data in a data dashboard.
 
 ## What is it?
 
-The Libraries Taskforce have been working on an English libraries dataset to bring together information of all libraries and library authorities in England.  This includes tracking closures, changes of library type, number of libraries, locations of libraries, and contact details.
+The Libraries Taskforce have been working on an English libraries dataset to bring together a list of all libraries and library authorities in England.  This includes tracking closures, changes of library type, number of libraries, locations of libraries, and contact details.
 
 Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK leading source for libraries news.  This includes regular updates about changes, local news by authority, ideas, national news, and international news.
+
+This project aims at bringing these things together, along with latest tweets, to visualise the data all together.
 
 ## Supporting technology
 
 | Technology | Description |
 | ---------- | ----------- |
 | Web | The site is coded using front-end web technologies: HTML/CSS/JavaScript |
-| Google apps scripts | Data is refreshed from PLN and Twitter by using Google apps scripts. |
+| Google apps scripts | Data is refreshed from Public Libraries News and Twitter by using Google apps scripts. |
 | PostGIS database | A PostGIS database was used for the majority of the geospatial analysis. |
 
 ## Functionality
@@ -24,19 +26,22 @@ The dashboard is split into cards, providing different areas of functionality.
 
 #### 1. Areas
 
-The dashboard provides either data on all library services, or for specific areas.  Using the drop down control in this card will filter the data to show for that library service.
+The dashboard provides either data on all library services, or for specific areas (library authorities).  Using the drop down control in this card will filter the data to show for the specified library service.
 
-#### 2. Library details
+#### 2. Twitter card
 
-After choosing a library service this gives the opportunity to select a particular library to see further details.
+On selecting a library service if there is a matching tweet from the twitter data then this will be displayed.  
 
-Details shown for each library are:
+#### 3. Library details
 
-- library type
-- address
-- closed details (if applicable)
-- notes on the library
+With no library service selected all libraries are listed to select.  If a particular service is selected then only the libraries for that service are shown.
+
+On selecting a library, details displayed are:
+
 - email and website (as buttons)
+- library type
+- closed/replaced/new details (if applicable)
+- notes on the library
 - deprivation deciles for the area the library is located in.
 
 #### 3. Library distance stats

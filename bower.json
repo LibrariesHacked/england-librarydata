@@ -22,10 +22,7 @@
     "leaflet-geometry": "^0.4.0",
     "chart.js": "npm:chart.js#^2.2.2",
     "datatables.net": "^1.10.12",
-    "datatables.net-bs": "^1.10.12",
-    "datatables.net-buttons-bs": "^1.2.2",
     "datatables.net-responsive": "^2.1.0",
-    "datatables.net-responsive-bs": "^2.1.0",
     "drmonty-leaflet-awesome-markers": "^2.0.2",
     "twitter-text": "npm:twitter-text#^1.14.0",
     "devbridge-autocomplete": "v1.2.26",
@@ -33,7 +30,10 @@
     "awesome-bootstrap-checkbox": "v1.0.0-alpha.4",
     "polyline": "^0.2.0",
     "bootstrap": "v4.0.0-alpha.6",
-    "leaflet": "^1.0.3"
+    "leaflet": "^1.0.3",
+    "datatables.net-bs4": "^3.2.2",
+    "datatables.net-buttons-bs4": "^1.2.4",
+    "datatables.net-responsive-bs4": "^2.1.1"
   },
   "resolutions": {
     "font-awesome": "^4.6.3",

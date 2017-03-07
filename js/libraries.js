@@ -186,20 +186,20 @@
     ///////////////////////////////////////////////////////////////////
     // Function: getAuthoritiesDataTable
     // Input: None
-    // Output:
+    // Output: Object to be used in DataTables data object.
     ///////////////////////////////////////////////////////////////////
     getAuthoritiesDataTable: function () {
         var datatable = [];
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             datatable.push([
                 x.name, // Name
-                x.code, // Code
                 $.map(x.libraries, function (l, y) { if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') return l.name }).length, // Libraries
                 $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length, // Local authority
-                $.map(x.libraries, function (l, y) { if (l.type == 'LCL') return l.name }).length, // Commissioned
-                $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length, // Community
+                $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length, // Commissioned
+                $.map(x.libraries, function (l, y) { if (l.type == 'CRL') return l.name }).length, // Community
                 $.map(x.libraries, function (l, y) { if (l.type == 'ICL') return l.name }).length, // Independent community
-                $.map(x.libraries, function (l, y) { if (l.type == 'XL') return l.name }).length, // Closed
+                $.map(x.libraries, function (l, y) { if (l.type == 'XL' || l.type == 'XLR' || l.type == 'XLT') return l.name }).length,
+                $.map(x.libraries, function (l, y) { if (l.opened_year != '') return l.name }).length,// Opened
                 x.population, // Population
                 x.hectares // Area
             ]);
@@ -256,9 +256,8 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getAuthorityListSorted
-    // Input: 
-    // Output: 
-    // 
+    // Input: None
+    // Output: Array or authority names, sorted alphabetically.
     /////////////////////////////////////////////////////////////
     getAuthorityListSorted: function () {
         return $.map(this.authorities, function (i, x) { return i.name }).sort();
@@ -289,8 +288,8 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getStatCountsByAuthority
-    // Input: 
-    // Output: 
+    // Input: authority (name)
+    // Output: Object of stats
     // 
     /////////////////////////////////////////////////////////////
     getStatCountsByAuthority: function (authority) {
@@ -308,6 +307,7 @@
                     if (lib.closed != '' && lib.closed != 'XLR') counts.closedLibraries++;
                     if (lib.opened_year != '' && lib.replacement == 'f') counts.newLibs++;
                 });
+
                 // For each library service there MUST be as many replaced libraries as there are replacements.
                 // Authorities have a habit of listing libraries that are new, but not those that are closed.
                 if (counts.replacements > counts.replaced) {
@@ -318,7 +318,7 @@
                 }
             }
         });
-        counts.libsChange = counts.newLibs - counts.closedLibraries;
+        counts.libsChange = (counts.newLibs + counts.replacements) - (counts.closedLibraries + counts.replaced);
         counts.statutoryChange = counts.statutory2016 - counts.statutory2010;
         counts.peoplePerLibrary = counts.population / counts.libraries;
         counts.areaPerLibrary = counts.area / counts.libraries;
@@ -326,9 +326,9 @@
     },
     /////////////////////////////////////////////////////////////
     // Function: getCountLibrariesByAuthorityType
-    // Input: 
-    // Output: 
-    // 
+    // Input: authority (name), type (library type)
+    // Output: Count
+    // Returns a count of the specified type of library.
     /////////////////////////////////////////////////////////////
     getCountLibrariesByAuthorityType: function (authority, type) {
         var count = 0;
@@ -461,7 +461,6 @@
             var localAuthorityCount = 0;
             authGeoData.features[x].properties.libraries = {};
             $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
-                if (l.type == 'XLT') l.type = 'XL';
                 if (!authGeoData.features[x].properties.libraries[l.type] && l.type != '') authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
                 if ((l.type != '' && l.closed == '') || l.lat != '') authGeoData.features[x].properties.libraries[l.type].libs.push(l);
                 if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') nonClosedCount = nonClosedCount + 1;
@@ -511,7 +510,6 @@
         $.each(this.libraries, function (i, lib) {
             if (!authLibraries[lib['authority_id']]) authLibraries[lib['authority_id']] = [];
             if (lib.type == '') lib.type = lib.closed;
-            if (lib.type == 'XLT') lib.type = 'XL';
             if (lib.type != '') authLibraries[lib['authority_id']].push(lib);
         }.bind(this));
         return authLibraries;
@@ -679,5 +677,17 @@
             data.push(obj)
         });
         return data;
+    },
+    /////////////////////////////////////////////////////////////
+    // Function: getNumFormat
+    // Input: Number
+    // Output: String (formatted number).
+    // 
+    /////////////////////////////////////////////////////////////
+    getNumFormat: function (num) {
+        if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+        if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        return num ? parseInt(num).toFixed(0) : null;
     }
 };

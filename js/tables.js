@@ -1,6 +1,6 @@
 ﻿$(function () {
 
-    PublicLibrariesNews.loadData(2, false, true, true, true, function () {
+    LibrariesFuncs.loadData(0, true, true, true, true, function () {
 
         /////////////////////////////////////////////////
         // Table 1: Authorities
@@ -10,22 +10,35 @@
                 processing: true,
                 responsive: true,
                 dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'print', text: 'Print', className: 'btn-sm' },
-                    { extend: 'excelHtml5', text: 'Export Excel', className: 'btn-sm' }
-                ],
+                info: false,
                 deferRender: true,
-                data: PublicLibrariesNews.getAuthoritiesDataTable(),
+                data: LibrariesFuncs.getAuthoritiesDataTable(),
                 columns: [
                     { title: "name" },
                     { title: "libraries" },
-                    { title: "LAL" },
-                    { title: "CL" },
-                    { title: "CL" },
-                    { title: "ICL" },
-                    { title: "closed" },
-                    { title: "population" },
-                    { title: "area (hectares)" }
+                    { title: "authority" },
+                    { title: "commissioned" },
+                    { title: "community" },
+                    { title: "independent" },
+                    {
+                        title: "closed",
+                        render: function (data, type, row) {
+                            return '<span class="text-danger strong">' + data + '</span>';
+                        }
+                    },
+                    { title: "new" },
+                    {
+                        title: "population",
+                        render: function (data, type, row) {
+                            return LibrariesFuncs.getNumFormat(parseInt(data));
+                        }
+                    },
+                    {
+                        title: "area",
+                        render: function (data, type, row) {
+                            return LibrariesFuncs.getNumFormat(parseInt(data)) + ' ha';
+                        }
+                    }
                 ]
             });
 
@@ -37,70 +50,57 @@
                 processing: true,
                 responsive: true,
                 dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'print', text: 'Print', className: 'btn-sm' },
-                    { extend: 'excelHtml5', text: 'Export Excel', className: 'btn-sm' }
-                ],
+                info: false,
                 deferRender: true,
-                data: PublicLibrariesNews.getLibrariesDataTable(),
+                data: LibrariesFuncs.getLibrariesDataTable(),
                 columns: [
                     { title: "name" },
-                    { title: "address" },
                     { title: "postcode" },
                     { title: "type" },
-                    { title: "closed" },
+                    {
+                        title: "closed",
+                        render: function (data, type, row) {
+                            return '<span class="text-danger">' + data + '</span>';
+                        }
+                    },
                     { title: "notes" },
-                    { title: "multiple" },
-                    { title: "education" },
-                    { title: "income" },
-                    { title: "health" }
+                    {
+                        title: "multiple",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(0);
+                        }
+                    },
+                    {
+                        title: "employment",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(0);
+                        }
+                    },
+                    {
+                        title: "education",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(0);
+                        }
+                    },
+                    {
+                        title: "adult skills",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(0);
+                        }
+                    },
+                    {
+                        title: "health",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(0);
+                        }
+                    },
+                    {
+                        title: "services",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(0);
+                        }
+                    }
                 ]
             });
-
-        /////////////////////////////////////////////////
-        // Table 3: Local news
-        /////////////////////////////////////////////////
-        var tableLocal = $('#tblPlnLocal').dataTable(
-            {
-                processing: true,
-                responsive: true,
-                dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'print', text: 'Print', className: 'btn-sm' },
-                    { extend: 'excelHtml5', text: 'Export Excel', className: 'btn-sm' }
-                ],
-                deferRender: true,
-                data: PublicLibrariesNews.getNewsDataTable('local'),
-                columns: [
-                    { title: "Location" },
-                    { title: "Date" },
-                    { title: "Text" },
-                    { title: "URL" },
-                ]
-            });
-
-        /////////////////////////////////////////////////
-        // Table 4: Changes
-        /////////////////////////////////////////////////
-        var tableChanges = $('#tblPlnChanges').dataTable(
-            {
-                processing: true,
-                responsive: true,
-                dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'print', text: 'Print', className: 'btn-sm' },
-                    { extend: 'excelHtml5', text: 'Export Excel', className: 'btn-sm' }
-                ],
-                deferRender: true,
-                data: PublicLibrariesNews.getNewsDataTable('changes'),
-                columns: [
-                    { title: "Location" },
-                    { title: "Date" },
-                    { title: "Text" },
-                    { title: "URL" },
-                ]
-            });
-
-
     });
 });

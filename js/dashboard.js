@@ -9,10 +9,14 @@
     // Global Chart options
     Chart.defaults.global.defaultFontColor = '#98978B';
     Chart.defaults.global.defaultFontFamily = '"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif';
+    Chart.defaults.global.responsiveAnimationDuration = 500;
+    Chart.defaults.global.maintainAspectRatio = false;
 
-    //////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     // LOAD.  Load the data
-    //////////////////////////////////////////////
+    // 2 months of pulic libraries news.  Authority data, not authority 
+    // geography, library data, twitter data.
+    //////////////////////////////////////////////////////////////////////////
     LibrariesFuncs.loadData(2, true, false, true, true, function () {
 
         //////////////////////////////////////////////
@@ -26,7 +30,6 @@
         // Run when the authority is changed to update all individual widgets
         var updateAll = function () {
             var auth = $('#selAuthority').find(":selected");
-            $('.sel-auth-name').removeClass('text-dark-gray text-success').addClass((auth.val() ? 'text-success' : 'text-dark-gray'));
             $('.sel-auth-name').text(auth.text());
             updateLibTypesDonut(auth.val());
             updateLibTypeStatsBar(auth.val());
@@ -34,8 +37,11 @@
             updateLibraryDetailsSelect(auth.val());
             if (auth.val()) skipStoriesToAuthority(auth.val());
             if (auth.val()) skipTwitterToAuthority(auth.val());
-            (auth.text().indexOf('tersh') != -1 ? $('#divBetaAlert').removeClass('alert-warning').addClass('alert-danger') : $('#divBetaAlert').removeClass('alert-danger').addClass('alert-warning'));
+
+            // Sentiment analysis
+            (auth.text().indexOf('tersh') != -1 && (auth.text().indexOf('le') != -1 || auth.text().indexOf('gl') != -1) ? $('#divBetaAlert').removeClass('alert-warning').addClass('alert-danger') : $('#divBetaAlert').removeClass('alert-danger').addClass('alert-warning'));
         };
+
         // EVENT: Change authority
         $('#selAuthority').change(function () { updateAll(); });
 
@@ -47,15 +53,18 @@
             if (tweets && tweets[index]) {
                 var tweet = tweets[index];
                 var tw = '<div class="row">' +
-                    '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + numFormat(tweet.tweets) + '</strong></p></div>' +
-                    '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead"><strong>' + numFormat(tweet.followers) + '</strong></p></div>' +
-                    '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead"><strong>' + numFormat(tweet.following) + '</strong></p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + LibrariesFuncs.getNumFormat(tweet.tweets) + '</strong></p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">followers</small><p class="lead"><strong>' + LibrariesFuncs.getNumFormat(tweet.followers) + '</strong></p></div>' +
+                    '<div class="stats col-sm-4"><small class="text-muted">following</small><p class="lead"><strong>' + LibrariesFuncs.getNumFormat(tweet.following) + '</strong></p></div>' +
                     '</div>' +
-                    '<p>' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + ': ' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>';
+                    '<p><a title="' + tweet.name + ' on twitter - ' + tweet.description + '" href="https://twitter.com/' + tweet.account + '">' + tweet.name + '</a> ' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</p>' +
+                    '<p>' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>';
                 $('#divTweet').append(tw);
                 $('#divTweet a').addClass('alert-link');
+                $('#divTweet a').attr('target', '_blank');
             }
         };
+
         var skipTwitterToAuthority = function (authority) {
             $('#divTwitter').hide();
             $.each(tweets, function (i, t) {
@@ -103,7 +112,7 @@
 
             // Set up the library details such as closed/open year, type, and notes
             var libType = (library.type ? ('<span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span>') : '');
-            var replacement = (library.replacement && library.replacement == 't' ? ' <span class="strong text-muted">(replacement)</span>' : '');
+            var replacement = (library.replacement && library.replacement == 't' ? ' <span class="strong text-muted">(replacement ' + library.opened_year + ')</span>' : '');
             var closed = (library.closed && library.closed_year ? (' <span class="strong text-danger">(' + library.closed_year) + ')</span>' : '');
             var notes = (library.notes ? '<p>' + library.notes + '</p>' : '');
 
@@ -114,7 +123,7 @@
             // Populate the hours and statutory details
             $('#divLibraryStatutoryDetails').append(
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="is this part of the local authority statutory provision?"></a></small><p class="lead text-gray-dark">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="is the library part of the local authority statutory provision?"></a></small><p class="lead text-gray-dark">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of hours open per week"></a></small><p class="lead text-gray-dark">' + (library.hours ? library.hours : '0') + '</p></div>' +
                 '<div class="col col-sm-4"><small class="text-muted">staff hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of staff hours per week"></a></small><p class="lead ' + (library.staffhours && library.staffhours != 0 ? ('text-gray-dark">' + library.staffhours) : 'text-danger">0') + '</p>' +
                 '</div>'
@@ -122,23 +131,23 @@
 
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append(
-                (library.address ? ('<small class="text-muted">catchment population around ' + library.address + '.</small></p>') : '') +
+                (library.address ? ('<small class="text-muted">catchment population and deprivation around ' + library.address + ' ' + library.postcode + '</small></p>') : '') +
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + numFormat(library.population) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + numFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + numFormat(library.dependent_children) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + LibrariesFuncs.getNumFormat(library.dependent_children) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall indicator"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.multiple).toFixed(0)] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.employment).toFixed(0)] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.education).toFixed(0)] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.multiple).toFixed(0)] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.employment).toFixed(0)] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.education).toFixed(0)] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
                 '</div>' +
                 '<div class="row">' +
-                '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.adultskills).toFixed(0)] + '">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.health).toFixed(0)] + '">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
-                '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.services).toFixed(0)] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
-                '</div>'
-                );
+                '<div class="col col-sm-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.adultskills).toFixed(0)] + '">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.health).toFixed(0)] + '">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
+                '<div class="col col-sm-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.services).toFixed(0)] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
+                '</div>' +
+                '<p><small class="text-muted">lower represents greater deprivation (1-10).</small></p>');
             updateTooltips();
         });
 
@@ -148,7 +157,7 @@
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
             data: {
                 datasets: [{
-                    data: [11, 16, 7, 3, 14, 11],
+                    data: [11, 16, 7, 3, 14, 11, 8],
                     backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].colour; })
                 }],
                 labels: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].type; })
@@ -174,9 +183,9 @@
             var stats = LibrariesFuncs.getStatCountsByAuthority(libAuthority);
             // These stats shown at the authority selector.
             $('#divNumLibs p').text(stats.libraries);
-            $('#divPopulation p').text(numFormat(stats.population));
+            $('#divPopulation p').text(LibrariesFuncs.getNumFormat(stats.population));
             $('#divLibsPerPopulation p').removeClass().addClass('lead ' + (stats.peoplePerLibrary < 20000 ? 'text-gray-dark' : 'text-danger'))
-            $('#divLibsPerPopulation p').text(numFormat(stats.peoplePerLibrary));
+            $('#divLibsPerPopulation p').text(LibrariesFuncs.getNumFormat(stats.peoplePerLibrary));
             // These stats shown at the library types widget
             $('#divTotalCount p #spLibTotal').text(stats.libraries);
             $('#divTotalCount p #spLibChange').html('<span class="badge badge' + (stats.libsChange >= 0 ? '-default">+' : '-danger">') + stats.libsChange + '</span>');
@@ -198,16 +207,31 @@
                         spanGaps: false,
                         backgroundColor: config.libStyles['CL'].colour,
                         borderColor: '#98978B',
-                        pointRadius: 1,
+                        pointRadius: 2,
                         pointHoverRadius: 4,
                         borderWidth: 1
                     }
-                ]
+                ],
+                scales: {
+                    xAxes: [{
+                        type: 'logarithmic'
+                    }]
+                }
             },
             options: {
                 animation: { animateScale: true },
                 legend: {
                     display: false
+                },
+                tooltips: {
+                    callbacks: {
+                        title: function (tooltipItem, data) {
+                            return tooltipItem[0].xLabel + ' miles';
+                        },
+                        label: function (tooltipItem, data) {
+                            return tooltipItem.yLabel + '%';
+                        }
+                    }
                 },
                 scales: {
                     xAxes: [{
@@ -229,23 +253,28 @@
             }
         });
 
+        // Function: updateLibDistancesLine
+        // The library distances line chart works either on an authority or library basis.
         var updateLibDistancesLine = function (authority, library) {
             if (library) {
                 var distances = LibrariesFuncs.getDistancesByLibrary(library);
                 var lib = LibrariesFuncs.getLibraryById(library);
                 $('#spDistanceTitle').text(lib.name + ' catchment');
-                $('#hLibDistanceSubtitle').text('distance to ' + lib.name + ' within catchment area');
+                $('#hLibDistanceSubtitle').text('distance to ' + lib.name + ' for population within catchment area');
             } else {
                 var distances = LibrariesFuncs.getDistancesByAuthority(authority);
-                $('#hLibDistanceSubtitle').text('distance to the nearest statutory library');
+                $('#hLibDistanceSubtitle').text('distance for population to the nearest statutory library');
             }
             var totalDistance = 0, population = 0;
             $.each(distances, function (i, x) {
-                totalDistance = (totalDistance + (i * x));
+                totalDistance = (totalDistance + (parseFloat(i) * x));
                 population = population + x;
             });
-            distanceLine.config.data.labels = $.map(distances, function (x, y) { if (y != 'undefined') return y; });
-            distanceLine.config.data.datasets[0].data = $.map(distances, function (x, y) { return Math.round((x / population) * 100); });
+            var labels = [], dataset = [];
+            var distArray = $.map(distances, function (x, y) { if (y != 'undefined') return { dist: parseFloat(y), pop: x }; }).sort(function (a, b) { return a.dist - b.dist; });
+            $.each(distArray, function (i, x) { labels.push(x.dist); dataset.push(Math.round((x.pop / population) * 100)) });
+            distanceLine.config.data.labels = labels;
+            distanceLine.config.data.datasets[0].data = dataset;
             distanceLine.update();
             $('#divDistanceAverage p').text((totalDistance / population).toFixed(1) + ' mi.');
             $('#divDistanceLongest p').text(Object.keys(distances).sort((function (a, b) { return parseFloat(b) - parseFloat(a) }))[0] + ' mi.');
@@ -293,7 +322,7 @@
                     '<div class="col col-sm-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + $.map(it.stories, function (x, i) { if (x.type == 'changes') return 1; }).length + '</strong></p></div>' +
                     '<div class="col col-sm-4"><small class="text-muted">viewing&nbsp;</small><p class="lead" id="pCntCurrent"><strong>1</strong></p></div>' +
                     '</div>' +
-                    '<p>public libraries news: <a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">' + moment(it.stories[0].date).fromNow() + '</a></p>' +
+                    '<p><a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">Public Libraries News</a> ' + moment(it.stories[0].date).fromNow() + '</p>' +
                     '<p id="pNewsStory">' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
                     (it.stories.length > 1 ? '<p><a data-auth="' + storiesOrdered[index] + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
                 $('#divNews').append(li);
@@ -307,15 +336,24 @@
         //////////////////////////////////////////////
         var typeBar = new Chart($('#divLibrariesStatsBarChart'), {
             type: 'horizontalBar',
-            data: { labels: ['multiple'], datasets: [] },
+            data: {
+                labels: ['closed', 'replaced', 'local authority'],
+                datasets: [
+                    {
+                        data: [1, 2, 3],
+                        backgroundColor: config.libStyles['ICL'].colour,
+                        borderColor: '#98978B',
+                        borderWidth: 1
+                    }]
+            },
             options: {
                 animation: { animateScale: true },
-                legend: { position: 'bottom' },
+                legend: { display: false },
                 scales: {
                     xAxes: [{ scaleLabel: { display: true, labelString: 'deprivation decile (1-10)' }, ticks: { beginAtZero: true } }],
-                    yAxes: [{ scaleLabel: { display: true, labelString: 'deprivation type' } }]
+                    yAxes: [{ scaleLabel: { display: true, labelString: 'library type' } }]
                 },
-                title: { display: true, text: 'library catchment deprivation by library type' }
+                title: { display: true, text: 'multiple deprivation by library type' }
             }
         });
         var updateLibTypeStatsBar = function (authority) {
@@ -333,16 +371,19 @@
             $('#divHealth p').addClass('lead strong text-' + config.depStatStyles[authDepStats.health])
             $('#divServices p').text(authDepStats.services);
             $('#divServices p').addClass('lead strong text-' + config.depStatStyles[authDepStats.services])
-            typeBar.config.data.datasets = $.map(Object.keys(config.libStyles), function (x, y) {
+            typeBar.config.data.datasets[0].data = [];
+            typeBar.config.data.datasets[0].backgroundColor = [];
+            typeBar.config.data.labels = [];
+            $.each(Object.keys(config.libStyles), function (i, x) {
                 var ind = LibrariesFuncs.getDeprivationIndicesByAuthorityAndLibType(authority, x);
                 if (ind.multiple.length > 0) {
-                    return {
-                        label: config.libStyles[x].type,
-                        data: $.map(Object.keys(ind), function (i, y) { return ind[i] && ind[i] == 0 ? '' : ind[i]; }),
-                        backgroundColor: config.libStyles[x].colour,
-                        borderColor: '#98978B',
-                        borderWidth: 1
-                    };
+                    typeBar.config.data.labels.push(x);
+                    typeBar.config.data.datasets[0].data.push(ind.multiple);
+                    if (parseFloat(ind.multiple) < 4) {
+                        typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['XL'].colour);
+                    } else {
+                        typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['ICL'].colour);
+                    }
                 }
             });
             typeBar.update();
@@ -466,15 +507,7 @@
         }
         return total;
     };
-    /////////////////////////////////////////////////////////
-    // Helper Function: numFormat
-    /////////////////////////////////////////////////////////
-    var numFormat = function (num) {
-        if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
-        if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-        if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-        return num ? parseInt(num).toFixed(0) : null;
-    };
+
     /////////////////////////////////////////////////////////
     // Helper Function: getMiles
     /////////////////////////////////////////////////////////

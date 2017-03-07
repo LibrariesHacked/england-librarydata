@@ -3,14 +3,15 @@
     mapTilesDark: 'https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A',
     mapTilesLight: 'https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A',
     mapTilesStreets: 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A',
-    mapAttribution: '&copy; <a href="http://osm.org/copyright">OSM</a> contributors.  contains OS data &copy; Crown copyright and database right 2016, Royal Mail data &copy; Royal Mail copyright and Database right 2016, National Statistics data &copy; Crown copyright and database right 2016.',
+    mapAttribution: '&copy; <a href="http://osm.org/copyright" target="blank" title="Open Street Map">OSM</a> contributors.  Contains: OS data &copy;, Royal Mail data &copy;, National Statistics data &copy;.  Crown copyright and database right 2016',
     libStyles: {
-        LAL: { type: 'local authority', description: '', cssClass: 'success', colour: '#5cb85c' },
-        CL: { type: 'commissioned', description: '', cssClass: 'info', colour: '#5bc0de' },
-        CRL: { type: 'community', description: '', cssClass: 'warning', colour: '#f0ad4e' },
-        ICL: { type: 'independent community', description: '', cssClass: 'primary', colour: '#0275d8' },
-        XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#d9534f' },
-        XLR: { type: 'replaced', description: '', cssClass: 'muted', colour: '#818a91' }
+        LAL: { type: 'local authority', description: '', cssClass: 'success', colour: '#5CB85C' },
+        CL: { type: 'commissioned', description: '', cssClass: 'info', colour: '#5BC0DE' },
+        CRL: { type: 'community', description: '', cssClass: 'primary', colour: '#0275D8' },
+        ICL: { type: 'independent community', description: '', cssClass: 'gray-dark', colour: '#636C72' },
+        XLT: { type: 'temp closed', description: '', cssClass: 'warning', colour: '#F0AD4E' },
+        XLR: { type: 'replaced', description: '', cssClass: 'muted', colour: '#F7F7F9' },
+        XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#D9534F' }
     },
     depStatStyles: {
         1: 'danger',
@@ -24,13 +25,14 @@
         9: 'gray-dark',
         10: 'gray-dark',
     },
-    markerPoints: { radius: 4, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
+    markerPoints: { radius: 3, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
     boundaryLines: {
-        gl: { fillColor: "#772953", color: "#772953", weight: 2, opacity: 0.7, fillOpacity: 0.1 },
-        normal: { fillColor: "#38B44A", color: "#808080", weight: 1, opacity: 0.7, fillOpacity: 0.1 },
-        selected: { fillColor: "#EFB73E", color: "#808080", weight: 3, opacity: 0.9, fillOpacity: 0.1 },
+        normal: { fillColor: "#38B44A", color: "#808080", weight: 1, opacity: 0.6, fillOpacity: 0.1 },
+        selected: { fillColor: "#EFB73E", color: "#808080", weight: 2, opacity: 0.8, fillOpacity: 0.1 },
         nonselected: { fillColor: "#ccc", color: "#ccc", weight: 1, opacity: 0.3, fillOpacity: 0.1 },
-        le: { fillColor: "#DF382C", color: "#DF382C", weight: 2, opacity: 0.7, fillOpacity: 0.1 }
+        // sentiment analysis
+        le: { fillColor: "#DF382C", color: "#DF382C", weight: 2, opacity: 0.7, fillOpacity: 0.1 },
+        gl: { fillColor: "#772953", color: "#772953", weight: 2, opacity: 0.7, fillOpacity: 0.1 },
     },
     fillColours: {
         1: '#93C54B',

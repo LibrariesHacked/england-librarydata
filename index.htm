@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Data dashboard for Libraries Taskforce English libraries open dataset">
+    <meta name="description" content="Data dashboard for Libraries Taskforce English libraries dataset">
     <meta name="author" content="Libraries Hacked">
-    <title>dashboard | england.librarydata</title>
+    <title>dashboard | england</title>
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="bower_components/tether/dist/css/tether.min.css" rel="stylesheet" />
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -33,7 +33,8 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active"><a class="nav-link" href="/">dashboard <span class="sr-only">(current)</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/about">about</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/thedata">data</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://www.github.com/librarieshacked/england-librarydata/about.md" target="_blank">about</a></li>
                 </ul>
             </div>
         </div>
@@ -51,7 +52,7 @@
                 <!-- Widget 1: Areas -->
                 <div class="card mb-3">
                     <div class="card-block">
-                        <h4 class="card-title text-muted">area: <span class="sel-auth-name"></span></h4>
+                        <h4 class="card-title text-muted"><span class="sel-auth-name"></span></h4>
                         <h6 class="card-subtitle text-muted">select an area you're interested in</h6>
                     </div>
                     <div class="card-block" id="divAuthMap"></div>
@@ -62,9 +63,9 @@
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthStats1">
-                            <div id="divPopulation" class="stats col-sm-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="estimated population in 2015"></a></small><p class="lead text-gray-dark"></p></div>
-                            <div id="divNumLibs" class="stats col-sm-4"><small class="text-muted">libraries&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries of all types"></a></small><p class="lead text-gray-dark"></p></div>
-                            <div id="divLibsPerPopulation" class="stats col col-sm-4"><small class="text-muted">per library&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of people for each library"></a></small><p class="lead text-gray-dark"></p></div>
+                            <div id="divPopulation" class="stats col-sm-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="estimated population in mid 2015"></a></small><p class="lead text-gray-dark"></p></div>
+                            <div id="divNumLibs" class="stats col-sm-4"><small class="text-muted">libraries&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries open in 2016, of all types"></a></small><p class="lead text-gray-dark"></p></div>
+                            <div id="divLibsPerPopulation" class="stats col col-sm-4"><small class="text-muted">per library&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of people per library"></a></small><p class="lead text-gray-dark"></p></div>
                         </div>
                     </div>
                 </div>
@@ -95,13 +96,13 @@
                 <!-- Widget 4: Library types by authority -->
                 <div class="card mb-3">
                     <div class="card-block">
-                        <h4 class="card-title text-muted">library counts: <span class="sel-auth-name"></span></h4>
+                        <h4 class="card-title text-muted">library counts in <span class="sel-auth-name"></span></h4>
                         <h6 class="card-subtitle text-muted">types of library and how many</h6>
                     </div>
                     <div class="card-block">
                         <div class="row">
                             <div id="divTotalCount" class="col-sm-6"><small class="text-muted">total&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries currently open, with change since april 2010"></a></small><p class="strong"><span id="spLibTotal" class="lead text-gray-dark"></span> <span id="spLibChange"></span></p></div>
-                            <div id="divStatutoryCount" class="col-sm-6"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries part of statutory provision, with change since april 2010"></a></small><p class="strong"><span id="spStatTotal" class="lead text-gray-dark"></span> <span id="spStatChange"></span></p></div>
+                            <div id="divStatutoryCount" class="col-sm-6"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of current libraries part of statutory provision, with change since april 2010"></a></small><p class="strong"><span id="spStatTotal" class="lead text-gray-dark"></span> <span id="spStatChange"></span></p></div>
                         </div>
                     </div>
                     <div class="card-block">
@@ -113,7 +114,7 @@
                 <!-- Widget 5: Libraries distance stats -->
                 <div class="card mb-3">
                     <div class="card-block">
-                        <h4 class="card-title text-muted">distances: <span class="sel-auth-name" id="spDistanceTitle"></span></h4>
+                        <h4 class="card-title text-muted">distances in <span class="sel-auth-name" id="spDistanceTitle"></span></h4>
                         <h6 class="card-subtitle text-muted" id="hLibDistanceSubtitle">distance to the nearest statutory library</h6>
                     </div>
                     <div class="card-block">
@@ -136,12 +137,12 @@
                 <!-- Widget 7: Libraries area stats -->
                 <div class="card mb-3">
                     <div class="card-block">
-                        <h4 class="card-title text-muted">deprivation: <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">area average deprivation stats</h6>
+                        <h4 class="card-title text-muted">deprivation in <span class="sel-auth-name"></span></h4>
+                        <h6 class="card-subtitle text-muted">area deprivation measures</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDepStats1">
-                            <div id="divIMD" class="stats col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give overall indicator"></a></small><p class="lead text-success"></p></div>
+                            <div id="divIMD" class="stats col-sm-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give overall deprivation index"></a></small><p class="lead text-success"></p></div>
                             <div id="divEmployment" class="stats col-sm-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-success"></p></div>
                             <div id="divEducation" class="stats col-sm-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="children&apos;s education  deprivation for the area"></a></small><p class="lead text-success"></p></div>
                         </div>
@@ -240,8 +241,8 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
     <!-- Data and charting plugins -->
-    <script src="bower_components/papaparse/papaparse.min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/papaparse/papaparse.min.js"></script>
     <script src="bower_components/chart.js/dist/Chart.min.js"></script>
     <script src="bower_components/twitter-text/twitter-text.js"></script>
     <script src="bower_components/jquery-shorten-js/dist/jquery-shorten.min.js"></script>

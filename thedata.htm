@@ -5,49 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="Libraries Hacked">
     <title>the data | england.librarydata</title>
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/tether/dist/css/tether.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="bower_components/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@librarieshacked">
+    <meta name="twitter:creator" content="@librarieshacked">
+    <meta name="twitter:title" content="england.librarydata the data">
+    <meta name="twitter:description" content="locations of libraries, types, area deprivation and distances to libraries.">
+    <meta name="twitter:image" content="https://england.librarydata.uk/images/dashboard.png">
 </head>
-<body>
-    <nav class="navbar navbar-fixed-top navbar-light bg-faded">
+<body class="grey">
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
         <div class="container">
-            <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
-            <div class="collapse navbar-toggleable-md" id="navbarResponsive">
-                <a class="navbar-brand" href="/"><span class="fa fa-cube strong"></span> <span class="text-danger strong">england</span>.librarydata</a>
-                <ul class="nav navbar-nav">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/"><span class="text-danger strong">england</span></a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" href="/">dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
-                    <li class="nav-item active"><a class="nav-link active" href="/map">data</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/about">about</a></li>
+                    <li class="nav-item active"><a class="nav-link" href="/thedata">data <span class="sr-only">(current)</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://www.github.com/librarieshacked/england-librarydata/about.md" target="_blank">about</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <div id="main" class="container">
-        <h3 class="text-muted">libraries</h3>
+        <h3 class="text-gray-dark">libraries</h3>
         <p></p>
-        <div class="table-responsive">
-            <table id="tblLibraries" class="table table-condensed dt-responsive"></table>
+        <div class="container">
+            <table id="tblLibraries" class="table table-bordered table-sm"></table>
         </div>
-        <h3>areas</h3>
+        <br />
+        <h3 class="text-gray-dark">library services</h3>
         <p></p>
-        <div class="container table-responsive">
-            <table id="tblAuthorities" class="table table-condensed dt-responsive"></table>
-        </div>
-        <h3>local news</h3>
-        <p></p>
-        <div class="table-responsive">
-            <table id="tblPlnLocal" class="table table-condensed dt-responsive"></table>
-        </div>
-        <h3>changes</h3>
-        <p></p>
-        <div class="table-responsive">
-            <table id="tblPlnChanges" class="table table-condensed dt-responsive"></table>
+        <div class="container">
+            <table id="tblAuthorities" class="table table-bordered table-sm"></table>
         </div>
         <footer>
             <hr />
@@ -60,10 +60,9 @@
     <script src="bower_components/moment/moment.js"></script>
     <script src="bower_components/papaparse/papaparse.min.js"></script>
     <script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="bower_components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="bower_components/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="bower_components/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="bower_components/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="bower_components/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="bower_components/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
     <script src="js/libraries.js"></script>
     <script src="js/tables.js"></script>
 </body>
