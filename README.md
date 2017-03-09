@@ -8,7 +8,7 @@ The Libraries Taskforce have been working on an English libraries dataset to bri
 
 Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK leading source for libraries news.  This includes regular updates about changes, local news by authority, ideas, national news, and international news.
 
-This project aims at bringing these things together, along with latest tweets, to visualise the data all together.
+This project aims at bringing these things together, along with latest tweets and lots of other data, into a larger set of visualisations.
 
 ## Supporting technology
 

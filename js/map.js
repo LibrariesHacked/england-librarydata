@@ -129,7 +129,7 @@
             var tweet = LibrariesFuncs.getLatestLibraryTweet(library.name);
             if (tweet) $('#sidebar-librarycontent').append('<div id="divTweet" class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
             $('#divTweet a').addClass('alert-link');
-            ('#divTweet a').attr('target', '_blank');
+            $('#divTweet a').attr('target', '_blank');
 
             var libStyle = config.libStyles[library.type].cssClass;
 
