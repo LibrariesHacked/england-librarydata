@@ -6,7 +6,7 @@ Project to display English libraries data in a data dashboard.
 
 The Libraries Taskforce have been working on an English libraries dataset to bring together a list of all libraries and library authorities in England.  This includes tracking closures, changes of library type, number of libraries, locations of libraries, and contact details.
 
-Public Libraries News ([PLN Link](http://www.publiclibrariesnews.com)) is the UK leading source for libraries news.  This includes regular updates about changes, local news by authority, ideas, national news, and international news.
+[Public Libraries News](http://www.publiclibrariesnews.com) is the UK leading source for libraries news.  This includes regular updates about changes, local news by authority, ideas, national news, and international news.
 
 This project aims at bringing these things together, along with latest tweets and lots of other data, into a larger set of visualisations.
 
@@ -102,6 +102,14 @@ bower install
 Once the project is built it should be able to be hosted on any web hosting environment.
 
 ## Third party licences
+
+### Data licences
+
+| Name | Description | Link | Licence |
+| ---- | ----------- | ---- | ------- |
+| | | | |
+
+### Technology and code licences
 
 | Name | Description | Link | Licence |
 | ---- | ----------- | ---- | ------- |

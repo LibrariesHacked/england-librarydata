@@ -1,22 +1,22 @@
 # Libraries database setup
 
-These are instructions to set up a spatial database using the Libraries Taskforce open dataset.
+These are instructions to set up a spatial database using the Libraries Taskforce basic core dataset.
 
 ## Pre-requisites
 
-1.  A [PostgreSQL](https://www.postgresql.org/) database server.  These instructions completed with version 9.6.1.
-2.  A [PostGIS](http://postgis.net/install/) database server (extensions for PostgreSQL).  These instructions completed with version 2.3.2.
+- A [PostgreSQL](https://www.postgresql.org/) database server.  These instructions completed with version 9.6.1.
+- A [PostGIS](http://postgis.net/install/) database server (extensions for PostgreSQL).  These instructions completed with version 2.3.2.
 
 ## Database setup
 
-1.  Create a new database
+- Create a new database
 
 ```
 -- database: englandlibs.  create new db.
 create database englandlibs;
 ```
 
-2.  We want this to be a spatial database, so on the database run the command to add PostGIS extensions.
+- We want this to be a spatial database, so on the database run the command to add PostGIS extensions.
 
 ```
 -- extension: postgis.  add spatial extensions to the database.
@@ -25,21 +25,21 @@ create extension postgis;
 
 ## Dataset: OS Code-point Open
 
-The Ordnance Survey have an open data product listing all postcodes in the UK, complete with geo-cordinates (the centre of the postcode), and various codes specifying the authorities each postcode falls within.  
+The Ordnance Survey have an open data product listing all postcodes in the UK, complete with geo-cordinates (set to the centre of the postcode), and various codes specifying the areas that each postcode falls within.  
 
-1.  Download code-point open from [OS Open Data](https://www.ordnancesurvey.co.uk/opendatadownload/products.html).  It's open data but unfortunately you need to sign up.
+- Download code-point open from [OS Open Data](https://www.ordnancesurvey.co.uk/opendatadownload/products.html).  It's open data but unfortunately you need to sign up.  A zip file of postcodes is included in the [data/os](https://github.com/libraries-hacked/england-librarydata/data/os) directory of this project.
 
 This data is provided as a series of CSV files for each postcode area.  It would be a lot simpler to import the data as a single CSV file.  There are many ways to combine CSV files into one, depending on your operating system.
 
-2.  For Windows, run the following command at a command prompt.
+- For Windows, run the following command at a command prompt.
 
 ```
 copy *.csv postcodes.csv
 ```
 
-Once the data is in a single CSV file it can be imported into a database.  A copy of postcodes.csv is included in the **data/OS** folder in this project.
+Once the data is in a single CSV file it can be imported into a database.  A copy of postcodes.csv is included in the [data/os](https://github.com/libraries-hacked/england-librarydata/data/os) folder in this project.
 
-3.  Create the table.
+- Create the table.
 
 ```
 -- table: postcodes.
@@ -66,13 +66,13 @@ alter table postcodes cluster on cuix_postcodes_postcode;
 create unique index ix_postcodes_postcode_coords on postcodes using btree (postcode, eastings, northings);
 ```
 
-4.  Import the postcodes data into the new table.
+- Import the postcodes data into the new table.
 
 ```
 copy postcodes FROM 'postcodes.csv' delimiter ',' csv;
 ```
 
-5.  Add a geometry column to make use of the eastings and northings.
+- Add a geometry column to make use of the eastings and northings.
 
 ```
 -- add the geometry column for the table
@@ -87,9 +87,9 @@ create index ix_postcodes_geom ON postcodes using gist (geom);
 
 ## Dataset: OS authority boundaries
 
-1.  Download [Boundary Lines](https://www.ordnancesurvey.co.uk/opendatadownload/products.html) from the OS Open Data products.  Alternatively, copies of the relevant boundary line files (county_region and district_borough_unitary_region) are included in the **data/os** directory of this project.
+- Download [Boundary Lines](https://www.ordnancesurvey.co.uk/opendatadownload/products.html) from the OS Open Data portal.  Alternatively, copies of the relevant boundary line files (county_region and district_borough_unitary_region) are included in the [data/os](https://github.com/libraries-hacked/england-librarydata/data/os) directory of this project.
 
-2.  From a command prompt, run the following commands (requires **shp2pgsql** which should be installed with PostGIS).  This will prompt for the password of your database server (for the specified username) and automatically create the relevant tables.
+- From a command prompt, run the following commands (requires **shp2pgsql** which should be installed with PostgreSQL/PostGIS).  This will prompt for the password of your database server (for the specified username) and automatically create the relevant tables.
 
 ```
 shp2pgsql "county_region.shp" | psql -d englandlibs -U "username"
@@ -98,7 +98,7 @@ shp2pgsql "district_borough_unitary_region.shp" | psql -d englandlibs -U "userna
 
 That will create some tables with the boundary data in, but doesn't create the indexes.  We'll merge together the tables into a new one and then index that.
 
-3.  Create the new table
+- Create the new table
 
 ```
 -- table: regions.  a table to store local authority boundaries.
@@ -127,7 +127,7 @@ drop table county_region;
 drop table district_borough_unitary_region;
 ```
 
-3.  Run the following commands on the database to do some indexing.
+- Run the following commands on the database to do some indexing.
 
 ```
 -- index: cuix_regions_code.  a unique clustered index on the authority code.
@@ -140,9 +140,9 @@ create index ix_regions_geom on regions using gist (geom);
 
 ## Dataset: ONS UK and Authorities population estimates mid-2015
 
-1.  Download from the ONS [2015 mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland).  A copy of the data is included in the **data/ons** directory of this project.
+- Download from the ONS [2015 mid-year population estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland).  A copy of the data is included in the [data/ons](https://github.com/libraries-hacked/england-librarydata/data/ons) directory of this project.
 
-2.  Create a basic table with 3 columns to store the counts.
+- Create a basic table with 3 columns to store the counts.
 
 ```
 -- table: population
@@ -162,7 +162,7 @@ alter table regions_population cluster on cuix_population_code;
 create unique index uix_population_code_population on regions_population using btree (code, population);
 ```
 
-3.  Import the data from the CSV file into the table.
+- Import the data from the CSV file into the table.
 
 ```
 -- table: population.  populate the table
@@ -171,15 +171,15 @@ copy population FROM 'ukpopulation.csv' delimiter ',' csv;
 
 ## Dataset: ONS Output area boundaries
 
-1.  Download [Output Area (December 2011) Full Clipped Boundaries in England and Wales](http://geoportal.statistics.gov.uk/datasets/09b8a48426e3482ebbc0b0c49985c0fb_0).  Select to download the Shapefile.
+- Download [Output Area (December 2011) Full Clipped Boundaries in England and Wales](http://geoportal.statistics.gov.uk/datasets/09b8a48426e3482ebbc0b0c49985c0fb_0).  Select to download the Shapefile.
 
-2.  Import the data into the database.
+- Import the data into the database.
 
 ```
 shp2pgsql "Output_Area_December_2011_Full_Clipped_Boundaries_in_England_and_Wales.shp" | psql -d englandlibs -U "username"
 ```
 
-3.  Then modify the table a little and add some indexes.
+- Then modify the table a little and add some indexes.
 
 ```
 -- table: rename to oa_boundaries
@@ -198,7 +198,7 @@ create index ix_oaboundaries_geom on oa_boundaries using gist (geom);
 
 ## Dataset: Output area population mid-2015.
 
-1.  Download the following Census Output Area population statistics. 
+Download the following Census Output Area population statistics:
 
 - [Census Output Area Estimates - London](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthelondonregionofengland)
 - [Census Output Area Estimates - East](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesintheeastregionofengland)
@@ -211,9 +211,9 @@ create index ix_oaboundaries_geom on oa_boundaries using gist (geom);
 - [Census Output Area Estimates - North East](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinthenortheastregionofengland)
 - [Census Output Area Estimates - Wales](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/censusoutputareaestimatesinwales)
 
-These files are in Excel format but the second worksheet in each one can be converted to CSV to get at the data.  Copies of all the CSVs are held in this project in the **data/ons** folder.
+These files are in Excel format but the second worksheet in each one can be converted to CSV to get at the data.  Copies of all the CSVs are held in this project in the [data/ons](https://github.com/libraries-hacked/england-librarydata/data/ons) folder.
 
-2.  Create a database table to hold these population stats.
+- Create a database table to hold these population stats.
 
 ```
 -- table: oa_populations.  a table of population stats, split by output area.
@@ -243,7 +243,7 @@ alter table oa_population cluster on cuix_oapopulations_lsoa_oa;
 create unique index uix_oapopulations_oa_population on oa_population using btree (oa, all_ages);
 ```
 
-3.  Then import the data from the CSV files.
+- Then import the data from the CSV files.
 
 ```
 -- table:  oa_population.  populate the table.
@@ -261,15 +261,15 @@ copy oa_population FROM 'coa-population-mid2015-yorkshireandthehumber.csv' delim
 
 ## Dataset: ONS Lower layer super output area boundaries
 
-1.  Download LSOA Boundaries Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA%20Boundaries).  Select the download of [Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales](http://geoportal.statistics.gov.uk/datasets/da831f80764346889837c72508f046fa_0).
+- Download LSOA Boundaries Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA%20Boundaries).  Select the download of [Lower Layer Super Output Areas (December 2011) Full Clipped Boundaries in England and Wales](http://geoportal.statistics.gov.uk/datasets/da831f80764346889837c72508f046fa_0).
 
-2.  From a command line run the following command.
+- From a command line run the following command.
 
 ```
 shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Full_Clipped__Boundaries_in_England_and_Wales.shp" | psql -d englandlibs -U "username"
 ```
 
-3.  Then modify the table and add some indexes.
+- Then modify the table and add some indexes.
 
 ```
 -- table: rename to lsoa_boundaries.
@@ -287,15 +287,15 @@ create index ix_lsoaboundaries_geom on lsoa_boundaries using gist (geom);
 
 ## Dataset: ONS Lower layer super output areas population weighted centroids
 
-1.  Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries).  Select Lower Layer Super Output Areas (December 2011) Population Weighted Centroids
+- Download Shapefile from [ONS Geoportal](http://geoportal.statistics.gov.uk/datasets?q=LSOA Boundaries).  Select Lower Layer Super Output Areas (December 2011) Population Weighted Centroids.
 
-2.  From a command line run the following command:
+- From a command line import the data.
 
 ```
 shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Population_Weighted_Centroids.shp" | psql -d englandlibs -U "username"
 ```
 
-3.  Then modify the table and add some indexes.
+- Then modify the table and add some indexes.
 
 ```
 -- table: rename to lsoa_population_weighted.
@@ -312,9 +312,9 @@ create index ix_lsoapopulationweighted_geom on lsoa_population_weighted using gi
 
 ## Dataset: ONS Lower layer super output areas population estimates mid-2015 
 
-1.  Download from [2015 ONS LSOA Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/lowersuperoutputareamidyearpopulationestimates)  A CSV is available in the **data/ons** folder of this project.
+- Download from [2015 ONS LSOA Population Estimates](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/lowersuperoutputareamidyearpopulationestimates)  A CSV is available in the [data/ons](https://github.com/libraries-hacked/england-librarydata/data/ons) folder of this project.
 
-2.  Create a table to store the data.
+- Create a table to store the data.
 
 ```
 -- table: lsoa_population
@@ -344,7 +344,7 @@ alter table lsoa_population cluster on cuix_lsoapopulation_code;
 create unique index uix_lsoapopulation_code_population on lsoa_population using btree (code, all_ages);
 ```
 
-3.  Import the data
+- Import the data
 
 ```
 copy lsoa_population FROM 'lsoa-population-mid2015.csv' delimiter ',' csv header;
@@ -352,9 +352,9 @@ copy lsoa_population FROM 'lsoa-population-mid2015.csv' delimiter ',' csv header
 
 ## Dataset: Indices of deprivation
 
-1.  Download from [Gov.UK statistics](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2015).  Select to download the CSV *File 7: all ranks, deciles and scores for the indices of deprivation, and population denominators*
+- Download the CSV *File 7: all ranks, deciles and scores for the indices of deprivation, and population denominators* from [gov.uk statistics](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2015).  A copy of this file is included in the [data/ons](https://github.com/libraries-hacked/england-librarydata/data/ons) folder of this project.
 
-2.  Create a table to store the data.
+- Create a table to store the data.
 
 ```
 -- table: lsoa_imd.  a table to store deprivation statistics.
@@ -386,7 +386,7 @@ create unique index cuix_imd_code on lsoa_imd using btree (lsoa_code);
 alter table lsoa_imd cluster on cuix_imd_code;
 ```
 
-3.  Copy the data from the CSV into the table.
+- Copy the data from the CSV into the table.
 
 ```
 copy lsoa_imd from 'lsoa-imd.csv' delimiter ',' csv header;
@@ -394,9 +394,11 @@ copy lsoa_imd from 'lsoa-imd.csv' delimiter ',' csv header;
 
 ##  Dataset: Libraries Taskforce source data
 
-1.  Convert the Excel file.  The spreadsheet is distributed from the Libraries Taskforce as an Excel file.  To convert that file it was opened in Excel, the rows copied and saved to a new file, and then saved as CSV.  The data can then be imported directly into a database.
+- Get the libraries taskforce dataset from *wherever it ends up when and if it's published.*
 
-2.  Create a table to hold the data.
+- Convert the Excel file.  The spreadsheet is distributed as an Excel file.  To convert that file open in Excel and save the rows to CSV.
+
+- Create a table to hold the data.
 
 ```
 -- table: libraries_raw.  stores the raw data from the libraries taskforce.
@@ -407,7 +409,7 @@ create table libraries_raw
 );
 ```
 
-3.  Import the data.
+- Import the data.
 
 ```
 copy libraries_raw from 'librariesraw.csv' delimiter ',' csv;
@@ -415,7 +417,7 @@ copy libraries_raw from 'librariesraw.csv' delimiter ',' csv;
 
 ## Table: Authorities.
 
-1.  Create the basic table structure.
+- Create the basic table structure.
 
 ```
 -- table: authorities.  table to store a list of library services data.
@@ -433,7 +435,7 @@ alter table authorities cluster on cuix_authorities_id;
 create unique index uix_authorities_code on authorities USING btree (code);
 ```
 
-2.  Insert all the unique authority names from the raw library data.
+- Insert all the unique authority names from the raw library data.
 
 ```
 insert into authorities(name)
@@ -443,7 +445,7 @@ from libraries_raw order by trim(both from authority);
 
 Then to have a dataset that we can reliably merge from data elsewhere we're going to add the authority codes used in datasets like those published by the Office for National Statistics, and Ordnance Survey.  That data can come from the authority boundaries.
 
-3.  Try to match using the region table.
+- Try to match using the region table.
 
 ```
 update authorities a
@@ -455,7 +457,7 @@ where a.code is null;
 
 That will still leave 10 with no matching code.  The reason for this will be authorities in the taskforce dataset that are named irregularly (e.g. *Bath and NE Somerset* instead of *Bath and North East Somerset*).
 
-4.  Edit the table manually to fill in the missing values.
+- Edit the table manually to fill in the missing values.
 
 ```
 -- table: authorities.  populate the table.
@@ -473,7 +475,7 @@ update authorities set code = 'E06000021' where name = 'Stoke on Trent';
 
 ## Get all the OAs for each LSOA.
 
-1. Create a table to hold the LSOA/OA lookup.
+- Create a table to hold the LSOA/OA lookup.
 
 ```
 -- table: lsoa_oas.  stores a lookup to match lsoa code to a code.
@@ -488,7 +490,7 @@ create unique index cuix_lsoasoas_lsoa_oa on lsoa_oas using btree (lsoa_code, oa
 alter table lsoa_oas cluster on cuix_lsoasoas_lsoa_oa;
 ```
 
-2.  And then insert the data into that table.
+- And then insert the data into that table.
 
 ```
 -- table:  lsoa_oas.  populate the table.
@@ -502,7 +504,7 @@ and ST_Area(ST_Intersection(l.geom, o.geom))/ST_Area(o.geom) > 0.5;
 
 ## Get all the LSOAs for each authority
 
-1.  Create a table to hold the LSOA lookups.
+- Create a table to hold the LSOA lookups.
 
 ```
 -- table: authorities_lsoas.  stores a lookup to match authority code to lsoa code.
@@ -517,7 +519,7 @@ create unique index cuix_authoritieslsoas_code_lsoa on authorities_lsoas using b
 alter table authorities_lsoas cluster on cuix_authoritieslsoas_code_lsoa;
 ```
 
-2.  And then insert the data into that table.
+- And then insert the data into that table.
 
 ```
 -- table:  authorities_lsoas.  populate the table.
@@ -533,7 +535,7 @@ and ST_Area(ST_Intersection(r.geom, ls.geom))/ST_Area(ls.geom) > 0.5;
 
 ## Get all the OAs for each authority
 
-1.  Create the table to hold the output area lookups.
+- Create the table to hold the output area lookups.
 
 ```
 -- table: authorities_oas.  holds output area codes for each authority.
@@ -548,7 +550,7 @@ create unique index cuix_authoritiesoas_code_lsoa_oa on authorities_oas using bt
 alter table authorities_oas cluster on cuix_authoritiesoas_code_lsoa_oa;
 ```
 
-2.  And import the data
+- And import the data
 
 ```
 -- table:  authorities_oas.  populate the table.
@@ -567,7 +569,7 @@ and ST_Area(ST_Intersection(ls.geom, oa.geom))/ST_Area(oa.geom) > 0.5
 
 ## Export the authorities details
 
-1.  Export an authorities CSV file.
+- Export an authorities CSV file.
 
 ```
 -- export: authorities.
@@ -625,7 +627,7 @@ copy (
 ) to 'authorities.csv' delimiter ',' csv header;
 ```
 
-2.  Export the authorities as GeoJSON.
+- Export the authorities as GeoJSON.
 
 ```
 -- export:  authorities_geo.
@@ -649,7 +651,7 @@ copy (
 
 ## Create libraries table
 
-1.  Create the table.
+- Create the table.
 
 ```
 -- table: libraries.  stores the library data.
@@ -674,7 +676,7 @@ alter table libraries cluster on cuix_libraries_id_authid;
 create index uix_libraries_authid on libraries using btree (authority_id);
 ```
 
-2.  Take data from lots of tables and put it into the libraries table.
+- Take data from lots of tables and put it into the libraries table.
 
 ```
 -- correct invalid postcode entries
@@ -759,7 +761,7 @@ What about addresses?
 | ----- | ----- | ---------- |
 | No postcode or invalid postcode | 97 | Must fix these manually. |
 
-3. Clean up the data.  Run the following scripts to implement the rules above.
+- Clean up the data.  Run the following scripts to implement the rules above.
 
 ```
 -- library type rules
@@ -926,7 +928,7 @@ and l.postcode_easting is null
 
 Although all of the libraries have some address data (either a full address or postcode).  We need coordinates in order to do some of the geographic profiling, and match libraries to particuar areas.  To do this, we'll need to use a geocoding service such as Open Street Map.  Where we can't get geocoordinates, we can always fall back on postcodes, for which we have the centre coordinates (centroids).  That is a little less accurate though as a postcode can span over a wide area.
 
-1.  Export the libraries data to geocode it.  While doing this, create a bounding box to limit the area that we wish to search within.  This should give the geocoder more to go on, and reduce the number of false matches, which we won't otherwise be able to check.
+- Export the libraries data to geocode it.  While doing this, create a bounding box to limit the area that we wish to search within.  This should give the geocoder more to go on, and reduce the number of false matches, which we won't otherwise be able to check.
 
 ```
 copy (
@@ -941,11 +943,11 @@ copy (
 ) to '\data\libraries\libraries_addresses.csv' delimiter ',' csv header;
 ```
 
-2.  Run the addresses through a geocoder.
+- Run the addresses through a geocoder.
 
 There is a python script in the scripts directory of this project that will take the output of the above query (libraries_addresses.csv), and attempt to geocode the library locations using Open Street Map.  Run that file, which will take about an hour.  It will produce another file (libraries_addresses_geo.csv).  
 
-3.  Create a table to store the locations.
+- Create a table to store the locations.
 
 ```
 create table libraries_locations
@@ -957,13 +959,13 @@ create table libraries_locations
 );
 ```
 
-4.  Import the library locations.
+- Import the library locations.
 
 ```
 copy libraries_locations from 'libraries_addresses_geo.csv' delimiter ',' csv header;
 ```
 
-5.  And update the locations.  This checks that the geocoded value is also within the relevant authority boundary.
+- And update the locations.  This checks that the geocoded value is also within the relevant authority boundary.
 
 ```
 update libraries u
@@ -983,7 +985,7 @@ where ST_Within(
 and u.id = ll.libraryid;
 ```
 
-6. The create a convenient geometry column.
+- The create a convenient geometry column.
 
 ```
 select AddGeometryColumn ('libraries','geom', 27700, 'POINT', 2);
@@ -1010,7 +1012,7 @@ However, it would be useful to have an idea of the demographics around other (e.
 
 For each of the above there will also be 2 methodologies.  The first will create catchment areas that are limited to the authority that each library is in.  The second will create catchment areas that span over authority boundaries.
 
-1.  Create a table to hold library catchment areas.
+- Create a table to hold library catchment areas.
 
 ```
 -- table: libraries_catchments.  holds libraries and output areas.
@@ -1025,7 +1027,7 @@ create unique index cuix_librariescatchments_id_code on libraries_catchments usi
 alter table libraries_catchments cluster on cuix_librariescatchments_id_code;
 ```
 
-2.  Create the catchment areas for current statutory libraries.
+- Create the catchment areas for current statutory libraries.
 
 ```
 insert into libraries_catchments
@@ -1046,7 +1048,7 @@ join authorities_oas aos
 on aos.oa_code = o.oa11cd;
 ```
 
-3.  Add the catchment areas for current non-statutory libraries.  This analyses all current libraries and then adds the catchments for those that are non statutory in 2016.
+- Add the catchment areas for current non-statutory libraries.  This analyses all current libraries and then adds the catchments for those that are non statutory in 2016.
 
 ```
 insert into libraries_catchments
@@ -1070,7 +1072,7 @@ on li.id = ca.library_id
 where li.statutory2016 = 'f';
 ```
 
-4.  Add the catchment areas for closed libraries that were statutory in 2010.
+- Add the catchment areas for closed libraries that were statutory in 2010.
 
 ```
 insert into libraries_catchments
@@ -1094,7 +1096,7 @@ on li.id = ca.library_id
 where li.closed is not null;
 ```
 
-5.  Add the catchment areas for closed libraries that weren't statutory in 2010.
+- Add the catchment areas for closed libraries that weren't statutory in 2010.
 
 ```
 insert into libraries_catchments
@@ -1119,7 +1121,7 @@ where li.closed is not null
 and li.statutory2010 = 'f';
 ```
 
-6.  Export library polygons for each catchment area.
+- Export library polygons for each catchment area.
 
 ```
 select library_id, ST_Union(ST_SnapToGrid(oa.geom, 0.0001)) 
@@ -1137,7 +1139,7 @@ It'd also be good to do some distance analysis, such as how far people have to t
 It makes sense to only do this for statutory libraries.  It also makes sense to do it only for open libraries, but then it may also be useful to see what a catchment area was for a closed library.  To do this we need to run a catchment analysis for libraries open in 2010 and one for libraries open in 2016.
 
 
-4.  Add a table for cross authority catchment areas.
+- Add a table for cross authority catchment areas.
 
 ```
 -- table: libraries_catchments.  holds libraries and output areas.
@@ -1152,7 +1154,7 @@ create unique index cuix_librariescatchmentsxauth_id_code on libraries_catchment
 alter table libraries_catchments_xauth cluster on cuix_librariescatchmentsxauth_id_code;
 ```
 
-5.  Add cross-authority catchment areas for open libraries
+- Add cross-authority catchment areas for open libraries
 
 ```
 insert into libraries_catchments_xauth
@@ -1168,7 +1170,7 @@ join authorities_oas aos
 on aos.oa_code = o.oa11cd;
 ```
 
-6.  Add cross-authority catchment areas for closed libraries
+- Add cross-authority catchment areas for closed libraries
 
 ```
 insert into libraries_catchments_xauth
@@ -1189,7 +1191,7 @@ where li.closed is not null;
 
 ## Distance calculations
 
-1.  Export a file to show distances for authorities.
+- Export a file to show distances for authorities.
 
 ```
 copy (select a.id as authority, sum(op.all_ages) as population, round(round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric) * 2, 0) /2, 1) as distance
@@ -1208,7 +1210,7 @@ where l.closed is null
 group by authority, distance) to 'data\libraries\authorities_distances.csv' delimiter ','csv header;
 ```
 
-2.  Export a file to show distances within the catchment for each library.
+- Export a file to show distances within the catchment for each library.
 
 ```
 copy (select l.id, 
@@ -1228,7 +1230,7 @@ group by l.id, distance order by l.id, distance) to 'data\libraries\libraries_di
 
 Now that's pretty much everything done with the libraries data.  Export it, including deprivation details for the library catchment (assuming non-cross authority).
 
-1.  Export a CSV.
+- Export a CSV.
 
 ```
 copy (select 
