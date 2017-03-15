@@ -658,7 +658,7 @@ copy (
 create table libraries
 (
   id serial, name text, authority_id integer, address text,
-  postcode character varying(8), postcode_easting numeric, postcode_northing numeric,
+  postcode character varying(8), easting numeric, northing numeric,
   type character varying(4),
   closed character varying(4), closed_year text,
   statutory2010 boolean, statutory2016 boolean,
@@ -686,7 +686,7 @@ update libraries_raw set postcode = 'TA21 8AQ' where postcode = 'TA21  8AQ';
 
 -- table: libraries.  populate the library data.
 insert into libraries(
-	name, authority_id, address, postcode, postcode_easting, postcode_northing, type, closed, closed_year, statutory2010, 
+	name, authority_id, address, postcode, easting, northing, type, closed, closed_year, statutory2010, 
 	statutory2016, opened_year, replacement, notes, hours, staffhours, email, url)
 select trim(both from r.library), a.id, trim(both from r.address), 
 	coalesce(p.postcode, r.postcode),
@@ -706,7 +706,7 @@ on replace(upper(r.postcode), ' ', '') = replace(p.postcode, ' ', '')
 order by r.authority, r.library;
 ```
 
-There are some decisions to be made about cleaning up the data from the raw library details into a new one.  For library types there are the following in the dataset:
+There are some decisions to be made about cleaning up the data.  For library types there are the following in the dataset:
 
 | Library type | Count | Description |
 | ------------ | ----- | ----------- |
@@ -734,17 +734,17 @@ That makes for 248 closed libraries.  Aside from the statuses, there are then so
 | Issue | Count | Resolution |
 | ----- | ----- | ---------- |
 | No closed status but a closed year.  What's going on here?  Set them to closed. | 5 | Set closed status to XL.  Set statutory2016 value to No. |
-| Less replaced libraries than replacements | 114/216 | There are 114 libraries set as replaced.  And 216 libraries marked as replacements.  The likelihood here is that library services have included new libraries but not listed the ones they replaced.  Can't do much about that, except accoutn for it in the dashboard. |
-| Closed status but also library type.  Would like this to always be the case but it is generally not.  | 13 | Remove the library type where the library is closed. |
+| Less replaced libraries than replacements | 114/216 | There are 114 libraries set as replaced.  And 216 libraries marked as replacements.  The likelihood here is that library services have included new libraries but not listed the ones they replaced.  Can't do much about that, except account for it in the dashboard. |
+| Closed status but also library type.  Would like this to always be the case but it is generally not so can't really use it.  | 13 | Remove the library type where the library is closed. |
 
 So that's a set of rules for library type.  Then there is the statutory and non-statutory indicator for 2010 and 2016.  Services completing the data return should indicate (Yes/No) whether the library was included as part of their statutory service both in April 2010 and July 2016.  If the library is new then it should be marked as No in 2010.  There are the following slightly odd responses:
 
 | Issue | Count | Resolution |
 | ------ | ----- | ---------- |
-| Library, not marked as new or replacement, but marked as statutory in 2016 but not in 2010.  Some of these appear to be libraries that haven't changed status. Others are micro libraries or collections that are replacements for mobile library services. | 31 | Change statutory 2016 value to No.  |
+| Library, not marked as new or replacement, marked as statutory in 2016 but not in 2010.  Some of these appear to be libraries that haven't changed status. Others are micro libraries or collections that are replacements for mobile library services. | 31 | Change statutory 2016 value to No.  |
 | Independent community library marked as statutory in 2016.  If these are supported by the authority, would expect them to be marked as CRL. | 1 | Change statutory 2016 value to No. |
 | Have a closed year but marked as statutory in 2016.  Some may be temporary closures, others indefinite. | 6 | Change statutory 2016 value to No. |
-| New, but marked as statutory in 2010.  | 122 | Change statutory 2010 value to No |
+| New, but also marked as statutory in 2010.  | 122 | Change statutory 2010 value to No |
 | Have a closed status but marked as statutory in 2016.  | 9 | Change statutory 2016 value to No |
 
 Then, there's the closed and opened years.  
@@ -771,13 +771,13 @@ update libraries set type = 'ICL' where type = 'ICL+';
 update libraries set type = 'CRL' where type = 'CRL+';
 
 -- closed oddities
-update libraries set closed = 'XL' where closed_year is not null and closed is null;
+update libraries set closed = 'XL', type = null where closed_year is not null and closed is null;
 update libraries set type = null where type is not null and closed is not null;
 
 -- statutory indicator rules
 update libraries set statutory2016 = 'f' where statutory2016 = 't' and statutory2010 = 'f' and opened_year is null;
 update libraries set statutory2016 = 'f' where type = 'ICL' and statutory2016 = 't';
-update libraries set statutory2010 = 'f' where closed_year is not null and statutory2016 = 't';
+update libraries set statutory2016 = 'f' where closed_year is not null and statutory2016 = 't';
 update libraries set statutory2010 = 'f' where opened_year is not null and statutory2010 = 't';
 update libraries set statutory2016 = 'f' where closed is not null and statutory2016 = 't';
 
@@ -818,6 +818,8 @@ update libraries set opened_year = '2012' where authority_id = 129 and name = 'H
 update libraries set opened_year = '2014' where authority_id = 149 and name = 'Wednesfield Library' and opened_year is not null;
 
 -- fill in missing and invalid postcodes
+update libraries set postcode = 'BH5 1EZ' where name = 'Boscombe Library' and authority_id = 11 and postcode = 'BH1 1BY';
+update libraries set postcode = 'SL1 1EL' where name = 'Central library' and authority_id = 111 and postcode = 'SL1 1EA';
 update libraries set postcode = 'S70 2SR' where name = 'Central' and authority_id = 3 and postcode = 'S70 2JF';
 update libraries set postcode = 'BS39 7QG' where name = 'Paulton (The Hub)' and authority_id = 4 and postcode = 'BS29 7QG';
 update libraries set postcode = 'B34 7AZ' where name = 'Shard End Library' and authority_id = 7 and postcode = 'B34 7AG';
@@ -918,15 +920,15 @@ update libraries set postcode = 'RG10 8EP' where name = 'Wargrave' and authority
 
 -- and update the eastings and northings for those postcodes
 update libraries l
-set postcode_easting = p.eastings, postcode_northing = p.northings
+set easting = p.eastings, northing = p.northings
 from postcodes p
 where replace(p.postcode, ' ', '') = replace(l.postcode, ' ', '')
-and l.postcode_easting is null
+and l.easting is null
 ```
 
 ## Geocoding the libraries
 
-Although all of the libraries have some address data (either a full address or postcode).  We need coordinates in order to do some of the geographic profiling, and match libraries to particuar areas.  To do this, we'll need to use a geocoding service such as Open Street Map.  Where we can't get geocoordinates, we can always fall back on postcodes, for which we have the centre coordinates (centroids).  That is a little less accurate though as a postcode can span over a wide area.
+Although all of the libraries have some address data (either a full address or postcode).  We need co-ordinates in order to do some of the geographic profiling, and match libraries to particuar areas.  To do this, we'll need to use a geocoding service such as Open Street Map.  Where we can't get geocoordinates, we can always fall back on postcodes, for which we have the centre coordinates (centroids).  That is a little less accurate though as a postcode can span over a wide area.
 
 - Export the libraries data to geocode it.  While doing this, create a bounding box to limit the area that we wish to search within.  This should give the geocoder more to go on, and reduce the number of false matches, which we won't otherwise be able to check.
 
