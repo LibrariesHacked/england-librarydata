@@ -1,4 +1,5 @@
 import csv
+# pip install requests
 import requests
 import json
 import time
@@ -24,10 +25,11 @@ with open('../data/libraries/libraries_addresses.csv', 'r') as libscsv:
         print(url)
         # request are like:  http://nominatim.openstreetmap.org/search/York+Explore+Library+Square+York?viewbox=-1.22371196679726,54.0568663596222,-0.919670778852277,53.8745672170754&format=json&bounded=1&limit=1		result = requests.get(url).json()
         r = requests.get(url)
-        data = r.json()
-        if len(data) > 0:
+        if len(r.content) > 0:
+            data = r.json()
             for place in data:
-                if place['type'] == 'library':            
-                    writer.writerow([id, data[0]['lat'], data[0]['lon']])
-                    break
-            time.sleep(1) # because the web service is rate limited, wait for a second before moving onto the next one.
+                if len(data) > 0:
+                    if place['type'] == 'library':            
+                        writer.writerow([id, data[0]['lat'], data[0]['lon']])
+                        break
+        time.sleep(2) # because the web service is rate limited, wait for a second before moving onto the next one

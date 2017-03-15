@@ -5,10 +5,10 @@
     mapTilesStreets: 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A',
     mapAttribution: '&copy; <a href="http://osm.org/copyright" target="blank" title="Open Street Map">OSM</a> contributors.  Contains: OS data &copy;, Royal Mail data &copy;, National Statistics data &copy;.  Crown copyright and database right 2016',
     libStyles: {
-        LAL: { type: 'local authority', description: '', cssClass: 'success', colour: '#5cb85c' },
+        LAL: { type: 'authority', description: '', cssClass: 'success', colour: '#5cb85c' },
         CL: { type: 'commissioned', description: '', cssClass: 'info', colour: '#5bc0de' },
         CRL: { type: 'community', description: '', cssClass: 'primary', colour: '#0275d8' },
-        ICL: { type: 'independent community', description: '', cssClass: 'gray-dark', colour: '#292b2c' },
+        ICL: { type: 'independent', description: '', cssClass: 'gray-dark', colour: '#292b2c' },
         XLT: { type: 'temp closed', description: '', cssClass: 'warning', colour: '#f0ad4e' },
         XLR: { type: 'replaced', description: '', cssClass: 'muted', colour: '#636c72' },
         XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#d9534f' }

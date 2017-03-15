@@ -917,6 +917,8 @@ update libraries set postcode = 'WA13 0QW' where name = 'Lymm' and authority_id 
 update libraries set postcode = 'BA14 8XR' where name = 'Trowbridge' and authority_id = 145 and postcode = 'BA14 8BA';
 update libraries set postcode = 'RG2 9JR' where name = 'Arborfield Container' and authority_id = 148 and postcode is null;
 update libraries set postcode = 'RG10 8EP' where name = 'Wargrave' and authority_id = 148 and postcode = 'EG10 8EP';
+-- tsk
+update libraries set postcode = 'TA24 8NP' where name = 'Porlock' and authority_id = 113 and postcode = 'TA24 7HD';
 
 -- and update the eastings and northings for those postcodes
 update libraries l
@@ -924,6 +926,18 @@ set easting = p.eastings, northing = p.northings
 from postcodes p
 where replace(p.postcode, ' ', '') = replace(l.postcode, ' ', '')
 and l.easting is null
+```
+
+- Then create a convenient geometry column.
+
+```
+select AddGeometryColumn ('libraries','geom', 27700, 'POINT', 2);
+-- and update the column to store the coordinates
+update libraries set geom = ST_SetSRID(ST_MakePoint(easting, northing), 27700);
+select UpdateGeometrySRID('libraries', 'geom', 27700);
+
+-- index: uix_libraries_geom
+create index ix_libraries_geom on libraries using btree (geom);
 ```
 
 ## Geocoding the libraries
@@ -935,8 +949,8 @@ Although all of the libraries have some address data (either a full address or p
 ```
 copy (
 	select 	l.id, l.name, l.address, l.postcode, 
-	case when l.postcode is not null then ST_AsText(ST_Envelope(ST_Buffer(ST_Transform(ST_SetSRID(ST_MakePoint(l.postcode_easting, l.postcode_northing), 27700), 4326)::geography, 1609)::geometry))
-	else ST_AsText(ST_Envelope(ST_Transform(r.geom, 4326))) end
+	case when l.postcode is not null then ST_AsText(ST_Envelope(ST_Buffer(ST_Transform(l.geom, 4326)::geography, 1609)::geometry))
+	else ST_AsText(ST_Envelope(ST_Transform(r.geom, 4326))) end as bbox
 	from libraries l
 	join authorities a
 	on a.id = l.authority_id
@@ -967,13 +981,13 @@ create table libraries_locations
 copy libraries_locations from 'libraries_addresses_geo.csv' delimiter ',' csv header;
 ```
 
-- And update the locations.  This checks that the geocoded value is also within the relevant authority boundary.
+- And update the locations.  This checks that the geocoded value is within the relevant authority boundary.
 
 ```
 update libraries u
-set postcode_easting = ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700)),
-postcode_northing = ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700))
-from librarylocations ll
+set easting = ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700)),
+northing = ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700))
+from libraries_locations ll
 join libraries l
 on l.id = ll.libraryid
 join authorities a
@@ -981,43 +995,32 @@ on a.id = l.authority_id
 where ST_Within(
 	ST_Transform(ST_SetSRID(ST_MakePoint(ll.lng, ll.lat), 4326), 27700), 
 	(select geom 
-		from (	select code, geom 
+		from (select code, geom 
 			from regions ) ab 
 		where ab.code = a.code))
 and u.id = ll.libraryid;
-```
-
-- The create a convenient geometry column.
-
-```
-select AddGeometryColumn ('libraries','geom', 27700, 'POINT', 2);
--- and update the column to store the coordinates
-update libraries set geom = ST_SetSRID(ST_MakePoint(postcode_easting, postcode_northing), 27700);
-select UpdateGeometrySRID('libraries', 'geom', 27700);
-
--- index: uix_libraries_geom
-create index ix_libraries_geom on libraries using btree (geom);
+update libraries set geom = ST_SetSRID(ST_MakePoint(easting, northing), 27700);
 ```
 
 ## Catchment areas
 
-We are going to create a catchment area for each library.  This will be based upon the nearest library for the population of England.  The makeup of a librry catchment will be the population where that library is their nearest.
+Going to create a catchment area for each library.  The makeup of a library catchment will be the area covered by the population for whom that library is their nearest.
 
-It doesn't make sense to create a library catchment for libraries other than those that are statutory.  For authorities, it is only useful to have an understanding of the catchment areas for libraries that are fulfilling a statutory duty.  And to include other libraries would affect the catchment areas.
+It doesn't make that much sense to create a library catchment for libraries other than those that are statutory.  For authorities, it is only useful to have an understanding of the catchment areas for libraries that are fulfilling a statutory duty.  To include other libraries would affect the catchment areas.
 
 However, it would be useful to have an idea of the demographics around other (e.g. Independent Community) libraries.  Therefore, these scripts will:
 
-- Create library catchment areas for current statutory Libraries
-- Create library catchment areas for current non-statutory libraries
+- First create library catchment areas for current statutory Libraries
+- Then create library catchment areas for current non-statutory libraries
 - Create library catchment areas for closed statutory libraries in 2010
 - Create library catchment areas for closed non-statutory libraries in 2010.
 
-For each of the above there will also be 2 methodologies.  The first will create catchment areas that are limited to the authority that each library is in.  The second will create catchment areas that span over authority boundaries.
+For each of the above there will also be 2 alternative methodologies.  The first will create catchment areas that are limited to the authority that each library is in.  The second will create catchment areas that span over authority boundaries.
 
 - Create a table to hold library catchment areas.
 
 ```
--- table: libraries_catchments.  holds libraries and output areas.
+-- table: libraries_catchments.  holds libraries matched to output areas.
 create table libraries_catchments (
 	library_id integer,
 	oa_code character varying(9),
@@ -1050,7 +1053,7 @@ join authorities_oas aos
 on aos.oa_code = o.oa11cd;
 ```
 
-- Add the catchment areas for current non-statutory libraries.  This analyses all current libraries and then adds the catchments for those that are non statutory in 2016.
+- Add the catchment areas for current non-statutory libraries.
 
 ```
 insert into libraries_catchments
@@ -1126,7 +1129,7 @@ and li.statutory2010 = 'f';
 - Export library polygons for each catchment area.
 
 ```
-select library_id, ST_Union(ST_SnapToGrid(oa.geom, 0.0001)) 
+select library_id, st_union(st_snaptogrid(oa.geom, 0.0001)) 
 from libraries_catchments lc
 join oa_boundaries oa
 on oa.oa11cd = lc.oa_code
@@ -1144,7 +1147,7 @@ It makes sense to only do this for statutory libraries.  It also makes sense to 
 - Add a table for cross authority catchment areas.
 
 ```
--- table: libraries_catchments.  holds libraries and output areas.
+-- table: libraries_catchments_xauth.  holds libraries and output areas.
 create table libraries_catchments_xauth (
 	library_id integer,
 	oa_code character varying(9),
@@ -1156,32 +1159,51 @@ create unique index cuix_librariescatchmentsxauth_id_code on libraries_catchment
 alter table libraries_catchments_xauth cluster on cuix_librariescatchmentsxauth_id_code;
 ```
 
-- Add cross-authority catchment areas for open libraries
+- Create the catchment areas for current statutory libraries.
 
 ```
 insert into libraries_catchments_xauth
-select
+select 
 (select l.id
 	from libraries l
 	where l.statutory2016 = 't'
 	and l.closed is null
-	order by l.geom <-> o.geom limit 1) as library_id,
+	order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
 o.oa11cd
 from oa_boundaries o
 join authorities_oas aos
 on aos.oa_code = o.oa11cd;
 ```
 
-- Add cross-authority catchment areas for closed libraries
+- Add the catchment areas for current non-statutory libraries.
 
 ```
 insert into libraries_catchments_xauth
-select ca.library_id, ca.oa11cd from ( 
+select ca.library_id, ca.oa11cd from (
+	select
+	(select l.id
+		from libraries l
+		where l.closed is null
+		order by l.geom <-> o.geom limit 1) as library_id,
+	o.oa11cd
+	from oa_boundaries o
+	join authorities_oas aos
+	on aos.oa_code = o.oa11cd) as ca
+join libraries li
+on li.id = ca.library_id
+where li.statutory2016 = 'f';
+```
+
+- Add the catchment areas for closed libraries that were statutory in 2010.
+
+```
+insert into libraries_catchments_xauth
+select ca.library_id, ca.oa11cd from (
 	select
 	(select l.id
 		from libraries l
 		where l.statutory2010 = 't'
-		order by l.geom <-> o.geom limit 1) as library_id,
+		order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
 	o.oa11cd
 	from oa_boundaries o
 	join authorities_oas aos
@@ -1191,11 +1213,32 @@ on li.id = ca.library_id
 where li.closed is not null;
 ```
 
-## Distance calculations
-
-- Export a file to show distances for authorities.
+- Add the catchment areas for closed libraries that weren't statutory in 2010.
 
 ```
+insert into libraries_catchments_xauth
+select ca.library_id, ca.oa11cd from (
+	select
+	(select l.id
+		from libraries l
+		where l.opened_year is null
+		order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
+	o.oa11cd
+	from oa_boundaries o
+	join authorities_oas aos
+	on aos.oa_code = o.oa11cd) as ca
+join libraries li
+on li.id = ca.library_id
+where li.closed is not null
+and li.statutory2010 = 'f';
+```
+
+## Distance calculations
+
+- Export a file to show distances for the libraries in an authority.
+
+```
+-- distances assuming non cross-authority catchments
 copy (select a.id as authority, sum(op.all_ages) as population, round(round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric) * 2, 0) /2, 1) as distance
 from libraries_catchments lc
 join libraries l
@@ -1209,16 +1252,46 @@ on op.oa = lc.oa_code
 join oa_boundaries oab
 on oab.oa11cd = lc.oa_code
 where l.closed is null
-group by authority, distance) to 'data\libraries\authorities_distances.csv' delimiter ','csv header;
+group by authority, distance) to '\data\libraries\authorities_distances.csv' delimiter ','csv header;
+
+-- distances with cross-authority catchments
+copy (select a.id as authority, sum(op.all_ages) as population, round(round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric) * 2, 0) /2, 1) as distance
+from libraries_catchments_xauth lc
+join libraries l
+on l.id = lc.library_id
+join authorities_oas ao
+on ao.oa_code = lc.oa_code
+join authorities a
+on a.code = ao.code
+join oa_population op
+on op.oa = lc.oa_code
+join oa_boundaries oab
+on oab.oa11cd = lc.oa_code
+where l.closed is null
+group by authority, distance) to '\data\libraries\authorities_distances_xauth.csv' delimiter ','csv header;
 ```
 
 - Export a file to show distances within the catchment for each library.
 
 ```
+-- distances assuming non cross-authority catchments
 copy (select l.id, 
 sum(op.all_ages) as population, 
 round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric), 1) as distance
 from libraries_catchments lc
+join libraries l
+on l.id = lc.library_id
+join oa_boundaries oab
+on oab.oa11cd = lc.oa_code
+join oa_population op
+on op.oa = lc.oa_code
+group by l.id, distance order by l.id, distance) to 'data\libraries\libraries_distances.csv' delimiter ','csv header;
+
+-- distances with cross-authority catchments
+copy (select l.id, 
+sum(op.all_ages) as population, 
+round(cast(ST_Distance(l.geom, ST_Centroid(oab.geom)) / 1609.34 as numeric), 1) as distance
+from libraries_catchments_xauth lc
 join libraries l
 on l.id = lc.library_id
 join oa_boundaries oab
@@ -1241,8 +1314,8 @@ copy (select
 	a.id as authority_id,
 	l.address,
 	l.postcode,
-	ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(l.postcode_easting, l.postcode_northing), 27700), 4326)) as lat,
-	ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(l.postcode_easting, l.postcode_northing), 27700), 4326)) as lng,
+	ST_Y(ST_Transform(l.geom, 4326)) as lat,
+	ST_X(ST_Transform(l.geom, 4326)) as lng,
 	l.statutory2010,
 	l.statutory2016,
 	l.type, 
