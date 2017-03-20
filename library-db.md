@@ -69,7 +69,7 @@ create unique index ix_postcodes_postcode_coords on postcodes using btree (postc
 - Import the postcodes data into the new table.
 
 ```
-copy postcodes FROM 'postcodes.csv' delimiter ',' csv;
+copy postcodes from '\data\os\postcodes.csv' delimiter ',' csv;
 ```
 
 - Add a geometry column to make use of the eastings and northings.
@@ -83,6 +83,37 @@ select UpdateGeometrySRID('postcodes', 'geom', 27700);
 
 -- index: uix_postcodes_geom.  a spatial index on the geometry.
 create index ix_postcodes_geom ON postcodes using gist (geom);
+```
+
+## Dataset: Postcode head counts
+
+Postcode head count data tells us how many people live at a particular postcode.  This can be useful for counting people within a certain area but is also useful for this project because it tells us if there are any residents in a library postcode.  The postcode headcount web page includes the following comment: *'Postcodes with no usual residents have not been included in these tables.'*  When libraries are in postcodes that have no usual residents we can be more optimistic about the accuracy of the centre point of that postcode location.  This will be useful later on.
+
+- Download Table 1: All postcodes [from nomisweb](https://www.nomisweb.co.uk/census/2011/postcode_headcounts_and_household_estimates).
+
+- Add a table to store the data
+
+```
+-- table: postcodes.
+create table postcodes_headcounts
+(
+  postcode character varying(8) not null,
+  total integer,
+  males integer,
+  females integer,
+  households integer,
+  constraint pk_postcodeheadcounts_postcode primary key (postcode)
+);
+
+-- index: cuix_postcodeheadcounts_postcode.  a unique clustered index for postcode.
+create unique index cuix_postcodeheadcounts_postcode on postcodes_headcounts using btree (postcode);
+alter table postcodes_headcounts cluster on cuix_postcodeheadcounts_postcode;
+```
+
+- And import the data
+
+```
+copy postcodes_headcounts from '\data\ons\postcode_estimates.csv' delimiter ',' csv header;
 ```
 
 ## Dataset: OS authority boundaries
@@ -120,7 +151,7 @@ union
 select name, area_code, code, hectares, area, geom from district_borough_unitary_region);
 
 -- geometry: set srid.
-select UpdateGeometrySRID('regions', 'geom', 27700);
+select updategeometrysrid('regions', 'geom', 27700);
 
 -- get rid of the old tables
 drop table county_region;
@@ -166,7 +197,7 @@ create unique index uix_population_code_population on regions_population using b
 
 ```
 -- table: population.  populate the table
-copy population FROM 'ukpopulation.csv' delimiter ',' csv;
+copy regions_population FROM '\data\ons\ukpopulation.csv' delimiter ',' csv;
 ```
 
 ## Dataset: ONS Output area boundaries
@@ -186,7 +217,7 @@ shp2pgsql "Output_Area_December_2011_Full_Clipped_Boundaries_in_England_and_Wale
 alter table "output_area_december_2011_full_clipped_boundaries_in_england_an" rename to oa_boundaries
 
 -- geometry: set srid.
-select UpdateGeometrySRID('oa_boundaries', 'geom', 27700);
+select updategeometrysrid('oa_boundaries', 'geom', 27700);
 
 -- index: cuix_oaboundaries_code.  a unique clustered index on output area code.
 create unique index cuix_oaboundaries_code on oa_boundaries using btree (oa11cd);
@@ -247,16 +278,16 @@ create unique index uix_oapopulations_oa_population on oa_population using btree
 
 ```
 -- table:  oa_population.  populate the table.
-copy oa_population FROM 'coa-population-mid2015-east.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-eastmidlands.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-london.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-northeast.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-northwest.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-southeast.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-southwest.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-wales.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-westmidlands.csv' delimiter ',' csv header;
-copy oa_population FROM 'coa-population-mid2015-yorkshireandthehumber.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-east.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-eastmidlands.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-london.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-northeast.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-northwest.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-southeast.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-southwest.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-wales.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-westmidlands.csv' delimiter ',' csv header;
+copy oa_population from '\data\ons\coa-population-mid2015-yorkshireandthehumber.csv' delimiter ',' csv header;
 ```
 
 ## Dataset: ONS Lower layer super output area boundaries
@@ -292,14 +323,14 @@ create index ix_lsoaboundaries_geom on lsoa_boundaries using gist (geom);
 - From a command line import the data.
 
 ```
-shp2pgsql "Lower_Layer_Super_Output_Areas_December_2011_Population_Weighted_Centroids.shp" | psql -d englandlibs -U "username"
+shp2pgsql "LSOA_December_2011_Population_Weighted_Centroids.shp" | psql -d englandlibs -U "username"
 ```
 
 - Then modify the table and add some indexes.
 
 ```
 -- table: rename to lsoa_population_weighted.
-alter table Lower_Layer_Super_Output_Areas_December_2011_Population_Weighted_Centroids rename to lsoa_population_weighted;
+alter table LSOA_December_2011_Population_Weighted_Centroids rename to lsoa_population_weighted;
 
 -- index: cuix_lsoapopulationweighted_code.
 create unique index cuix_lsoapopulationweighted_code on lsoa_population_weighted using btree (lsoa11cd);
@@ -347,7 +378,7 @@ create unique index uix_lsoapopulation_code_population on lsoa_population using 
 - Import the data
 
 ```
-copy lsoa_population FROM 'lsoa-population-mid2015.csv' delimiter ',' csv header;
+copy lsoa_population from '\data\ons\lsoa-population-mid2015.csv' delimiter ',' csv header;
 ```
 
 ## Dataset: Indices of deprivation
@@ -389,14 +420,14 @@ alter table lsoa_imd cluster on cuix_imd_code;
 - Copy the data from the CSV into the table.
 
 ```
-copy lsoa_imd from 'lsoa-imd.csv' delimiter ',' csv header;
+copy lsoa_imd from '\data\ons\lsoa-imd.csv' delimiter ',' csv header;
 ```
 
 ##  Dataset: Libraries Taskforce source data
 
 - Get the libraries taskforce dataset from *wherever it ends up when and if it's published.*
 
-- Convert the Excel file.  The spreadsheet is distributed as an Excel file.  To convert that file open in Excel and save the rows to CSV.
+- Convert the Excel file.  The spreadsheet is distributed as an Excel file.  To convert that file open in Excel and save the rows to CSV (just the data, no headers or nothing).
 
 - Create a table to hold the data.
 
@@ -412,7 +443,7 @@ create table libraries_raw
 - Import the data.
 
 ```
-copy libraries_raw from 'librariesraw.csv' delimiter ',' csv;
+copy libraries_raw from '\data\libraries\libraries_raw.csv' delimiter ',' csv;
 ```
 
 ## Table: Authorities.
@@ -918,14 +949,14 @@ update libraries set postcode = 'BA14 8XR' where name = 'Trowbridge' and authori
 update libraries set postcode = 'RG2 9JR' where name = 'Arborfield Container' and authority_id = 148 and postcode is null;
 update libraries set postcode = 'RG10 8EP' where name = 'Wargrave' and authority_id = 148 and postcode = 'EG10 8EP';
 -- tsk
-update libraries set postcode = 'TA24 8NP' where name = 'Porlock' and authority_id = 113 and postcode = 'TA24 7HD';
+update libraries set postcode = 'TA24 8NP' where name = 'Porlock' and authority_id = 113 and postcode = 'TA247HD';
 
 -- and update the eastings and northings for those postcodes
 update libraries l
 set easting = p.eastings, northing = p.northings
 from postcodes p
 where replace(p.postcode, ' ', '') = replace(l.postcode, ' ', '')
-and l.easting is null
+and l.easting is null;
 ```
 
 - Then create a convenient geometry column.
@@ -1130,11 +1161,12 @@ and li.statutory2010 = 'f';
 
 ```
 select library_id, st_union(st_snaptogrid(oa.geom, 0.0001)) 
-from libraries_catchments lc
-join oa_boundaries oa
-on oa.oa11cd = lc.oa_code
-group by lc.library_id
-order by library_id;
+from libraries_catchments lc join oa_boundaries oa on oa.oa11cd = lc.oa_code group by lc.library_id;
+
+select row_to_json(fc)
+from (select 'FeatureCollection' as type, array_to_json(array_agg(f)) as features
+	from (select 'Feature' as type, st_asgeojson(st_union(st_snaptogrid(oa.geom, 0.0001)))::json, row_to_json((select l from 
+	(select library_id) as l)) properties from libraries_catchments lc join oa_boundaries oa on oa.oa11cd = lc.oa_code group by lc.library_id) as f) as fc;
 ```
 
 ## Distance analysis
@@ -1142,7 +1174,6 @@ order by library_id;
 It'd also be good to do some distance analysis, such as how far people have to travel to their nearest library.  What we need for that is to create a catchment area for each library from census output areas.  
 
 It makes sense to only do this for statutory libraries.  It also makes sense to do it only for open libraries, but then it may also be useful to see what a catchment area was for a closed library.  To do this we need to run a catchment analysis for libraries open in 2010 and one for libraries open in 2016.
-
 
 - Add a table for cross authority catchment areas.
 
@@ -1285,7 +1316,7 @@ join oa_boundaries oab
 on oab.oa11cd = lc.oa_code
 join oa_population op
 on op.oa = lc.oa_code
-group by l.id, distance order by l.id, distance) to 'data\libraries\libraries_distances.csv' delimiter ','csv header;
+group by l.id, distance order by l.id, distance) to '\data\libraries\libraries_distances.csv' delimiter ','csv header;
 
 -- distances with cross-authority catchments
 copy (select l.id, 
@@ -1298,7 +1329,7 @@ join oa_boundaries oab
 on oab.oa11cd = lc.oa_code
 join oa_population op
 on op.oa = lc.oa_code
-group by l.id, distance order by l.id, distance) to 'data\libraries\libraries_distances.csv' delimiter ','csv header;
+group by l.id, distance order by l.id, distance) to '\data\libraries\libraries_distances.csv' delimiter ','csv header;
 ```
 
 ## Export data on libraries.

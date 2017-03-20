@@ -26,7 +26,7 @@
     ///////////////////////////////////////////////////////////////////////////
     // Function: loadData
     // Input: months(number of months stories to load), auth (whether to load authorities
-    // data), authGeo (boolean whether to load geo auth data), libraries (whether to load
+    // data), authGeo (whether to load geo auth data), libraries (whether to load
     // libraries data), twitter (whether to load twitter data), callback (the callback 
     // function)
     // Output: None. Callback
@@ -90,6 +90,23 @@
         }).sort(function (a, b) { return moment(b[12]) - moment(a[12]) });
     },
     ///////////////////////////////////////////////////////////////////////////
+    // Function: getDistancesByLibrary
+    // Input: Library (Id)
+    // Output: Object of distances 
+    // Takes the library Id and returns and object of distances with each distance
+    // as key and the associated population e.g. { 0.7: 4000 }
+    ////////////////////////////////////////////////////////////////////////////
+    getDistancesByLibrary: function (library) {
+        var distances = {};
+        $.each(this.librariesDistances, function (i, d) {
+            if (d.id == library || !library) {
+                if (!distances[d.distance]) distances[d.distance] = 0;
+                distances[d.distance] = distances[d.distance] + parseInt(d.population);
+            }
+        });
+        return distances;
+    },
+    ///////////////////////////////////////////////////////////////////////////
     // Function: getDistancesByAuthority
     // Input: Authority (name)
     // Output: Object of distances.
@@ -109,35 +126,9 @@
         return distances;
     },
     ///////////////////////////////////////////////////////////////////////////
-    // Function: getDistancesByLibrary
-    // Input: Library (Id)
-    // Output: Object of distances 
-    // Takes the library Id and returns and object of distances with each distance
-    // as key and the associated population e.g. { 0.7: 4000 }
-    ////////////////////////////////////////////////////////////////////////////
-    getDistancesByLibrary: function (library) {
-        var distances = {};
-        $.each(this.librariesDistances, function (i, d) {
-            if (d.id == library || !library) {
-                if (!distances[d.distance]) distances[d.distance] = 0;
-                distances[d.distance] = distances[d.distance] + parseInt(d.population);
-            }
-        });
-        return distances;
-    },
-    ///////////////////////////////////////////////////////////////////////////
-    // Function: getDeprivationIndicesByLibrary
-    // Input: Authority (name), Library (Id) 
-    // Output: 
-    // 
-    ////////////////////////////////////////////////////////////////////////////
-    getDeprivationIndicesByLibrary: function (authority, library) {
-        return { multiple: 0, employment: 0, education: 0, adultskills: 0, health: 0, services: 0 };
-    },
-    ///////////////////////////////////////////////////////////////////////////
     // Function: getDeprivationIndicesByAuthorityAndLibType
     // Input: Authority (name e.g. Barnet), Library type (e.g. LAL)
-    // Output: 
+    // Output: An object 
     // 
     ////////////////////////////////////////////////////////////////////////////
     getDeprivationIndicesByAuthorityAndLibType: function (authority, libType) {
@@ -336,6 +327,30 @@
             if (i == authority || !authority) $.each(x.libraries, function (y, lib) { if (lib.type == type) count = count + 1; });
         });
         return count;
+    },
+    /////////////////////////////////////////////////////////////
+    // Function: getCountLibraryTypesByAuthority
+    // Input: authority (name)
+    // Output: Counts
+    // Returns count of the types of library.  For closed libraries
+    // the counts are merged to one single type.
+    /////////////////////////////////////////////////////////////
+    getCountLibraryTypesByAuthority: function (authority) {
+        var counts = {};
+        $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
+            if (i == authority || !authority) {
+                $.each(x.libraries, function (y, lib) {
+                    if (!counts[lib.type]) counts[lib.type] = 0;
+                    counts[lib.type]++;
+                });
+            }
+        });
+        if (counts.XL || counts.XLR || counts.XLT) counts['X'] = (counts.XL || 0) + (counts.XLR || 0) + (counts.XLT || 0);
+        delete counts.XL;
+        delete counts.XLT;
+        delete counts.XLR;
+        // We're going to merge together closed statuses
+        return counts;
     },
     /////////////////////////////////////////////////////////////
     // Function: getLibraryById

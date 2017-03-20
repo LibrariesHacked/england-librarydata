@@ -157,10 +157,10 @@
         var typeDonut = new Chart($('#divLibrariesDonutChart'), {
             data: {
                 datasets: [{
-                    data: [11, 16, 7, 3, 14, 11, 8],
-                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].colour; })
+                    data: [11, 16, 7, 3, 14],
+                    backgroundColor: $.map(Object.keys(config.libStyles), function (x, y) { if (x != 'XL' && x != 'XLR' && x != 'XLT') return config.libStyles[x].colour; })
                 }],
-                labels: $.map(Object.keys(config.libStyles), function (x, y) { return config.libStyles[x].type; })
+                labels: $.map(Object.keys(config.libStyles), function (x, y) { if (x != 'XL' && x != 'XLR' && x != 'XLT') return config.libStyles[x].type; })
             },
             type: "polarArea",
             options: {
@@ -174,11 +174,11 @@
             typeDonut.config.data.datasets[0].data = [];
             typeDonut.config.data.datasets[0].backgroundColor = [];
             typeDonut.config.data.labels = [];
-            $.each(Object.keys(config.libStyles), function (t, c) {
-                var count = LibrariesFuncs.getCountLibrariesByAuthorityType(libAuthority, c);
-                if (count > 0) typeDonut.config.data.datasets[0].data.push(count);
-                if (count > 0) typeDonut.config.data.datasets[0].backgroundColor.push(config.libStyles[c].colour);
-                if (count > 0) typeDonut.config.data.labels.push(config.libStyles[c].type);
+            var counts = LibrariesFuncs.getCountLibraryTypesByAuthority(libAuthority);
+            $.each(Object.keys(counts), function (t, c) {
+                typeDonut.config.data.datasets[0].data.push(counts[c]);
+                typeDonut.config.data.datasets[0].backgroundColor.push(config.libStyles[c].colour);
+                typeDonut.config.data.labels.push(config.libStyles[c].type);
             });
             var stats = LibrariesFuncs.getStatCountsByAuthority(libAuthority);
             // These stats shown at the authority selector.

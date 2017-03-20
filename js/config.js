@@ -11,7 +11,8 @@
         ICL: { type: 'independent', description: '', cssClass: 'gray-dark', colour: '#292b2c' },
         XLT: { type: 'temp closed', description: '', cssClass: 'warning', colour: '#f0ad4e' },
         XLR: { type: 'replaced', description: '', cssClass: 'muted', colour: '#636c72' },
-        XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#d9534f' }
+        XL: { type: 'closed', description: '', cssClass: 'danger', colour: '#d9534f' },
+        X: { type: 'closed', description: '', cssClass: 'danger', colour: '#d9534f' }
     },
     depStatStyles: {
         1: 'danger',
@@ -23,7 +24,7 @@
         7: 'gray-dark',
         8: 'gray-dark',
         9: 'gray-dark',
-        10: 'gray-dark',
+        10: 'gray-dark'
     },
     markerPoints: { radius: 3, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
     boundaryLines: {
@@ -32,7 +33,7 @@
         nonselected: { fillColor: "#ccc", color: "#ccc", weight: 1, opacity: 0.3, fillOpacity: 0.1 },
         // sentiment analysis
         le: { fillColor: "#DF382C", color: "#DF382C", weight: 2, opacity: 0.7, fillOpacity: 0.1 },
-        gl: { fillColor: "#772953", color: "#772953", weight: 2, opacity: 0.7, fillOpacity: 0.1 },
+        gl: { fillColor: "#772953", color: "#772953", weight: 2, opacity: 0.7, fillOpacity: 0.1 }
     },
     fillColours: {
         1: '#93C54B',

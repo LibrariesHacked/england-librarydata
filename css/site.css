@@ -11,6 +11,10 @@ nav {
     border-bottom: 1px solid rgba(0, 0, 0, .125);
 }
 
+    nav .container {
+        min-width: 150px;
+    }
+
 .card-title {
     font-weight: 700;
 }

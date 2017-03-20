@@ -1,4 +1,4 @@
-﻿# England Libraries Data - About.
+﻿# England Libraries Data.  About.
 
 Public library data is rich, varied, interesting, and there is a great demand for it.  But though there's more public open data than ever, data on libraries is rare and difficult to obtain.  Other than protecting personal information, all data related to libraries should be openly licensed, and freely available for anyone to use.  
 
