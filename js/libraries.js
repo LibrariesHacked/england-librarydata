@@ -44,7 +44,7 @@
         if (twitter) urls.push(['', '', 'authorities_twitter', this.authoritiesTwitterUrl]);
         if (twitter) urls.push(['', '', 'libraries_twitter', this.librariesTwitterUrl]);
 
-        for (x = 0; x <= months ; x++) {
+        for (x = 0; x <= months; x++) {
             // what's the date to go back to?
             var date = moment().subtract(x, 'months'), year = date.year(), month = date.month() + 1;
             for (type in this.stories) {
@@ -126,6 +126,37 @@
         return distances;
     },
     ///////////////////////////////////////////////////////////////////////////
+    // Function: getDeprivationIndicesByAuthority
+    // Input: Authority (name e.g. Barnet)
+    // Output: An object array of deprivation objects
+    ////////////////////////////////////////////////////////////////////////////
+    getDeprivationIndicesByAuthority: function (authority) {
+        var dep = {};
+        $.each(this.getAuthoritiesWithLibraries(), function (i, a) {
+            if (a.name == authority || !authority) {
+                $.each(a.libraries, function (y, l) {
+                    if (l.multiple) {
+                        if (l.type.indexOf('X') == 0) {
+                            if (!dep['X']) dep['X'] = { multiple: 0, count: 0 };
+                            dep['X'].multiple += parseFloat(l.multiple);
+                            dep['X'].count++;
+                        } else {
+                            if (!dep[l.type]) dep[l.type] = { multiple: 0, count: 0 };
+                            dep[l.type].multiple += parseFloat(l.multiple);
+                            dep[l.type].count++;
+                        }
+                    }
+                });
+            }
+        });
+        $.each(Object.keys(dep), function (i, k) {
+            $.each(Object.keys(dep[k]), function (j, b) {
+                if (b != 'count') dep[k][b] = Math.round(dep[k][b] / dep[k]['count']);
+            });
+        });        
+        return dep;
+    },
+    ///////////////////////////////////////////////////////////////////////////
     // Function: getDeprivationIndicesByAuthorityAndLibType
     // Input: Authority (name e.g. Barnet), Library type (e.g. LAL)
     // Output: An object 
@@ -140,11 +171,6 @@
                     if (l.type == libType) {
                         count++;
                         if (l.multiple) depIndices.multiple += parseFloat(l.multiple);
-                        //depIndices.employment += parseFloat(l.employment);
-                        //depIndices.education += parseFloat(l.education);
-                        //depIndices.adultskills += parseFloat(l.adultskills);
-                        //depIndices.health += parseFloat(l.health);
-                        //depIndices.services += parseFloat(l.services);
                     }
                 });
             }

@@ -42,6 +42,10 @@ small, .lead {
     display: none;
 }
 
+#divWrapperLibrariesStatsBarChart {
+    height: 250px;
+}
+
 .strong {
     font-weight: 700;
 }

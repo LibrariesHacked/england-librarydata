@@ -12,7 +12,6 @@
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/jquery-shorten-js/dist/css/shorten.min.css" rel="stylesheet" />
-    <link href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet" />
     <link href="bower_components/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
     <meta name="twitter:card" content="summary_large_image">
@@ -153,7 +152,7 @@
                         </div>
                         <p><small class="text-muted">lower (1-10) represents greater deprivation</small></p>
                     </div>
-                    <div class="card-block"><div><canvas id="divLibrariesStatsBarChart" height="250"></canvas></div></div>
+                    <div class="card-block"><div id="divWrapperLibrariesStatsBarChart"><canvas id="divLibrariesStatsBarChart"></canvas></div></div>
                 </div>
                 <!-- Widget 8: Find My Library -->
                 <div class="card mb-3">
@@ -172,22 +171,26 @@
                             </div>
                         </div>
                         <div class="form-group form-inline">
-                            <div class="checkbox abc-checkbox abc-checkbox-success checkbox-inline">
-                                <input class="chb-libtype form-check-input" type="checkbox" id="chbLAL" value="LAL" checked="checked">
-                                <label class="form-check-inline" for="chbLAL">local authority</label>
-                            </div>
-                            <div class="checkbox abc-checkbox abc-checkbox-info checkbox-inline">
-                                <input class="chb-libtype form-check-input" type="checkbox" id="chbCL" value="CL" checked="checked">
-                                <label class="form-check-inline" for="chbCL">commissioned</label>
-                            </div>
-                            <div class="checkbox abc-checkbox abc-checkbox-warning checkbox-inline">
-                                <input class="chb-libtype form-check-input" type="checkbox" id="chbCRL" value="CRL" checked="checked">
-                                <label class="form-check-inline" for="chbCRL">community</label>
-                            </div>
-                            <div class="checkbox abc-checkbox abc-checkbox-primary checkbox-inline">
-                                <input class="chb-libtype form-check-input" type="checkbox" id="chbICL" value="ICL" checked="checked">
-                                <label class="form-check-inline" for="chbICL">independent</label>
-                            </div>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input chb-libtype" id="chbLAL" value="LAL" checked="checked">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">authority</span>
+                            </label>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input chb-libtype" id="chbCL" value="CL" checked="checked">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">commissioned</span>
+                            </label>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input chb-libtype" id="chbCRL" value="CRL" checked="checked">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">community</span>
+                            </label>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input chb-libtype" id="chbICL" value="ICL" checked="checked">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">independent</span>
+                            </label>
                         </div>
                         <div id="divFmlContent">
                             <ul class="nav nav-tabs" role="tablist">
@@ -228,8 +231,9 @@
             <hr />
             <p>
                 <ul class="list-inline">
-                    <li class="list-inline-item"><a href="https://www.librarydata.uk" title="library data UK home page" target="_blank">librarydata.uk</a> <span class="text-muted">|</span></li>
-                    <li class="list-inline-item"><a href="https://books.librarydata.uk" title="library data books page" target="_blank">books</a></li>
+                    <li class="list-inline-item"><a href="https://www.librarydata.uk" title="library data UK home page" target="_blank">librarydata.uk</a>  <span class="text-muted">|</span></li>
+                    <li class="list-inline-item"><a href="https://books.librarydata.uk" title="library data books page" target="_blank">books</a>  <span class="text-muted">|</span></li> 
+                    <li class="list-inline-item"><a href="https://mobiles.librarydata.uk" title="mobile libraries page" target="_blank">mobiles</a></li>
                 </ul>
             </p>
             <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">github</a>.  part of <a href="https://www.librarydata.uk" title="library data UK home page" target="_blank">librarydata.uk</a>.</p>

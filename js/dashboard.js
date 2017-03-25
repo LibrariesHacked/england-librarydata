@@ -131,7 +131,7 @@
 
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append(
-                (library.address ? ('<small class="text-muted">catchment population and deprivation around ' + library.address + ' ' + library.postcode + '</small></p>') : '') +
+                (library.address ? ('<small class="text-muted">catchment around ' + library.address + ' ' + library.postcode + '</small></p>') : '') +
                 '<div class="row">' +
                 '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
                 '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
@@ -353,7 +353,7 @@
                     xAxes: [{ scaleLabel: { display: true, labelString: 'deprivation decile (1-10)' }, ticks: { beginAtZero: true } }],
                     yAxes: [{ scaleLabel: { display: true, labelString: 'library type' } }]
                 },
-                title: { display: true, text: 'multiple deprivation by library type' }
+                title: { display: true, text: 'multiple deprivation index by library type' }
             }
         });
         var updateLibTypeStatsBar = function (authority) {
@@ -374,18 +374,19 @@
             typeBar.config.data.datasets[0].data = [];
             typeBar.config.data.datasets[0].backgroundColor = [];
             typeBar.config.data.labels = [];
-            $.each(Object.keys(config.libStyles), function (i, x) {
-                var ind = LibrariesFuncs.getDeprivationIndicesByAuthorityAndLibType(authority, x);
-                if (ind.multiple.length > 0) {
-                    typeBar.config.data.labels.push(x);
-                    typeBar.config.data.datasets[0].data.push(ind.multiple);
-                    if (parseFloat(ind.multiple) < 4) {
-                        typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['XL'].colour);
-                    } else {
-                        typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['XLR'].colour);
-                    }
+            var height = 100;
+            var libDepIndices = LibrariesFuncs.getDeprivationIndicesByAuthority(authority);
+            $.each(Object.keys(libDepIndices), function (i, x) {
+                height = height + 30;
+                typeBar.config.data.labels.push(config.libStyles[x].type);
+                typeBar.config.data.datasets[0].data.push(libDepIndices[x].multiple);
+                if (parseFloat(libDepIndices[x].multiple) < 4) {
+                    typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['XL'].colour);
+                } else {
+                    typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['XLR'].colour);
                 }
             });
+            $('#divWrapperLibrariesStatsBarChart').css('height', height + 'px');
             typeBar.update();
         };
         // ONLOAD: First thing to do is update all widgets
@@ -414,7 +415,7 @@
                 stepsHtml += '. ';
             });
             $('#div' + type + 'Instructions').append('<p>' + stepsHtml + '</p>');
-            $('#div' + type + 'Instructions p small').shorten({ chars: 30 });
+            $('#div' + type + 'Instructions p').shorten({ chars: 30 });
         });
     };
 
