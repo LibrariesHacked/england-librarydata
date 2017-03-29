@@ -153,7 +153,7 @@
             $.each(Object.keys(dep[k]), function (j, b) {
                 if (b != 'count') dep[k][b] = Math.round(dep[k][b] / dep[k]['count']);
             });
-        });        
+        });
         return dep;
     },
     ///////////////////////////////////////////////////////////////////////////
@@ -224,6 +224,17 @@
         return datatable;
     },
     /////////////////////////////////////////////////////////////
+    // Function: getLibraryCatchment
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
+    getLibraryCatchment: function (id, callback) {
+        $.get('/data/libraries/catchments/library_id_' + id + '.geojson', function (lib_catchment) {
+            callback(lib_catchment);
+        });
+    },
+    /////////////////////////////////////////////////////////////
     // Function: getLibrariesDataTable
     // Input: 
     // Output: 
@@ -278,6 +289,43 @@
     /////////////////////////////////////////////////////////////
     getAuthorityListSorted: function () {
         return $.map(this.authorities, function (i, x) { return i.name }).sort();
+    },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthorityById
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
+    getAuthorityById: function (id) {
+        var auth = {};
+        $.each(this.authorities, function (i, a) {
+            if (a.authority_id == id) {
+                auth = a;
+                return true;
+            }
+        });
+        return auth;
+    },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthorityByIdWithLibrariesByType
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
+    getAuthorityByIdWithLibrariesByType: function (id) {
+        var auth = {};
+        $.each(this.authorities, function (i, a) {
+            if (a.authority_id == id) {
+                auth = a;
+                auth.libraries = {};
+                $.each(this.libraries, function (y, l) {
+                    if (l.authority_id == id && !auth.libraries[l.type]) auth.libraries[l.type] = [];
+                    if (l.authority_id == id) auth.libraries[l.type].push(l);
+                });
+                return true;
+            }
+        }.bind(this));
+        return auth;
     },
     /////////////////////////////////////////////////////////////
     // Function: getAuthorityByName
@@ -628,7 +676,7 @@
     getLatestLibraryTweet: function (lib) {
         var tweet = null;
         $.each(this.librariesTwitter, function (i, t) {
-            if (t[0].toLowerCase() == lib.toLowerCase()) tweet = t;
+            if (lib && t[0].toLowerCase() == lib.toLowerCase()) tweet = t;
         }.bind(this));
         return tweet;
     },

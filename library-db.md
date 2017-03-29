@@ -1159,14 +1159,92 @@ and li.statutory2010 = 'f';
 
 - Export library polygons for each catchment area.
 
-```
-select library_id, st_union(st_snaptogrid(oa.geom, 0.0001)) 
-from libraries_catchments lc join oa_boundaries oa on oa.oa11cd = lc.oa_code group by lc.library_id;
+The following query exports a single geojson file which contains polygons for each output area, with the library id and some associated population in the properties.
 
-select row_to_json(fc)
-from (select 'FeatureCollection' as type, array_to_json(array_agg(f)) as features
-	from (select 'Feature' as type, st_asgeojson(st_union(st_snaptogrid(oa.geom, 0.0001)))::json, row_to_json((select l from 
-	(select library_id) as l)) properties from libraries_catchments lc join oa_boundaries oa on oa.oa11cd = lc.oa_code group by lc.library_id) as f) as fc;
+```
+copy(select row_to_json(fc)
+from (select 'FeatureCollection' as type, array_to_json(array_agg(f)) as features from
+(select 'Feature' as type, st_asgeojson(st_snaptogrid(st_simplify(st_transform(oa.geom, 4326), 0.0001), 0.0001))::json as geometry, row_to_json(p) as properties 
+from (select op.oa, lc.library_id, op.all_ages,
+      op.age_0 + op.age_1 + op.age_2 + op.age_3 + op.age_4 + op.age_5 + op.age_6 + op.age_7 + op.age_8 +
+          op.age_9 + op.age_10 + op.age_11 + op.age_12 + op.age_13 + op.age_14 + op.age_15 as children,
+      op.age_16 + op.age_17 + op.age_18 + op.age_19 + op.age_20 + op.age_21 + op.age_22 + op.age_23 + op.age_24 +
+          op.age_25 + op.age_26 + op.age_27 + op.age_28 + op.age_29 + op.age_30 + op.age_31 + op.age_32 + op.age_33 + op.age_34 +
+          op.age_35 + op.age_36 + op.age_37 + op.age_38 + op.age_39 + op.age_40 + op.age_41 + op.age_42 + op.age_43 + op.age_44 +
+          op.age_45 + op.age_46 + op.age_47 + op.age_48 + op.age_49 + op.age_50 + op.age_51 + op.age_52 + op.age_53 + op.age_54 +
+          op.age_55 + op.age_56 + op.age_57 + op.age_58 + op.age_59 + op.age_60 + op.age_61 + op.age_62 + op.age_63 as working,
+      op.age_16 + op.age_17 + op.age_18 + op.age_19 + op.age_20 + op.age_21 + op.age_22 + op.age_23 + op.age_24 + 
+          op.age_25 + op.age_26 + op.age_27 + op.age_28 + op.age_29 + op.age_30 + op.age_31 + op.age_32 + op.age_33 + op.age_34 + 
+          op.age_35 + op.age_36 + op.age_37 + op.age_38 + op.age_39 + op.age_40 + op.age_41 + op.age_42 + op.age_43 + op.age_44 + 
+          op.age_45 + op.age_46 + op.age_47 + op.age_48 + op.age_49 + op.age_50 + op.age_51 + op.age_52 + op.age_53 + op.age_54 + 
+          op.age_55 + op.age_56 + op.age_57 + op.age_58 + op.age_59 as sxt_fynn,
+      op.age_60 + op.age_61 + op.age_62 + op.age_63 + op.age_64 + op.age_65 + op.age_66 + op.age_67 + op.age_68 + 
+          op.age_69 + op.age_70 + op.age_71 + op.age_72 + op.age_73 + op.age_74 + op.age_75 + op.age_76 + op.age_77 + op.age_78 + 
+          op.age_80 + op.age_81 + op.age_82 + op.age_83 + op.age_84 + op.age_85 + op.age_86 + op.age_87 + op.age_88 + op.age_89 + op.age_90 as ovr_sxty,
+      ld.imd_rank as imd_r,
+      ld.imd_decile as imd_r,
+      ld.income_rank as inc_r,
+      ld.income_decile as inc_d,
+      ld.employment_rank as emp_r,
+      ld.employment_decile as emp_d,
+      ld.education_rank as edu_r,
+      ld.education_decile as edu_d,
+      ld.health_rank as hth_r,
+      ld.health_decile as hth_d,
+      ld.crime_rank as crm_r,
+      ld.crime_decile as crm_d,
+      ld.housing_rank as hsg_r, 
+      ld.housing_decile as hsg_d,
+      ld.environment_rank as env_r,
+      ld.environment_decile as env_d,
+      ld.idaci_rank as idaci_r,
+      ld.idaci_decile as idaci_d,
+      ld.children_rank as chd_r,
+      ld.children_decile as chd_d,
+      ld.adultskills_rank as ads_r,
+      ld.adultskills_decile as ads_d,
+      ld.geographical_rank as geo_r,
+      ld.geographical_decile as geo_d,
+      ld.wider_rank as wdr_r,
+      ld.wider_decile as wdr_d,
+      ld.indoors_rank as ind_r,
+      ld.indoors_decile as ind_d,
+      ld.outdoors_rank as out_r,
+      ld.outdoors_decile as out_d      
+      from libraries_catchments lc
+      join oa_population op
+      on op.oa = lc.oa_code
+      join lsoa_oas loa
+      on loa.oa_code = op.oa
+      join lsoa_imd ld
+      on ld.lsoa_code = loa.lsoa_code
+     ) p
+ join oa_boundaries oa on p.oa = oa.oa11cd) as f) as fc) to '\data\libraries\libraries_catchments_geo.json';
+```
+
+- From there, split the file by library id using QGIS 'Split vector layer' batch functionality.  Output this to the librarycatchments directory in data/libraries/.  It creates a directory of shapefiles.
+
+- Convert the shapefiles using ogr2ogr from a command line (while in that directory).
+
+```
+for %f in (*.shp) do "C:\Program Files\QGIS 2.18\bin\ogr2ogr.exe" -f GeoJSON %f.geojson %f
+```
+
+- Delete all the unnecessary shapefiles.
+
+```
+del *.dbf
+del *.prj
+del *.qpj
+del *.shp
+del *.shx
+```
+
+- Rename the GeoJSON files using Powershell.
+
+```
+Dir | Rename-Item –NewName { $_.name –replace "libraries_catchments_geo.json_","" }
+Dir | Rename-Item –NewName { $_.name –replace ".shp","" }
 ```
 
 ## Distance analysis
@@ -1197,13 +1275,20 @@ insert into libraries_catchments_xauth
 select 
 (select l.id
 	from libraries l
+	join authorities a
+	on a.id = l.authority_id
+	join regions r
+	on r.code = a.code
 	where l.statutory2016 = 't'
 	and l.closed is null
+	and st_dwithin(r.geom, re.geom, 500)
 	order by l.geom <-> ST_Centroid(o.geom) limit 1) as library_id,
 o.oa11cd
 from oa_boundaries o
 join authorities_oas aos
-on aos.oa_code = o.oa11cd;
+on aos.oa_code = o.oa11cd
+join regions re
+on aos.code = re.code;
 ```
 
 - Add the catchment areas for current non-statutory libraries.

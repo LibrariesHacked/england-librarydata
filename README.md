@@ -123,3 +123,17 @@ Once the project is built it should be able to be hosted on any web hosting envi
 ## Licence
 
 Original code licensed under the [MIT Licence](LICENSE)
+
+## Data Licenses
+
+| Data | Description | Licence |
+| ---- | ----------- | ------- |
+| Core Basic Dataset |  | Open Government Licence |
+| Map tiles |  | &copy; Mapbox and &copy; Open Street Map contributor data. |
+| 
+- The Libraries Taskforce basic dataset is released under the Open Government Licence.
+- The maps are created using Mapbox tiles.  These are 
+- Authority boundary lines are taken from Ordnance Survey Open data, in particular, Boundary-line open.  
+- Population estimates are taken from the Office for National Statistics.
+- English Indices of Deprivation are taken from the ONS.
+- Public Libraries News data is taken from [PLN](http://www.publiclibrariesnews.com).

@@ -21,7 +21,7 @@ nav {
 
 .sidebar-header, .sidebar-tabs > li.active, .sidebar-tabs > ul > li.active {
     background-color: #F2F4F8;
-    color: #d9534f;
+    color: #292b2c;
     font-weight: 700;
 }
 
@@ -30,7 +30,7 @@ small, .lead {
 }
 
 #sidebar-maincontent, #sidebar-librarycontent, #sidebar-newscontent, #sidebar-locationcontent {
-    background-color: rgba(255, 255, 255, 0.85) !important;
+    background-color: rgba(255, 255, 255, 0.3) !important;
     margin-top: 10px;
 }
 
