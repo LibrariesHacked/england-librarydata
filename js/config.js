@@ -29,9 +29,9 @@
         7: 'muted',
         8: 'muted',
         9: 'muted',
-        10: 'gray-dark'
+        10: 'muted'
     },
-    markerPoints: { radius: 3, stroke: true, weight: 4, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
+    markerPoints: { radius: 4, stroke: true, weight: 3, fill: true, fillColor: '#ccc', fillOpacity: 0.5, color: '#ccc', opacity: 0.7 },
     boundaryLines: {
         normal: { fillColor: "#38B44A", color: "#808080", weight: 1, opacity: 0.6, fillOpacity: 0.1 },
         selected: { fillColor: "#EFB73E", color: "#808080", weight: 2, opacity: 0.8, fillOpacity: 0.1 },

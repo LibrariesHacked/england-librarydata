@@ -114,6 +114,17 @@
     };
 
     /////////////////////////////////////////////////////////
+    // Function: displayLibraryTweet
+    // 
+    /////////////////////////////////////////////////////////
+    var displayLibraryTweet = function (name) {
+        var tweet = LibrariesFuncs.getLatestLibraryTweet(library.name);
+        if (tweet) $('#sidebar-librarycontent').append('<div id="divTweet" class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
+        $('#divTweet a').addClass('alert-link');
+        $('#divTweet a').attr('target', '_blank');
+    };
+
+    /////////////////////////////////////////////////////////
     // Function: displayLibrary
     // 
     /////////////////////////////////////////////////////////
@@ -127,15 +138,12 @@
         $('#library .sidebar-title').text(library.name);
 
         // Display latest tweet
-        var tweet = LibrariesFuncs.getLatestLibraryTweet(library.name);
-        if (tweet) $('#sidebar-librarycontent').append('<div id="divTweet" class="alert alert-dismissible alert-info"><strong>' + tweet[12] + '</strong> ' + tweet[11] + '</div>');
-        $('#divTweet a').addClass('alert-link');
-        $('#divTweet a').attr('target', '_blank');
+        displayLibraryTweet(library.name);
 
         var libStyle = config.libStyles[library.type].cssClass;
 
         // Set up the library details such as closed/open year, type, and notes
-        var libType = (library.type ? ('<span class="strong text-' + libStyle + '">' + config.libStyles[library.type].type + '</span>') : '');
+        var libType = (library.type ? ('<span class="strong text-' + libStyle + '">' + config.libStyles[library.type].description + '</span>') : '');
         var replacement = (library.replacement && library.replacement == 't' ? ' <span class="strong text-muted">(replacement ' + library.opened_year + ')</span>' : '');
         var closed = (library.closed && library.closed_year ? (' <span class="strong text-danger">(' + library.closed_year) + ')</span>' : '');
         var notes = (library.notes ? '<p>' + library.notes + '</p>' : '');
@@ -159,7 +167,7 @@
 
         // Populate the deprivation details.
         $('#sidebar-librarycontent').append(
-            (library.address ? ('<hr/><small class="text-muted">catchment population and deprivation around ' + library.address + ' ' + library.postcode + '</small></p>') : '') +
+            (library.address ? ('<hr/><p><small class="text-muted">catchment population and deprivation around ' + library.address + ' ' + library.postcode + '</small></p>') : '') +
             '<div class="row">' +
             '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
             '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
@@ -176,7 +184,6 @@
             '<div class="col col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.services).toFixed(0)] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
             '</div>' +
             '<p><small class="text-muted">lower represents greater deprivation (1-10).</small></p>');
-
         sidebar.open('library');
         markerarray.bringToFront();
     };
@@ -199,9 +206,43 @@
             setMapStyles();
             map.on('moveend', displayLib);
             map.flyToBounds(catchmentarea.getBounds(), { paddingTopLeft: L.point(-200, 0) });
-
         });
+    };
 
+    /////////////////////////////////////////////////////////
+    // Function: displayOutputArea
+    // 
+    /////////////////////////////////////////////////////////
+    var displayOutputArea = function (feature) {
+        sidebar.close();
+        $('#sidebar-oacontent').empty();
+        $('#liOA').removeClass('disabled');
+
+        $('#oa .sidebar-title').text('Output area: ' + feature.properties.oa);
+
+        // Population details
+        $('#sidebar-oacontent').append(
+            '<div class="row">' +
+            '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the output area (mid-2015 estimate)"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.all_ages) + '</p></div>' +
+            '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(parseInt(feature.properties.sxt_fynn) + parseInt(feature.properties.ovr_sxty)) + '</p></div>' +
+            '<div class="col col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.children) + '</p></div>' +
+            '</div>');
+
+        // Deprivation details
+        $('#sidebar-oacontent').append(
+            '<p><small class="text-muted">deprivation within ' + feature.properties.oa + '</small></p>' +
+            '<div class="row">' +
+            '<div class="col col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.imd_r).toFixed(0)] + '">' + parseFloat(feature.properties.imd_r).toFixed(0) + '</p></div>' +
+            '<div class="col col-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.emp_d).toFixed(0)] + '">' + parseFloat(feature.properties.emp_d).toFixed(0) + '</p></div>' +
+            '<div class="col col-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.edu_d).toFixed(0)] + '">' + parseFloat(feature.properties.edu_d).toFixed(0) + '</p></div>' +
+            '</div>' +
+            '<div class="row">' +
+            '<div class="col col-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.ads_d).toFixed(0)] + '">' + parseFloat(feature.properties.ads_d).toFixed(0) + '</p></div>' +
+            '<div class="col col-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.hth_d).toFixed(0)] + '">' + parseFloat(feature.properties.hth_d).toFixed(0) + '</p></div>' +
+            '<div class="col col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.geo_d).toFixed(0)] + '">' + parseFloat(feature.properties.geo_d).toFixed(0) + '</p></div>' +
+            '</div>' +
+            '<p><small class="text-muted">lower represents greater deprivation (1-10).</small></p>');
+        sidebar.open('oa');
     };
 
     /////////////////////////////////////////////////////////
@@ -209,8 +250,7 @@
     // 
     /////////////////////////////////////////////////////////
     var clickOutputArea = function (e, feature, layer) {
-        $('#sidebar-oacontent').empty();
-
+        displayOutputArea(feature);
     };
 
     /////////////////////////////////////////////////////////
