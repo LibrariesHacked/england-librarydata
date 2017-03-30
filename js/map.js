@@ -58,7 +58,7 @@
                 var style = {};
                 style = config.oaLines.normal;
                 // Shade by deprivation index if under 5
-                style.fillOpacity = (1 - (feature.properties.imd_r / 10)) / 2;
+                style.fillOpacity = (1 - (feature.properties.imd_d / 10)) / 2;
                 return style;
             });
         }
@@ -222,7 +222,7 @@
 
         // Population details
         $('#sidebar-oacontent').append(
-            '<div class="row">' +
+            '<br/><div class="row">' +
             '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the output area (mid-2015 estimate)"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.all_ages) + '</p></div>' +
             '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(parseInt(feature.properties.sxt_fynn) + parseInt(feature.properties.ovr_sxty)) + '</p></div>' +
             '<div class="col col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.children) + '</p></div>' +
@@ -232,7 +232,7 @@
         $('#sidebar-oacontent').append(
             '<p><small class="text-muted">deprivation within ' + feature.properties.oa + '</small></p>' +
             '<div class="row">' +
-            '<div class="col col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.imd_r).toFixed(0)] + '">' + parseFloat(feature.properties.imd_r).toFixed(0) + '</p></div>' +
+            '<div class="col col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.imd_d).toFixed(0)] + '">' + parseFloat(feature.properties.imd_d).toFixed(0) + '</p></div>' +
             '<div class="col col-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.emp_d).toFixed(0)] + '">' + parseFloat(feature.properties.emp_d).toFixed(0) + '</p></div>' +
             '<div class="col col-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.edu_d).toFixed(0)] + '">' + parseFloat(feature.properties.edu_d).toFixed(0) + '</p></div>' +
             '</div>' +
@@ -314,8 +314,8 @@
         addLibrariesToMap(auth.libraries);
         $('#sidebar-newscontent').empty();
         $('#liNews').addClass('disabled');
-        // displayPLNStories('changes', feature.properties, 'changes');
-        // displayPLNStories('local', feature.properties, 'local news');
+        //displayPLNStories('changes', feature.properties, 'changes');
+        //displayPLNStories('local', feature.properties, 'local news');
         sidebar.open('authority');
         setMapStyles();
     };
@@ -370,7 +370,9 @@
                 selectedlibrary = '';
                 map.removeLayer(catchmentarea);
             }
-            $('#style-changer li a:first').trigger('click');
+            selectedauth = '';
+            maptype = '1';
+            setMapStyles();
         });
 
         /////////////////////////////////////////////////////////////
@@ -386,12 +388,10 @@
         /////////////////////////////////////////////////////////////
         // Event: Change map style
         /////////////////////////////////////////////////////////////
-        $('#style-changer li a').on('click', function (e) {
+        $('input[name=rdo-maptype]').change(function (e) {
             e.preventDefault();
-            $('#style-changer li a').removeClass('active');
             selectedauth = '';
-            $(e.target).addClass('active');
-            maptype = e.target.dataset.style;
+            maptype = e.target.id.replace('rdo-maptype-', '');
             setMapStyles();
         });
     });
