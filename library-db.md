@@ -2,6 +2,8 @@
 
 These are instructions to set up a spatial database using the Libraries Taskforce basic core dataset.
 
+This database is used to create a dashboard currently located at [https://england.librarydata.uk](https://england.librarydata.uk).
+
 ## Pre-requisites
 
 - A [PostgreSQL](https://www.postgresql.org/) database server.  These instructions completed with version 9.6.1.
@@ -425,9 +427,7 @@ copy lsoa_imd from '\data\ons\lsoa-imd.csv' delimiter ',' csv header;
 
 ##  Dataset: Libraries Taskforce source data
 
-- Get the libraries taskforce dataset from *wherever it ends up when and if it's published.*
-
-- Convert the Excel file.  The spreadsheet is distributed as an Excel file.  To convert that file open in Excel and save the rows to CSV (just the data, no headers or nothing).
+- Get the libraries taskforce dataset from [https://www.gov.uk/government/publications/public-libraries-in-england-basic-dataset](gov.uk).  A copy is also held in the **data/libraries** directory of this project.
 
 - Create a table to hold the data.
 
