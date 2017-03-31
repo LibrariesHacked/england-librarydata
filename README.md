@@ -8,7 +8,7 @@ The Libraries Taskforce have been working on an English libraries dataset to bri
 
 [Public Libraries News](http://www.publiclibrariesnews.com) is the UK leading source for libraries news.  This includes regular updates about changes, local news by authority, ideas, national news, and international news.
 
-This project aims at bringing these things together, along with latest tweets and lots of other data, into a larger set of visualisations.
+This project aims at bringing these things together, along with latest tweets and other data - into a larger set of visualisations.
 
 ## Supporting technology
 
@@ -34,7 +34,7 @@ On selecting a library service if there is a matching tweet from the twitter dat
 
 #### 3. Library details
 
-With no library service selected all libraries are listed to select.  If a particular service is selected then only the libraries for that service are shown.
+If no library service selected, all libraries in England are listed to select.  If a particular service is selected then only the libraries for that service are shown.
 
 On selecting a library, details displayed are:
 
@@ -42,25 +42,42 @@ On selecting a library, details displayed are:
 - library type
 - closed/replaced/new details (if applicable)
 - notes on the library
-- deprivation deciles for the area the library is located in.
+- deprivation deciles for the catchment area the library is located in.
 
-#### 3. Library distance stats
+### 4. Library counts and types
 
+If no library service is selected, this polar area chart shows the library types in England.  These are either:
 
+- Authority: A local authority library.  Shown in green.
+- Community: A community run library, with some support from the local authority.  Shown in dark blue.
+- Commissioned: A library not run by the local authority but commissioned by them.  Shown in light blue.
+- Independent: A library outside of local authority provision completely.  Shown in very dark grey.
+- Closed:  Either permanently or temporarily closed libraries.  Shown in red.
 
-#### 4. Find nearest library
+This card also shows the total number of libraries as at July 2016, with an indicator of the difference in number since April 2010.  In then does the same for libraries that are marked as part of statutory provision.
 
+If a library service is selected then all of the details are filtered to the libraries in that service.
 
-#### 5. Library types
+#### 5. Library distances
 
+The distance line graph is designed to show the distance (straight line - not route of travel) to the nearest library for members of the poulation.  The x axis plots the distance, starting at 0 and going to the furthest distance.  The y axis plots the number of people estimated to be that distance from a library.
+
+When no library service is selected this shows data for England.  When a library service is selected it 
+
+The data currently works within authority boundaries and does not take into account cross-authority boundary distance.  For example, an area of an authority may have the nearest library as one that is a different authority, this is not accounted for.
 
 #### 6. News and changes
 
+When a library service is selected the dashboard checks if there are associated Public Libraries News stories for that authority within the last 3 months, and shows them in this card if so.
 
-#### 7. Libraries on Twitter
+
+#### 7. Deprivation stats
 
 
-#### 8. Deprivation stats
+
+### 8.  Nearest.
+
+
 
 ### Map
 
