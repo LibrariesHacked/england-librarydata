@@ -48,7 +48,7 @@ The basic dataset is a first version.  Here are an initial set of commments on t
 | Postcode | Some of the postcodes for closed libraries are no longer valid (no longer exist).  This isn't really a problem with the return, as that's the accurate data, but in these cases I've replaced with the nearest current match.  This is so postcodes can be used to provide geo-coordinates.  In other cases postcodes are typed wrong and invalid.  Sometimes these are mistyped but are valid postcodes, which makes such mistakes difficult to track down. |
 | Included in statutory service on 1 April 2010 | The statutory service indicator is used variably by authorities.  Cornwall claim that statutory library provision has risen from 31 statutory libraries in 2010 to 48 in 2016.  This is due to the fact that they have marked 17 community 'micro' libraries are statutory.  These libraries offer around 200 books where customers self serve on an honesty basis.  This project overrrides the statutory indication to 'No' if the library is an independent community library. |
 | Included in statutory service on 1 July 2016 | Same issues as above |
-| Type of library on 1 July 2016  | Main definitions were LAL (local authority), CL (commissioned), CRL (community run), ICL (independed).  The data also include LAL- (book drops), CRL+ (trumped-up community run), and ICL+ (trumped-up independent).  Have removed LAL- entries and changed the CRL+/ICL+ to CRL/ICL. |
+| Type of library on 1 July 2016  | Main definitions were LAL (local authority), CL (commissioned), CRL (community run), ICL (independed).  The data also include LAL- (mainly book drops), CRL+ (trumped-up community run), and ICL+ (trumped-up independent).  Have removed LAL- entries as in many cases they were even explicitly marked as non-librariers.  Changed the CRL+/ICL+ to CRL/ICL, as these don't seem to provide a too meaningful addition. |
 | Closed library | Indicator if the library is closed.  XL: closed library, XLR: Closed and replaced, XLT: Temporarily closed. |
 | Year of closure | There's little room for ambiguity in a year of closure, but the library services manage a lot of variation.  'Dec-12', 'Sept 2012', '2012', and more.  The month could be useful, but without a defined structure it makes it more difficult to use this field.  Would suggest going either for just year, or a full date. |
 | New building since 1 April 2010: insert year of opening | Same issues as above. |
@@ -68,7 +68,3 @@ And fields that could potentially be added:
 | Latitude/Northing | From the UPRN, the Y co-ordinate of the library. |
 | UPRN address | From the UPRN, the full postal address for the library. |
 | UPRN postcode | From the UPRN, the postcode for the library. | 
-
-## Other library open data
-
-For a great introduction to libraries open data please do look at [Newcastle Libraries open data](https://www.newcastle.gov.uk/your-council-and-democracy/open-data-and-access-information/open-data/data-sets/libraries-data-sets) and hack events.

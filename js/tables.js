@@ -14,27 +14,27 @@
                 deferRender: true,
                 data: LibrariesFuncs.getAuthoritiesDataTable(),
                 columns: [
-                    { title: "name" },
-                    { title: "libraries" },
-                    { title: "authority" },
-                    { title: "commissioned" },
-                    { title: "community" },
-                    { title: "independent" },
+                    { title: "Name" },
+                    { title: "Libraries" },
+                    { title: "Authority" },
+                    { title: "Commissioned" },
+                    { title: "Community" },
+                    { title: "Independent" },
                     {
-                        title: "closed",
+                        title: "Closed",
                         render: function (data, type, row) {
                             return '<span class="text-danger strong">' + data + '</span>';
                         }
                     },
-                    { title: "new" },
+                    { title: "New" },
                     {
-                        title: "population",
+                        title: "Population",
                         render: function (data, type, row) {
                             return LibrariesFuncs.getNumFormat(parseInt(data));
                         }
                     },
                     {
-                        title: "area",
+                        title: "Area",
                         render: function (data, type, row) {
                             return LibrariesFuncs.getNumFormat(parseInt(data)) + ' ha';
                         }
@@ -54,48 +54,48 @@
                 deferRender: true,
                 data: LibrariesFuncs.getLibrariesDataTable(),
                 columns: [
-                    { title: "name" },
-                    { title: "postcode" },
-                    { title: "type" },
+                    { title: "Name" },
+                    { title: "Postcode" },
+                    { title: "Type" },
                     {
-                        title: "closed",
+                        title: "Closed",
                         render: function (data, type, row) {
                             return '<span class="text-danger">' + data + '</span>';
                         }
                     },
-                    { title: "notes" },
+                    { title: "Notes" },
                     {
-                        title: "multiple",
+                        title: "Multiple",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "employment",
+                        title: "Employment",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "education",
+                        title: "Education",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "adult skills",
+                        title: "Adult Skills",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "health",
+                        title: "Health",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "services",
+                        title: "Services <span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }

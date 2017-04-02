@@ -63,6 +63,10 @@
                             <div id="divNumLibs" class="stats col-4"><small class="text-muted">libraries&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries open in 2016, of all types"></a></small><p class="lead text-gray-dark"></p></div>
                             <div id="divLibsPerPopulation" class="stats col-4"><small class="text-muted">per library&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the average number of people per library"></a></small><p class="lead text-gray-dark"></p></div>
                         </div>
+                        <div class="div-loading">
+                            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
                 <!-- Widget 2: Tweets -->
@@ -105,6 +109,10 @@
                         <div>
                             <canvas id="divLibrariesDonutChart" height="250"></canvas>
                         </div>
+                        <div class="div-loading">
+                            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
                 <!-- Widget 5: Libraries distance stats -->
@@ -122,6 +130,10 @@
                     </div>
                     <div class="card-block">
                         <div><canvas id="divLibrariesDistancesLineChart" height="250"></canvas></div>
+                        <div class="div-loading">
+                            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -149,7 +161,13 @@
                         </div>
                         <p><small class="text-muted">lower (1-10) represents greater deprivation</small></p>
                     </div>
-                    <div class="card-block"><div id="divWrapperLibrariesStatsBarChart"><canvas id="divLibrariesStatsBarChart"></canvas></div></div>
+                    <div class="card-block">
+                        <div id="divWrapperLibrariesStatsBarChart"><canvas id="divLibrariesStatsBarChart"></canvas></div>
+                        <div class="div-loading">
+                            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
                 </div>
                 <!-- Widget 8: Find My Library -->
                 <div class="card mb-3">
@@ -233,7 +251,7 @@
                     <li class="list-inline-item"><a href="https://mobiles.librarydata.uk" title="mobile libraries page" target="_blank">mobiles</a></li>
                 </ul>
             </p>
-            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">github</a>.  part of <a href="https://www.librarydata.uk" title="library data UK home page" target="_blank">librarydata.uk</a>.</p>
+            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">github</a>.</p>
         </footer>
     </div>
     <!-- Framework plugins -->

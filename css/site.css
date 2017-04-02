@@ -287,3 +287,8 @@ table.dataTable  {
 .navbar-brand {
     align-self: flex-start;
 }
+
+.div-loading {
+    align-content:center;
+    text-align: center;
+}
