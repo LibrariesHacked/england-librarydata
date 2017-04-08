@@ -7,7 +7,11 @@ This database is used to create a dashboard currently located at [https://englan
 ## Pre-requisites
 
 - A [PostgreSQL](https://www.postgresql.org/) database server.  These instructions completed with version 9.6.1.
-- A [PostGIS](http://postgis.net/install/) database server (extensions for PostgreSQL).  These instructions completed with version 2.3.2.
+- The [PostGIS](http://postgis.net/install/) database server extensions for PostgreSQL.  These instructions completed with version 2.3.2.
+
+## Script
+
+A script has been created to run through all these tasks one by though, though they are all detailed below.  
 
 ## Database setup
 
@@ -715,6 +719,9 @@ update libraries_raw set postcode = 'HU18 1PA' where postcode = 'HU 18 1PA';
 update libraries_raw set postcode = 'NE3234AU' where postcode = 'NE32 34AU';
 update libraries_raw set postcode = 'TA21 8AQ' where postcode = 'TA21  8AQ';
 
+-- there is an invalid library - Leicester Forest East in Leicestershire and Leicester City
+delete from libraries_raw where name = 'Forest East Community Library' and authority = 'Leicester City'
+
 -- table: libraries.  populate the library data.
 insert into libraries(
 	name, authority_id, address, postcode, easting, northing, type, closed, closed_year, statutory2010, 
@@ -742,12 +749,12 @@ There are some decisions to be made about cleaning up the data.  For library typ
 | Library type | Count | Description |
 | ------------ | ----- | ----------- |
 | | 1 | No library type and no closed status.  Marked as unofficial book drop.  Delete. |
-| | 235 | No library type, but they are all closed libraries.  Leave as is. |
-| ICL+ | 8 | Seem to be the same as ICL.  Will convert these to ICL.  |
+| | 235 | No library type, but they are all closed libraries.  It's a shame that we don't have the library type for closed libraries but leave as is. |
+| ICL+ | 8 | Seem to be the same as ICL, aside from having paid staff.  Will convert these to ICL.  |
 | LAL | 2247 | Library building funded, run and managed by local authority staff.  Leave as is. |
 | CRL | 279 | Libraries operating now as a library with some level of ongoing support from a local authority.  Leave as is. |
 | CL | 406 | Libraries commissioned and funded by a local authority.  Leave as is. |
-| ICL | 34 | Libraries transferred to the management of a non local authority body, either community group or third party, which is OUTSIDE THE LOCAL AUTHORITY NETWORK.  Leave as is. |
+| ICL | 34 | Libraries transferred to the management of a non local authority body, either community group or third party, which is outside the local authority network.  Leave as is. |
 | LAL- | 30 | These appear to be book drops and other non-libraries.  Will remove these. |
 | CRL+ | 29 | Seem to be the same as CRL.  Will convert to CRL. |
 

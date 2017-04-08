@@ -395,4 +395,12 @@
             setMapStyles();
         });
     });
+
+    /////////////////////////////////////////////////////////
+    // Tooltips
+    /////////////////////////////////////////////////////////
+    var updateTooltips = function () {
+        $('[data-toggle="tooltip"]').on('click', function (e) { e.preventDefault(); }).tooltip();
+    };
+    updateTooltips();
 });

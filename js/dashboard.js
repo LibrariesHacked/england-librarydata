@@ -39,7 +39,7 @@
             if (auth.val()) skipTwitterToAuthority(auth.val());
 
             // Sentiment analysis
-            (auth.text().indexOf('tersh') != -1 && (auth.text().indexOf('le') != -1 || auth.text().indexOf('gl') != -1) ? $('#divBetaAlert').removeClass('alert-warning').addClass('alert-danger') : $('#divBetaAlert').removeClass('alert-danger').addClass('alert-warning'));
+            (auth.text().indexOf('tersh') != -1 && (auth.text().indexOf('Le') != -1 || auth.text().indexOf('Gl') != -1) ? $('#divBetaAlert').removeClass('alert-warning').addClass('alert-danger') : $('#divBetaAlert').removeClass('alert-danger').addClass('alert-warning'));
         };
 
         // EVENT: Change authority
@@ -53,11 +53,11 @@
             if (tweets && tweets[index]) {
                 var tweet = tweets[index];
                 var tw = '<div class="row">' +
-                    '<div class="stats col-4"><small class="text-muted">tweets</small><p class="lead"><strong>' + LibrariesFuncs.getNumFormat(tweet.tweets) + '</strong></p></div>' +
-                    '<div class="stats col-4"><small class="text-muted">followers</small><p class="lead"><strong>' + LibrariesFuncs.getNumFormat(tweet.followers) + '</strong></p></div>' +
-                    '<div class="stats col-4"><small class="text-muted">following</small><p class="lead"><strong>' + LibrariesFuncs.getNumFormat(tweet.following) + '</strong></p></div>' +
+                    '<div class="stats col-4"><small class="text-muted">tweets</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.tweets) + '</p></div>' +
+                    '<div class="stats col-4"><small class="text-muted">followers</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.followers) + '</p></div>' +
+                    '<div class="stats col-4"><small class="text-muted">following</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.following) + '</p></div>' +
                     '</div>' +
-                    '<p><a title="' + tweet.name + ' on twitter - ' + tweet.description + '" href="https://twitter.com/' + tweet.account + '">' + tweet.name + '</a> ' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</p>' +
+                    '<p><a title="' + tweet.name + ' on twitter - ' + tweet.description + '" href="https://twitter.com/' + tweet.account + '">' + tweet.name + '</a> tweeted ' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</p>' +
                     '<p>' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>';
                 $('#divTweet').append(tw);
                 $('#divTweet a').addClass('alert-link');
@@ -132,11 +132,11 @@
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append(
                 '<div class="row">' +
-                '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
-                '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
-                '<div class="col col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(library.dependent_children) + '</p></div>' +
+                '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
+                '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
+                '<div class="col col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(library.dependent_children) + '</p></div>' +
                 '</div>' +
-                (library.address ? ('<small class="text-muted">' + library.address + ' catchment.  lower represents greater deprivation (1-10).</small></p>') : '') +
+                '<small class="text-muted">catchment area profile.  lower represents greater deprivation (1-10).</small></p>' +
                 '<div class="row">' +
                 '<div class="col col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.multiple).toFixed(0)] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
                 '<div class="col col-4"><small class="text-muted">work&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.employment).toFixed(0)] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
@@ -259,7 +259,7 @@
                 var distances = LibrariesFuncs.getDistancesByLibrary(library);
                 var lib = LibrariesFuncs.getLibraryById(library);
                 $('#spDistanceTitle').text(lib.name + ' catchment');
-                $('#hLibDistanceSubtitle').text('distance to ' + lib.name + ' for population within catchment area');
+                $('#hLibDistanceSubtitle').text('distance to ' + lib.name + ' library for population within the catchment area');
             } else {
                 var distances = LibrariesFuncs.getDistancesByAuthority(authority);
                 $('#hLibDistanceSubtitle').text('distance for population to the nearest statutory library');
@@ -299,7 +299,7 @@
             $('#pCntCurrent').text((index + 1));
             $('#pNewsStory').shorten('destroy');
             $('#pNewsStory').html(authSt[index].text.replace(auth + ' – ', ''));
-            $('#aPlnLink').html(moment(authSt[index].date).fromNow());
+            $('#sp-news-date').text(moment(authSt[index].date).fromNow());
             $('#aPlnLink').attr('href', 'http://www.publiclibrariesnews.com/' + authSt[index].url);
             $('#pNewsStory').shorten();
         };
@@ -317,11 +317,11 @@
             $('#divNews').empty();
             if (it) {
                 var li = '<div class="row">' +
-                    '<div class="col col-4"><small class="text-muted">stories&nbsp;</small><p class="lead" id="pCntStories"><strong>' + $.map(it.stories, function (x, i) { if (x.type == 'local') return 1; }).length + '</strong></p></div>' +
-                    '<div class="col col-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges"><strong>' + $.map(it.stories, function (x, i) { if (x.type == 'changes') return 1; }).length + '</strong></p></div>' +
-                    '<div class="col col-4"><small class="text-muted">viewing&nbsp;</small><p class="lead" id="pCntCurrent"><strong>1</strong></p></div>' +
+                    '<div class="col col-4"><small class="text-muted">stories&nbsp;</small><p class="lead" id="pCntStories">' + $.map(it.stories, function (x, i) { if (x.type == 'local') return 1; }).length + '</p></div>' +
+                    '<div class="col col-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges">' + $.map(it.stories, function (x, i) { if (x.type == 'changes') return 1; }).length + '</p></div>' +
+                    '<div class="col col-4"><small class="text-muted">viewing&nbsp;</small><p class="lead" id="pCntCurrent">1</p></div>' +
                     '</div>' +
-                    '<p><a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">Public Libraries News</a> ' + moment(it.stories[0].date).fromNow() + '</p>' +
+                    '<p><a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">Public Libraries News</a> <span id="sp-news-date">' + moment(it.stories[0].date).fromNow() + '</span></p>' +
                     '<p id="pNewsStory">' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
                     (it.stories.length > 1 ? '<p><a data-auth="' + storiesOrdered[index] + '" data-current="0" class="alert-link" id="Location' + index + '" href="#">next story &raquo;</a>&nbsp;</p>' : '');
                 $('#divNews').append(li);
@@ -376,13 +376,13 @@
             var height = 100;
             var libDepIndices = LibrariesFuncs.getDeprivationIndicesByAuthority(authority);
             $.each(Object.keys(libDepIndices), function (i, x) {
-                height = height + 30;
+                height = height + 25;
                 typeBar.config.data.labels.push(config.libStyles[x].type);
                 typeBar.config.data.datasets[0].data.push(libDepIndices[x].multiple);
                 if (parseFloat(libDepIndices[x].multiple) < 4) {
                     typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['XL'].colour);
                 } else {
-                    typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['XLR'].colour);
+                    typeBar.config.data.datasets[0].backgroundColor.push(config.libStyles['CRL'].colour);
                 }
             });
             $('#divWrapperLibrariesStatsBarChart').css('height', height + 'px');
