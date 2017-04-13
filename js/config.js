@@ -41,7 +41,7 @@
         gl: { fillColor: "#772953", color: "#772953", weight: 2, opacity: 0.7, fillOpacity: 0.1 }
     },
     oaLines: {
-        normal: { fillColor: "#d9534f", color: "#d9534f", weight: 2, opacity: 0.3, fillOpacity: 0 }
+        normal: { fillColor: "#d9534f", color: "#d9534f", weight: 2, opacity: 0.6, fillOpacity: 0 }
     },
     libCircle: { radius: 5, stroke: true, weight: 2, color: '#ffffff', fill: true, fillColor: '#ccc', opacity: 1, fillOpacity: 1 },
     fillColours: {

@@ -34,7 +34,7 @@
     // relevant page maing use of this functionality.
     ////////////////////////////////////////////////////////////////////////////
     loadData: function (months, auth, authGeo, libraries, twitter, callback) {
-        var urls = [];
+        var urls = [], requests = [];
         if (months > 0) urls.push(['', '', 'locations', this.librariesNewsLocationsUrl]);
         if (auth) urls.push(['', '', 'authorities', this.authoritiesUrl]);
         if (auth) urls.push(['', '', 'authorities_distances', this.authoritiesDistancesUrl]);
@@ -43,9 +43,7 @@
         if (libraries) urls.push(['', '', 'libraries_distances', this.librariesDistancesUrl]);
         if (twitter) urls.push(['', '', 'authorities_twitter', this.authoritiesTwitterUrl]);
         if (twitter) urls.push(['', '', 'libraries_twitter', this.librariesTwitterUrl]);
-
         for (x = 0; x <= months; x++) {
-            // what's the date to go back to?
             var date = moment().subtract(x, 'months'), year = date.year(), month = date.month() + 1;
             for (type in this.stories) {
                 if (!this.stories[type][year]) this.stories[type][year] = {};
@@ -53,8 +51,6 @@
                 urls.push([month, year, type, this.librariesNewsDataUrl.replace('YY', year).replace('M', month).replace('TYPE', type)]);
             }
         }
-
-        var requests = [];
         var getUrlFailSafe = function (url) {
             var dfd = jQuery.Deferred();
             $.ajax(url).always(function (res) { dfd.resolve(res); });
@@ -129,6 +125,7 @@
     // Function: getDeprivationIndicesByAuthority
     // Input: Authority (name e.g. Barnet)
     // Output: An object array of deprivation objects
+    // Returns an object array for average deprivation of authorities
     ////////////////////////////////////////////////////////////////////////////
     getDeprivationIndicesByAuthority: function (authority) {
         var dep = {};
@@ -150,9 +147,7 @@
             }
         });
         $.each(Object.keys(dep), function (i, k) {
-            $.each(Object.keys(dep[k]), function (j, b) {
-                if (b != 'count') dep[k][b] = Math.round(dep[k][b] / dep[k]['count']);
-            });
+            $.each(Object.keys(dep[k]), function (j, b) { if (b != 'count') dep[k][b] = Math.round(dep[k][b] / dep[k]['count']); });
         });
         return dep;
     },
@@ -186,7 +181,7 @@
     getDeprivationIndicesAveragesByAuthority: function (authority) {
         var depIndices = { multiple: 0, employment: 0, education: 0, adultskills: 0, health: 0, services: 0 };
         var count = 0;
-        $.each(this.getAuthorities(), function (i, a) {
+        $.each(this.authorities, function (i, a) {
             if (a.name && (a.name == authority || !authority)) {
                 count++;
                 depIndices.multiple += parseFloat(a.multiple);
@@ -200,6 +195,9 @@
         $.each(Object.keys(depIndices), function (i, k) { depIndices[k] = (depIndices[k] / count).toFixed(0); });
         return depIndices;
     },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: DataTables
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
     // Function: getAuthoritiesDataTable
     // Input: None
@@ -209,30 +207,19 @@
         var datatable = [];
         $.each(this.getAuthoritiesWithLibraries(), function (i, x) {
             datatable.push([
-                x.name, // Name
-                $.map(x.libraries, function (l, y) { if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') return l.name }).length, // Libraries
-                $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length, // Local authority
-                $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length, // Commissioned
-                $.map(x.libraries, function (l, y) { if (l.type == 'CRL') return l.name }).length, // Community
-                $.map(x.libraries, function (l, y) { if (l.type == 'ICL') return l.name }).length, // Independent community
+                x.name,
+                $.map(x.libraries, function (l, y) { if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') return l.name }).length,
+                $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length,
+                $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length,
+                $.map(x.libraries, function (l, y) { if (l.type == 'CRL') return l.name }).length,
+                $.map(x.libraries, function (l, y) { if (l.type == 'ICL') return l.name }).length,
                 $.map(x.libraries, function (l, y) { if (l.type == 'XL' || l.type == 'XLR' || l.type == 'XLT') return l.name }).length,
-                $.map(x.libraries, function (l, y) { if (l.opened_year != '') return l.name }).length,// Opened
-                x.population, // Population
-                x.hectares // Area
+                $.map(x.libraries, function (l, y) { if (l.opened_year != '') return l.name }).length,
+                x.population,
+                x.hectares
             ]);
         });
         return datatable;
-    },
-    /////////////////////////////////////////////////////////////
-    // Function: getLibraryCatchment
-    // Input: 
-    // Output: 
-    // 
-    /////////////////////////////////////////////////////////////
-    getLibraryCatchment: function (id, callback) {
-        $.get('/data/libraries/catchments/library_id_' + id + '.geojson', function (lib_catchment) {
-            callback(lib_catchment);
-        });
     },
     /////////////////////////////////////////////////////////////
     // Function: getLibrariesDataTable
@@ -245,19 +232,7 @@
         var authorities = this.getLibrariesByAuthority();
         $.each(authorities, function (i, a) {
             $.each(a, function (y, l) {
-                datatable.push([
-                    l.name, // Name
-                    l.postcode,
-                    l.type,
-                    l.closed_year,
-                    l.notes,
-                    l.multiple,
-                    l.employment,
-                    l.education,
-                    l.adultskills,
-                    l.health,
-                    l.services
-                ]);
+                datatable.push([l.name, l.postcode, l.type, l.closed_year, l.notes, l.multiple, l.employment, l.education, l.adultskills, l.health, l.services]);
             });
         });
         return datatable;
@@ -271,14 +246,7 @@
     getNewsDataTable: function (type) {
         var datatable = [];
         $.each(this.getStoriesGroupedByLocation(type), function (i, a) {
-            $.each(a.stories, function (y, c) {
-                datatable.push([
-                    i,
-                    c.date,
-                    c.text,
-                    c.url
-                ]);
-            });
+            $.each(a.stories, function (y, c) { datatable.push([i, c.date, c.text, c.url]); });
         });
         return datatable;
     },
@@ -469,13 +437,30 @@
         });
     },
     /////////////////////////////////////////////////////////////
-    // Function: getAuthorities
+    // Function: getAuthoritiesListedById
     // Input: None
     // Output: 
     // 
     /////////////////////////////////////////////////////////////
-    getAuthorities: function () {
-        return this.authorities;
+    getAuthoritiesListedById: function () {
+        var authorities = {};
+        $.each(this.authorities, function (i, a) {
+            authorities[a.authority_id] = a;
+        });
+        return authorities;
+    },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthoritiesListedByName
+    // Input: None
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
+    getAuthoritiesListedByName: function () {
+        var authorities = {};
+        $.each(this.authorities, function (i, a) {
+            authorities[a.name] = a;
+        });
+        return authorities;
     },
     /////////////////////////////////////////////////////////////
     // Function: getAuthoritiesWithStories
@@ -510,6 +495,9 @@
         }.bind(this));
         return authorities;
     },
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: Authority Geo Data
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
     // Function: getAuthGeoWithStories
     // Input: 
@@ -541,13 +529,15 @@
     // 
     /////////////////////////////////////////////////////////////
     getAuthGeoWithStoriesAndLibraries: function () {
-        var authGeoData = this.getAuthGeoWithStories();
-        var libs = this.getLibrariesByAuthority();
         var auth = {};
+        var libs = this.getLibrariesByAuthority();
+        var auths = this.getAuthoritiesListedById();
+        var authGeoData = this.getAuthGeoWithStories();
         $.each(authGeoData.features, function (x, y) {
-            var nonClosedCount = 0;
             var closedCount = 0;
+            var nonClosedCount = 0;
             var localAuthorityCount = 0;
+            var authData = auths[authGeoData.features[x].properties.authority_id];
             authGeoData.features[x].properties.libraries = {};
             $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
                 if (!authGeoData.features[x].properties.libraries[l.type] && l.type != '') authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
@@ -556,12 +546,12 @@
                 if (l.type == 'XL' || l.type == 'XLR' || l.type == 'XLT') closedCount = closedCount + 1;
                 if (l.type == 'LAL') localAuthorityCount = localAuthorityCount + 1;
             });
+            auth[authGeoData.features[x].properties.name] = { idx: x };
             authGeoData.features[x].properties['libraryCount'] = nonClosedCount;
-            authGeoData.features[x].properties['libraryCountPerPopulation'] = nonClosedCount / authGeoData.features[x].properties.population;
-            authGeoData.features[x].properties['libraryCountPerArea'] = nonClosedCount / authGeoData.features[x].properties.hectares;
             authGeoData.features[x].properties['closedLibraryCount'] = closedCount;
             authGeoData.features[x].properties['lalLibraryCount'] = localAuthorityCount;
-            auth[authGeoData.features[x].properties.name] = { idx: x };
+            authGeoData.features[x].properties['libraryCountPerArea'] = nonClosedCount / authData.hectares;
+            authGeoData.features[x].properties['libraryCountPerPopulation'] = nonClosedCount / authData.population;
         }.bind(this));
         var librariesSorted = Object.keys(auth).sort(function (a, b) {
             return authGeoData.features[auth[a].idx].properties.libraryCount - authGeoData.features[auth[b].idx].properties.libraryCount;
@@ -618,6 +608,9 @@
         }.bind(this));
         return libArray;
     },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: Address Lookup
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
     // Function: getAddressCoordinates
     // Input: 
@@ -636,6 +629,9 @@
             }
         });
     },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: Routing
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
     // Function: getRouteToLibrary
     // Input: 
@@ -654,6 +650,9 @@
             }
         });
     },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: Twitter Data
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
     // Function: getLatestAuthorityTweet
     // Input: 
@@ -680,6 +679,9 @@
         }.bind(this));
         return tweet;
     },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: Public Libraries News
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
     // Function: getAllStoriesGroupedByLocation
     // Input: 
@@ -767,16 +769,40 @@
         });
         return data;
     },
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: Library catchments
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    // Function: getLibraryCatchment
+    // Input: library id
+    // Output: Callback(catchment geojson)
+    // Runs asynchronousley, returns library catchments
+    /////////////////////////////////////////////////////////////
+    getLibraryCatchment: function (id, callback) {
+        $.get('/data/libraries/catchments/library_id_' + id + '.geojson', function (lib_catchment) { callback(lib_catchment); });
+    },
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Functions: Supporting helpers
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
     // Function: getNumFormat
     // Input: Number
     // Output: String (formatted number).
-    // 
+    // Formats a number into a concide readable format (e.g. 1.1K)
     /////////////////////////////////////////////////////////////
     getNumFormat: function (num) {
         if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
         if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
         if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
         return num ? parseInt(num).toFixed(0) : null;
+    },
+    // Function: hexToRgb
+    // Input: 
+    // Output:
+    // 
+    /////////////////////////////////////////////////////////////
+    hexToRgb: function (hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
     }
 };

@@ -8,6 +8,7 @@
     var maptype = 1, selectedauth = '', selectedlibrary = '', legend = null, catchmentarea = null, authboundaries = null;
     L.tileLayer(config.mapTilesLight, { attribution: config.mapAttribution }).addTo(map);
     var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
+    var mapstyles = ['pcLibraries', 'pcLibrariesPerPopulation', 'pcLibrariesPerArea', 'pcLalLibraries', 'pcClosedLibraries', 'pcLocalNews', 'pcChanges'];
 
     /////////////////////////////////////////////////////////
     // Helper Functions
@@ -16,13 +17,6 @@
     // Function: reverse
     // Additional reverse function for arrays
     jQuery.fn.reverse = [].reverse;
-
-    // Function: hexToRgb
-    // Converts a hex colour (e.g. 6699FF) to an RGB object.
-    var hexToRgb = function (hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
-    };
 
     ///////////////////////////////////////////////////////////////////////////////
     // Function: setMapStyles
@@ -47,7 +41,6 @@
 
             // In these cases an authority is not selected so we have the shaded view
             style.fillColor = config.fillColours[maptype];
-            var mapstyles = ['pcLibraries', 'pcLibrariesPerPopulation', 'pcLibrariesPerArea', 'pcLalLibraries', 'pcClosedLibraries', 'pcLocalNews', 'pcChanges'];
             style.fillOpacity = feature.properties[mapstyles[maptype - 1]].toFixed(1);
             return style;
         });
@@ -57,27 +50,37 @@
             catchmentarea.setStyle(function (feature) {
                 var style = {};
                 style = config.oaLines.normal;
-                // Shade by deprivation index if under 5
-                style.fillOpacity = (1 - (feature.properties.imd_d / 10)) / 2;
+                // Shade by deprivation index
+                style.fillOpacity = (1 - (feature.properties.imd_d / 10)).toFixed(1);
                 return style;
             });
         }
 
         if (legend != null) legend.remove();
 
+        // 
+        legend = L.control({ position: 'bottomleft' });
         if (selectedauth == '') {
             map.flyToBounds(authboundaries.getBounds(), { paddingTopLeft: L.point(-200, 0) });
-            legend = L.control({ position: 'bottomleft' });
             legend.onAdd = function (map) {
-                var c = hexToRgb(config.fillColours[maptype]);
+                var c = LibrariesFuncs.hexToRgb(config.fillColours[maptype]);
                 var div = L.DomUtil.create('div', 'info legend');
                 // Loop through our density intervals and generate a label with a colored square for each interval
-                div.innerHTML += '<p class="text-muted strong">' + $('#style-changer li a[data-style=' + maptype + ']').text() + '</p>';
+                div.innerHTML += '<p class="text-muted strong">' + $('#sel-maptype option[value=' + maptype + ']').text() + '</p>';
                 for (var i = 0; i <= 1; i = i + 0.2) div.innerHTML += '<i style="background: rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + i + ')"></i>' + (i == 0 ? 'fewer' : '') + (i == 1 ? 'lots' : '') + '<br/>';
                 return div;
             };
-            legend.addTo(map);
+        } else {
+            legend.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'info legend-circle');
+                div.innerHTML += '<p class="text-muted strong">library types</p>';
+                var libtypes = [];
+                $.each(markerarray._layers, function (i, m) { if (libtypes.indexOf(m.librarytype) == -1) libtypes.push(m.librarytype); });
+                $.each(libtypes, function (i, l) { div.innerHTML += '<i style="background: ' + config.libStyles[l].colour + '"></i>' + config.libStyles[l].type + '<br/>'; }) 
+                return div;
+            };
         }
+        legend.addTo(map);
     };
 
     /////////////////////////////////////////////////////////
@@ -92,6 +95,7 @@
             style.fillColor = config.libStyles[t].colour;
             $.each(libraries[t], function (x, lib) {
                 var m = L.circleMarker([lib.lat, lib.lng], style);
+                m.librarytype = lib.type;
                 m.on('click', function (e) { clickLibrary(lib); });
                 m.bindTooltip('Library: ' + lib.name, {});
                 markerarray.addLayer(m);
@@ -291,7 +295,7 @@
         $('#sidebar-authoritycontent').append(
             '<div class="row">' +
             '<div class="col-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(auth.population) + '</p></div>' +
-            '<div class="col-4"><small class="text-muted">area (hectares)</small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(auth.hectares) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">area (ha)</small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(auth.hectares) + '</p></div>' +
             '<div class="col4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + $.map(Object.keys(auth.libraries), function (t, i) { if (t.indexOf('X') != 0) return auth.libraries[t]; }).length + '</p></div>' +
             '</div>');
 
@@ -299,7 +303,7 @@
         $.each(Object.keys(config.libStyles), function (i, k) {
             if (auth.libraries[k]) {
                 var type = $('<div>');
-                var hd = $('<h5>', { text: config.libStyles[k].type }).appendTo(type);
+                var hd = $('<h5>', { text: config.libStyles[k].description }).appendTo(type);
                 var pa = $('<p>').appendTo(type);
                 var sm = $('<small>').appendTo(pa);
                 $.each(auth.libraries[k], function (x, l) {
@@ -388,10 +392,10 @@
         /////////////////////////////////////////////////////////////
         // Event: Change map style
         /////////////////////////////////////////////////////////////
-        $('input[name=rdo-maptype]').change(function (e) {
+        $('#sel-maptype').change(function (e) {
             e.preventDefault();
             selectedauth = '';
-            maptype = e.target.id.replace('rdo-maptype-', '');
+            maptype = e.target.value;
             setMapStyles();
         });
     });

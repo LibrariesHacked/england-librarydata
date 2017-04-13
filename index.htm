@@ -32,8 +32,6 @@
                 <ul class="navbar-nav">
                     <li class="nav-item active"><a class="nav-link" href="/">dashboard <span class="sr-only">(current)</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/map">data</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/benchmarking">benchmarking</a></li>
                 </ul>
             </div>
         </div>
@@ -45,7 +43,7 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>in progress.</strong> see <a class="alert-link" href="https://github.com/LibrariesHacked/england-librarydata/blob/master/about.md" title="about this project" target="_blank">about</a> info
+                    <strong>in progress.</strong> see <a class="alert-link" href="https://github.com/LibrariesHacked/england-librarydata/blob/master/about.md" title="about this project" target="_blank">about</a>
                 </div>
                 <!-- Widget 1: Areas -->
                 <div class="card mb-3">
@@ -104,7 +102,7 @@
                     <div class="card-block">
                         <div class="row">
                             <div id="divTotalCount" class="col-6"><small class="text-muted">total&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries open in july 2016, with change since april 2010"></a></small><p class="strong"><span id="spLibTotal" class="lead text-gray-dark"></span> <span id="spLibChange"></span></p></div>
-                            <div id="divStatutoryCount" class="col-6"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of open libraries part of statutory provision, with change since april 2010"></a></small><p class="strong"><span id="spStatTotal" class="lead text-gray-dark"></span> <span id="spStatChange"></span></p></div>
+                            <div id="divStatutoryCount" class="col-6"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries that part of statutory provision in july 2016, with change since april 2010"></a></small><p class="strong"><span id="spStatTotal" class="lead text-gray-dark"></span> <span id="spStatChange"></span></p></div>
                         </div>
                     </div>
                     <div class="card-block">
@@ -148,7 +146,7 @@
                 <div class="card mb-3">
                     <div class="card-block">
                         <h4 class="card-title text-muted">deprivation in <span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">area deprivation measures</h6>
+                        <h6 class="card-subtitle text-muted">area deprivation measures.  lower (1-10) means more deprived.</h6>
                     </div>
                     <div class="card-block">
                         <div class="row" id="divAuthDepStats1">
@@ -161,7 +159,6 @@
                             <div id="divHealth" class="stats col-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the area"></a></small><p class="lead text-success"></p></div>
                             <div id="divServices" class="stats col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-success"></p></div>
                         </div>
-                        <p><small class="text-muted">lower (1-10) represents greater deprivation</small></p>
                     </div>
                     <div class="card-block">
                         <div id="divWrapperLibrariesStatsBarChart"><canvas id="divLibrariesStatsBarChart"></canvas></div>
@@ -175,18 +172,9 @@
                 <div class="card mb-3">
                     <div class="card-block">
                         <h4 class="card-title text-muted">nearest<span id="spNearestLibName"></span></h4>
-                        <h6 class="card-subtitle text-muted">find your nearest library</h6>
+                        <h6 class="card-subtitle text-muted">select the library types and find your nearest library</h6>
                     </div>
                     <div class="card-block">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <span class="fa fa-home text-muted" id="spFmlHome"></span>
-                                    <span class="fa fa-spinner fa-spin text-muted" id="spFmlSpinning"></span>
-                                </span>
-                                <input id="txtAddress" class="form-control" type="text" placeholder="enter a location e.g. BA1 7JH">
-                            </div>
-                        </div>
                         <div class="form-group form-inline">
                             <label class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input chb-libtype" id="chbLAL" value="LAL" checked="checked">
@@ -208,6 +196,15 @@
                                 <span class="custom-control-indicator"></span>
                                 <span class="custom-control-description">independent</span>
                             </label>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-home text-muted" id="spFmlHome"></span>
+                                    <span class="fa fa-spinner fa-spin text-muted" id="spFmlSpinning"></span>
+                                </span>
+                                <input id="txtAddress" class="form-control" type="text" placeholder="enter a location e.g. BA1 7JH">
+                            </div>
                         </div>
                         <div id="divFmlContent">
                             <ul class="nav nav-tabs" role="tablist">

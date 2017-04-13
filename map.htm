@@ -44,44 +44,16 @@
                         map <span class="sidebar-close"><i class="fa fa-caret-right"></i></span>
                     </h1>
                     <div id="sidebar-maincontent">
-                        <p>shading of the map regions represents concentration of different aspects of the data.  select an option below.</p>
-                        <div class="custom-controls-stacked">
-                            <label class="custom-control custom-radio">
-                                <input id="rdo-maptype-1" name="rdo-maptype" type="radio" class="custom-control-input" checked>
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">number of libraries</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input id="rdo-maptype-2" name="rdo-maptype" type="radio" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">libraries per population</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input id="rdo-maptype-3" name="rdo-maptype" type="radio" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">libraries per area</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input id="rdo-maptype-4" name="rdo-maptype" type="radio" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">local authority libraries</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input id="rdo-maptype-5" name="rdo-maptype" type="radio" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">closed libraries</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input id="rdo-maptype-6" name="rdo-maptype" type="radio" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">public libraries news - Local stories</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input id="rdo-maptype-7" name="rdo-maptype" type="radio" class="custom-control-input">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">public libraries news - changes</span>
-                            </label>
-                        </div>
+                        <p>shading of the map regions represents concentration of different aspects of the data.  select an option below to customise the map.</p>
+                        <select id="sel-maptype" class="form-control">
+                            <option value="1" selected>number of libraries</option>
+                            <option value="2">libraries per population</option>
+                            <option value="3">libraries per area</option>
+                            <option value="4">local authority libraries</option>
+                            <option value="5">closed libraries</option>
+                            <option value="6">public libraries news - local stories</option>
+                            <option value="7">public libraries news - changes</option>
+                        </select>
                         <hr />
                         <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">github</a>.</p>
                     </div>

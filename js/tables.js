@@ -14,18 +14,13 @@
                 deferRender: true,
                 data: LibrariesFuncs.getAuthoritiesDataTable(),
                 columns: [
-                    { title: "Name" },
+                    { title: "Name&nbsp;<span class='fa fa-info-circle'></span>" },
                     { title: "Libraries" },
                     { title: "Authority" },
                     { title: "Commissioned" },
                     { title: "Community" },
                     { title: "Independent" },
-                    {
-                        title: "Closed",
-                        render: function (data, type, row) {
-                            return '<span class="text-danger strong">' + data + '</span>';
-                        }
-                    },
+                    { title: "Closed" },
                     { title: "New" },
                     {
                         title: "Population",
@@ -54,52 +49,52 @@
                 deferRender: true,
                 data: LibrariesFuncs.getLibrariesDataTable(),
                 columns: [
-                    { title: "Name" },
-                    { title: "Postcode" },
-                    { title: "Type" },
+                    { title: "Name&nbsp;<span class='fa fa-info-circle'></span>" },
+                    { title: "Postcode&nbsp;<span class='fa fa-info-circle'></span>" },
+                    { title: "Type&nbsp;<span class='fa fa-info-circle'></span>" },
                     {
-                        title: "Closed",
+                        title: "Closed&nbsp;<span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return '<span class="text-danger">' + data + '</span>';
                         }
                     },
-                    { title: "Notes" },
                     {
-                        title: "Multiple",
+                        title: "Multiple&nbsp;<span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "Employment",
+                        title: "Work&nbsp;<span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "Education",
+                        title: "Education&nbsp;<span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "Adult Skills",
+                        title: "Adult Skills&nbsp;<span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "Health",
+                        title: "Health&nbsp;<span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
                     },
                     {
-                        title: "Services <span class='fa fa-info-circle'></span>",
+                        title: "Services&nbsp;<span class='fa fa-info-circle'></span>",
                         render: function (data, type, row) {
                             return parseFloat(data).toFixed(0);
                         }
-                    }
+                    },
+                    { title: "Notes&nbsp;<span class='fa fa-info-circle'></span>" }
                 ]
             });
     });

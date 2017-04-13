@@ -6,6 +6,9 @@
     /////////////////////////////////////////////////
     var fmlMap = null, authMap = null, authBoundary = null, typeDonut = null, fmlLibraryMarker = null, fmlHomeMarker = null, fmlRoute = null;
 
+    // Some benchmarking variable
+    var avgPplPerlib = 0;
+
     // Global Chart options
     Chart.defaults.global.defaultFontColor = '#98978B';
     Chart.defaults.global.defaultFontFamily = '"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif';
@@ -164,7 +167,7 @@
             type: "polarArea",
             options: {
                 elements: { arc: { borderColor: "#98978B", borderWidth: 1 } },
-                legend: { position: 'bottom' },
+                legend: { },
                 startAngle: (-0.3 * Math.PI)
             },
             title: { display: true, text: 'number of libraries' }
@@ -180,10 +183,11 @@
                 typeDonut.config.data.labels.push(config.libStyles[c].type);
             });
             var stats = LibrariesFuncs.getStatCountsByAuthority(libAuthority);
+            if (!libAuthority) avgPplPerlib = stats.peoplePerLibrary;
             // These stats shown at the authority selector.
             $('#divNumLibs p').text(stats.libraries);
             $('#divPopulation p').text(LibrariesFuncs.getNumFormat(stats.population));
-            $('#divLibsPerPopulation p').removeClass().addClass('lead ' + (stats.peoplePerLibrary < 20000 ? 'text-gray-dark' : 'text-danger'))
+            $('#divLibsPerPopulation p').removeClass().addClass('lead ' + (stats.peoplePerLibrary <= avgPplPerlib ? 'text-gray-dark' : 'text-danger'))
             $('#divLibsPerPopulation p').text(LibrariesFuncs.getNumFormat(stats.peoplePerLibrary));
             // These stats shown at the library types widget
             $('#divTotalCount p #spLibTotal').text(stats.libraries);
