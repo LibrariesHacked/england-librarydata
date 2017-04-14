@@ -164,30 +164,30 @@
         // Populate the hours and statutory details
         $('#sidebar-librarycontent').append(
             '<div class="row">' +
-            '<div class="col col-4"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="is the library part of the local authority statutory provision?"></a></small><p class="lead text-gray-dark">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of hours open per week"></a></small><p class="lead text-gray-dark">' + (library.hours ? library.hours : '0') + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">staff hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of staff hours per week"></a></small><p class="lead ' + (library.staffhours && library.staffhours != 0 ? ('text-gray-dark">' + library.staffhours) : 'text-danger">0') + '</p>' +
+            '<div class="col-4"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="is the library part of the local authority statutory provision?"></a></small><p class="lead text-gray-dark">' + (library.statutory2016 == 't' ? 'yes' : 'no') + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of hours open per week"></a></small><p class="lead text-gray-dark">' + (library.hours ? library.hours : '0') + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">staff hours&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of staff hours per week"></a></small><p class="lead ' + (library.staffhours && library.staffhours != 0 ? ('text-gray-dark">' + library.staffhours) : 'text-danger">0') + '</p></div>' +
+            '</div>' +
+            '<div class="row">' +
+            '<div class="col-4"><small class="text-muted">people&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + LibrariesFuncs.getNumFormat(library.dependent_children) + '</p></div>' +
             '</div>');
 
         // Populate the deprivation details.
         $('#sidebar-librarycontent').append(
-            (library.address ? ('<hr/><p><small class="text-muted">catchment population and deprivation around ' + library.address + ' ' + library.postcode + '</small></p>') : '') +
+            (library.address ? ('<hr/><p><small class="text-muted">catchment deprivation, lower (1-10) means more deprived:</small></p>') : '') +
             '<div class="row">' +
-            '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-' + config.depStatStyles[library.population] + '">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-' + config.depStatStyles[library.population_adults] + '">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-' + config.depStatStyles[library.population_children] + '">' + LibrariesFuncs.getNumFormat(library.dependent_children) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.multiple).toFixed(0)] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">work&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.employment).toFixed(0)] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.education).toFixed(0)] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
             '</div>' +
             '<div class="row">' +
-            '<div class="col col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.multiple).toFixed(0)] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.employment).toFixed(0)] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.education).toFixed(0)] + '">' + parseFloat(library.education).toFixed(0) + '</p></div>' +
-            '</div>' +
-            '<div class="row">' +
-            '<div class="col col-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.adultskills).toFixed(0)] + '">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.health).toFixed(0)] + '">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.services).toFixed(0)] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
-            '</div>' +
-            '<p><small class="text-muted">lower represents greater deprivation (1-10).</small></p>');
+            '<div class="col-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.adultskills).toFixed(0)] + '">' + parseFloat(library.adultskills).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.health).toFixed(0)] + '">' + parseFloat(library.health).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.services).toFixed(0)] + '">' + parseFloat(library.services).toFixed(0) + '</p></div>' +
+            '</div>');
+        updateTooltips();
         sidebar.open('library');
         markerarray.bringToFront();
     };
@@ -227,25 +227,25 @@
         // Population details
         $('#sidebar-oacontent').append(
             '<br/><div class="row">' +
-            '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the output area (mid-2015 estimate)"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.all_ages) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(parseInt(feature.properties.sxt_fynn) + parseInt(feature.properties.ovr_sxty)) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.children) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">people&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the output area (mid-2015 estimate)"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.all_ages) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(parseInt(feature.properties.sxt_fynn) + parseInt(feature.properties.ovr_sxty)) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-muted">' + LibrariesFuncs.getNumFormat(feature.properties.children) + '</p></div>' +
             '</div>');
 
         // Deprivation details
         $('#sidebar-oacontent').append(
-            '<p><small class="text-muted">deprivation within ' + feature.properties.oa + '</small></p>' +
+            '<p><small class="text-muted">area deprivation, lower (1-10) means more deprived:</small></p>' + 
             '<div class="row">' +
-            '<div class="col col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.imd_d).toFixed(0)] + '">' + parseFloat(feature.properties.imd_d).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">employmnt&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.emp_d).toFixed(0)] + '">' + parseFloat(feature.properties.emp_d).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.edu_d).toFixed(0)] + '">' + parseFloat(feature.properties.edu_d).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.imd_d).toFixed(0)] + '">' + parseFloat(feature.properties.imd_d).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">work&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.emp_d).toFixed(0)] + '">' + parseFloat(feature.properties.emp_d).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">education&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="education deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.edu_d).toFixed(0)] + '">' + parseFloat(feature.properties.edu_d).toFixed(0) + '</p></div>' +
             '</div>' +
             '<div class="row">' +
-            '<div class="col col-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.ads_d).toFixed(0)] + '">' + parseFloat(feature.properties.ads_d).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.hth_d).toFixed(0)] + '">' + parseFloat(feature.properties.hth_d).toFixed(0) + '</p></div>' +
-            '<div class="col col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.geo_d).toFixed(0)] + '">' + parseFloat(feature.properties.geo_d).toFixed(0) + '</p></div>' +
-            '</div>' +
-            '<p><small class="text-muted">lower represents greater deprivation (1-10).</small></p>');
+            '<div class="col-4"><small class="text-muted">adult skills&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="adult skills and training deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.ads_d).toFixed(0)] + '">' + parseFloat(feature.properties.ads_d).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">health&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="health deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.hth_d).toFixed(0)] + '">' + parseFloat(feature.properties.hth_d).toFixed(0) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the output area"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(feature.properties.geo_d).toFixed(0)] + '">' + parseFloat(feature.properties.geo_d).toFixed(0) + '</p></div>' +
+            '</div>');
+        updateTooltips();
         sidebar.open('oa');
     };
 
@@ -294,7 +294,7 @@
         $('#authority .sidebar-title').text(auth.name);
         $('#sidebar-authoritycontent').append(
             '<div class="row">' +
-            '<div class="col-4"><small class="text-muted">population</small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(auth.population) + '</p></div>' +
+            '<div class="col-4"><small class="text-muted">people</small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(auth.population) + '</p></div>' +
             '<div class="col-4"><small class="text-muted">area (ha)</small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(auth.hectares) + '</p></div>' +
             '<div class="col4"><small class="text-muted">libraries</small><p class="lead text-gray-dark">' + $.map(Object.keys(auth.libraries), function (t, i) { if (t.indexOf('X') != 0) return auth.libraries[t]; }).length + '</p></div>' +
             '</div>');
@@ -376,6 +376,7 @@
             }
             selectedauth = '';
             maptype = '1';
+            $('#sel-maptype').val(1);
             setMapStyles();
         });
 

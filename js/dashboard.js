@@ -135,11 +135,11 @@
             // Populate the deprivation details.
             $('#divLibraryDeprivationDetails').append(
                 '<div class="row">' +
-                '<div class="col col-4"><small class="text-muted">population&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
+                '<div class="col col-4"><small class="text-muted">people&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="total population in the library catchment (mid-2015 estimate)"></a></small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(library.population) + '</p></div>' +
                 '<div class="col col-4"><small class="text-muted">adults&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of adults 16 and over"></a></small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(parseInt(library.sixteen_fiftynine) + parseInt(library.over_sixty)) + '</p></div>' +
                 '<div class="col col-4"><small class="text-muted">children&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="number of children under 16"></a></small><p class="lead text-gray-dark">' + LibrariesFuncs.getNumFormat(library.dependent_children) + '</p></div>' +
                 '</div>' +
-                '<small class="text-muted">catchment area profile.  lower represents greater deprivation (1-10).</small></p>' +
+                '<small class="text-muted">catchment area, lower (1-10) means more deprived:</small></p>' +
                 '<div class="row">' +
                 '<div class="col col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.multiple).toFixed(0)] + '">' + parseFloat(library.multiple).toFixed(0) + '</p></div>' +
                 '<div class="col col-4"><small class="text-muted">work&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the library catchment"></a></small><p class="lead text-' + config.depStatStyles[parseFloat(library.employment).toFixed(0)] + '">' + parseFloat(library.employment).toFixed(0) + '</p></div>' +

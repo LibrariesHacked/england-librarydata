@@ -281,7 +281,7 @@ small, .lead {
     }
 
 .legend-circle {
-    line-height: 10px;
+    line-height: 18px;
     color: #555;
 }
 
@@ -289,6 +289,7 @@ small, .lead {
         width: 8px;
         height: 8px;
         float: left;
+        margin-top: 4px;
         margin-right: 8px;
         border-radius: 50%;
     }
@@ -304,4 +305,12 @@ table.dataTable  {
 .div-loading {
     align-content:center;
     text-align: center;
+}
+
+.no-wrap {
+    white-space: nowrap!important;
+}
+
+.table-responsive {
+    overflow-x: hidden;
 }
