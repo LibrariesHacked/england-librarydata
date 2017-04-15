@@ -17,7 +17,21 @@
                     { title: "Name" },
                     { title: "Libraries&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of open libraries in july 2016'></a>" },
                     {
-                        title: "Population&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        title: "People&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        render: function (data, type, row) {
+                            if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
+                            return data;
+                        }
+                    },
+                    {
+                        title: "Adults&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        render: function (data, type, row) {
+                            if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
+                            return data;
+                        }
+                    },
+                    {
+                        title: "Children&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
@@ -62,6 +76,20 @@
                         title: "Type&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the type of library.  hover over the code to see the full description.'></a>",
                         render: function (data, type, row) {
                             return '<abbr class="initialism" title="' + config.libStyles[data].description + '">' + data + '</abbr>';
+                        }
+                    },
+                    {
+                        title: "Adults&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        render: function (data, type, row) {
+                            if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
+                            return data;
+                        }
+                    },
+                    {
+                        title: "Children&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        render: function (data, type, row) {
+                            if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
+                            return data;
                         }
                     },
                     {

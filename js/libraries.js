@@ -210,6 +210,8 @@
                 x.name,
                 $.map(x.libraries, function (l, y) { if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') return l.name }).length,
                 x.population,
+                parseInt(x.sixteen_fiftynine) + parseInt(x.over_sixty),
+                x.dependent_children,
                 x.hectares,
                 $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length,
                 $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length,
@@ -232,7 +234,7 @@
         var authorities = this.getLibrariesByAuthority();
         $.each(authorities, function (i, a) {
             $.each(a, function (y, l) {
-                datatable.push([l.name, l.postcode, l.type, l.multiple, l.employment, l.education, l.adultskills, l.services, l.health, l.notes, l.closed_year]);
+                datatable.push([l.name, l.postcode, l.type, (parseInt(l.sixteen_fiftynine) + parseInt(l.over_sixty)), l.dependent_children, l.multiple, l.employment, l.education, l.adultskills, l.services, l.health, l.notes, l.closed_year]);
             });
         });
         return datatable;

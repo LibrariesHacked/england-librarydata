@@ -5,7 +5,7 @@
     ////////////////////////////////////////////////////
     var markerarray = L.featureGroup([]);
     var map = L.map('map').setView([config.mapcentre.y, config.mapcentre.x], config.mapcentre.zoom);
-    var maptype = 1, selectedauth = '', selectedlibrary = '', legend = null, catchmentarea = null, authboundaries = null;
+    var maptype = 1, selectedauth = '', selectedlibrary = '', selectedoa = '', legend = null, catchmentarea = null, authboundaries = null;
     L.tileLayer(config.mapTilesLight, { attribution: config.mapAttribution }).addTo(map);
     var sidebar = L.control.sidebar('sidebar', { position: 'right' }).addTo(map);
     var mapstyles = ['pcLibraries', 'pcLibrariesPerPopulation', 'pcLibrariesPerArea', 'pcLalLibraries', 'pcClosedLibraries', 'pcLocalNews', 'pcChanges'];
@@ -71,14 +71,25 @@
                 return div;
             };
         } else {
-            legend.onAdd = function (map) {
-                var div = L.DomUtil.create('div', 'info legend-circle');
-                div.innerHTML += '<p class="text-muted strong">library types</p>';
-                var libtypes = [];
-                $.each(markerarray._layers, function (i, m) { if (libtypes.indexOf(m.librarytype) == -1) libtypes.push(m.librarytype); });
-                $.each(libtypes, function (i, l) { div.innerHTML += '<i style="background: ' + config.libStyles[l].colour + '"></i>' + config.libStyles[l].type + '<br/>'; }) 
-                return div;
-            };
+            if (selectedlibrary == '') {
+                legend.onAdd = function (map) {
+                    var div = L.DomUtil.create('div', 'info legend-circle');
+                    div.innerHTML += '<p class="text-muted strong">library types</p>';
+                    var libtypes = [];
+                    $.each(markerarray._layers, function (i, m) { if (libtypes.indexOf(m.librarytype) == -1) libtypes.push(m.librarytype); });
+                    $.each(libtypes, function (i, l) { div.innerHTML += '<i style="background: ' + config.libStyles[l].colour + '"></i>' + config.libStyles[l].type + '<br/>'; })
+                    return div;
+                };
+            } else {
+                legend.onAdd = function (map) {
+                    var div = L.DomUtil.create('div', 'info legend');
+                    div.innerHTML += '<p class="text-muted strong">deprivation</p>';
+                    var libtypes = [];
+                    var c = LibrariesFuncs.hexToRgb(config.libStyles['XL'].colour);
+                    for (var i = 2; i <= 10; i = i + 2) div.innerHTML += '<i style="background: rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + (1 - (i / 10)) + ')"></i>' + (i == 2 ? 'most deprived' : '') + (i == 10 ? 'least deprived' : '') + '<br/>';
+                    return div;
+                };
+            }
         }
         legend.addTo(map);
     };
@@ -219,6 +230,7 @@
     /////////////////////////////////////////////////////////
     var displayOutputArea = function (feature) {
         sidebar.close();
+        selectedoa = feature.properties.oa;
         $('#sidebar-oacontent').empty();
         $('#liOA').removeClass('disabled');
 
@@ -331,6 +343,7 @@
         sidebar.close();
         if (selectedlibrary != '') {
             selectedlibrary = '';
+            selectedoa = '';
             map.removeLayer(catchmentarea);
         }
         selectedauth = feature.properties['authority_id'];
@@ -372,6 +385,7 @@
             sidebar.open('home');
             if (selectedlibrary != '') {
                 selectedlibrary = '';
+                selectedoa = '';
                 map.removeLayer(catchmentarea);
             }
             selectedauth = '';
