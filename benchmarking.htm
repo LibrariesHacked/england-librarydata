@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="Data dashboard for Libraries Taskforce English libraries dataset">
     <meta name="author" content="Libraries Hacked">
-    <title>dashboard | england</title>
+    <title>england benchmarking</title>
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="bower_components/tether/dist/css/tether.min.css" rel="stylesheet" />
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -39,15 +39,17 @@
         </div>
     </nav>
     <div id="main" class="container main">
+        <p>select an option below</p>
+        <select id="sel-benchmark-type" class="form-control">
+            <option value="population">Population</option>
+            <option value="hectares">Area</option>
+        </select>
+        <div>
+            <canvas id="cht-benchmarking" height="2200"></canvas>
+        </div>
         <footer>
             <hr />
-            <p>
-                <ul class="list-inline">
-                    <li class="list-inline-item"><a href="https://books.librarydata.uk" title="library data books page" target="_blank">books</a>  <span class="text-muted">|</span></li>
-                    <li class="list-inline-item"><a href="https://mobiles.librarydata.uk" title="mobile libraries page" target="_blank">mobiles</a></li>
-                </ul>
-            </p>
-            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">github</a>.</p>
+            <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>.</p>
         </footer>
     </div>
     <!-- Framework plugins -->

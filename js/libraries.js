@@ -212,6 +212,8 @@
                 x.population,
                 parseInt(x.sixteen_fiftynine) + parseInt(x.over_sixty),
                 x.dependent_children,
+                x.over_sixty,
+                x.working_age,
                 x.hectares,
                 $.map(x.libraries, function (l, y) { if (l.type == 'LAL') return l.name }).length,
                 $.map(x.libraries, function (l, y) { if (l.type == 'CL') return l.name }).length,
@@ -234,7 +236,7 @@
         var authorities = this.getLibrariesByAuthority();
         $.each(authorities, function (i, a) {
             $.each(a, function (y, l) {
-                datatable.push([l.name, l.postcode, l.type, (parseInt(l.sixteen_fiftynine) + parseInt(l.over_sixty)), l.dependent_children, l.multiple, l.employment, l.education, l.adultskills, l.services, l.health, l.notes, l.closed_year]);
+                datatable.push([l.name, l.postcode, l.type, (l.statutory2010 == 't' ? 'Yes' : 'No'), (l.statutory2016 == 't' ? 'Yes' : 'No'), l.population, (parseInt(l.sixteen_fiftynine) + parseInt(l.over_sixty)), l.dependent_children, l.multiple, l.employment, l.education, l.adultskills, l.services, l.health, l.address, l.notes, l.email, l.url, l.closed_year]);
             });
         });
         return datatable;
@@ -461,6 +463,30 @@
         var authorities = {};
         $.each(this.authorities, function (i, a) {
             authorities[a.name] = a;
+        });
+        return authorities;
+    },
+    /////////////////////////////////////////////////////////////
+    // Function: getAuthoritiesListedByNameWithBenchmarks
+    // Input: None
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
+    getAuthoritiesListedByNameWithBenchmarks: function () {
+        var authorities = {};
+        var libraries = this.getLibrariesByAuthority();
+        $.each(this.authorities, function (i, a) {
+            authorities[a.name] = a;
+
+            // Area per library
+
+
+
+            // People per libraries
+
+
+
+
         });
         return authorities;
     },

@@ -167,7 +167,7 @@
             type: "polarArea",
             options: {
                 elements: { arc: { borderColor: "#98978B", borderWidth: 1 } },
-                legend: { },
+                legend: {},
                 startAngle: (-0.3 * Math.PI)
             },
             title: { display: true, text: 'number of libraries' }
