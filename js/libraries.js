@@ -476,17 +476,27 @@
         var authorities = {};
         var libraries = this.getLibrariesByAuthority();
         $.each(this.authorities, function (i, a) {
-            authorities[a.name] = a;
 
-            // Area per library
+            var libs = libraries[a.authority_id];
+            var libcount = $.map(libs, function (l, i) { if (l.closed == '') return 1 }).sum();
+            var lalcount = $.map(libs, function (l, i) { if (l.type == 'LAL') return 1 }).sum();
+            var clcount = $.map(libs, function (l, i) { if (l.type == 'CL') return 1 }).sum();
+            var crlcount = $.map(libs, function (l, i) { if (l.type == 'CRL') return 1 }).sum();
+            var iclcount = $.map(libs, function (l, i) { if (l.type == 'ICL') return 1 }).sum();
+            var closedcount = $.map(libs, function (l, i) { if (l.type.indexOf('X') != -1) return 1 }).sum();
 
-
-
-            // People per libraries
-
-
-
-
+            authorities[a.name] = {
+                peopleperlibrary: { display: 'People per library', value: (a.population / libcount).toFixed(0), sort: 'asc', x: 'Population per library' },
+                libraries: { display: 'Number of libraries', value: libcount, sort: 'desc', x: 'Number of libraries' },
+                lallibraries: { display: 'Number of local authority libraries', value: lalcount, sort: 'desc', x: 'Number of local authority libraries' },
+                cllibraries: { display: 'Number of commissioned libraries', value: clcount, sort: 'desc', x: 'Number of commissioned libraries' },
+                crllibraries: { display: 'Number of community run libraries', value: crlcount, sort: 'desc', x: 'Number of community libraries' },
+                icllibraries: { display: 'Number of independent community libraries', value: iclcount, sort: 'desc', x: 'Number of independent libraries' },
+                closedlibraries: { display: 'Number of closed libraries', value: closedcount, sort: 'desc', x: 'Number of libraries closed' },
+                areaperlibrary: { display: 'Area (ha) per library', value: (a.hectares / libcount).toFixed(0), sort: 'asc', x: 'Area (ha) per library' },
+                population: { display: 'Population', value: a.population, sort: 'desc', x: 'Population' },
+                area: { display: 'Area (ha)', value: a.hectares, sort: 'desc', x: 'Area (ha)' }
+            };
         });
         return authorities;
     },
@@ -603,6 +613,76 @@
             authGeoData.features[x].properties['pcClosedLibraries'] = (authGeoData.features[x].properties.closedLibraryCount == 0 ? 0 : closedLibrariesSorted.indexOf(y.properties.name) / Object.keys(closedLibrariesSorted).length.toFixed(1));
             authGeoData.features[x].properties['pcLalLibraries'] = authLALSorted.indexOf(y.properties.name) / Object.keys(authLALSorted).length.toFixed(1);
 
+        }.bind(this));
+        return authGeoData;
+    },
+    /////////////////////////////////////////////////////////////
+    // Function: get3DAuthGeo
+    // Input: 
+    // Output: 
+    // 
+    /////////////////////////////////////////////////////////////
+    get3DAuthGeo: function () {
+        var auth = {};
+        var libs = this.getLibrariesByAuthority();
+        var auths = this.getAuthoritiesListedById();
+        var authGeoData = this.getAuthGeoWithStories();
+        $.each(authGeoData.features, function (x, y) {
+            var closedCount = 0;
+            var nonClosedCount = 0;
+            var localAuthorityCount = 0;
+            var authData = auths[authGeoData.features[x].properties.authority_id];
+            authGeoData.features[x].properties.libraries = {};
+            $.each(libs[authGeoData.features[x].properties.authority_id], function (i, l) {
+                if (!authGeoData.features[x].properties.libraries[l.type] && l.type != '') authGeoData.features[x].properties.libraries[l.type] = { libs: [] };
+                if ((l.type != '' && l.closed == '') || l.lat != '') authGeoData.features[x].properties.libraries[l.type].libs.push(l);
+                if (l.type != 'XL' && l.type != 'XLR' && l.type != 'XLT') nonClosedCount = nonClosedCount + 1;
+                if (l.type == 'XL' || l.type == 'XLR' || l.type == 'XLT') closedCount = closedCount + 1;
+                if (l.type == 'LAL') localAuthorityCount = localAuthorityCount + 1;
+            });
+            auth[authGeoData.features[x].properties.name] = { idx: x };
+            authGeoData.features[x].properties['libraries'] = nonClosedCount;
+            authGeoData.features[x].properties['closedlibraries'] = closedCount;
+            authGeoData.features[x].properties['lallibraries'] = localAuthorityCount;
+            authGeoData.features[x].properties['areaperlibrary'] = (authData.hectares / nonClosedCount).toFixed(0);
+            authGeoData.features[x].properties['populationperlibrary'] = (authData.population / nonClosedCount).toFixed(0);
+        }.bind(this));
+
+        var librariesSorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[a].idx].properties.libraries - authGeoData.features[auth[b].idx].properties.libraries;
+        });
+        var populationPerLibrarySorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[a].idx].properties.populationperlibrary - authGeoData.features[auth[b].idx].properties.populationperlibrary;
+        });
+        var areaPerLibrarySorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[a].idx].properties.areaperlibrary - authGeoData.features[auth[b].idx].properties.areaperlibrary;
+        });
+        var authLALSorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[a].idx].properties.lallibraries - authGeoData.features[auth[b].idx].properties.lallibraries;
+        });
+        var closedLibrariesSorted = Object.keys(auth).sort(function (a, b) {
+            return authGeoData.features[auth[a].idx].properties.closedlibraries - authGeoData.features[auth[b].idx].properties.closedlibraries;
+        });
+
+        var getColour = function (index, opacity) {
+            var c = config.libStyles['ICL'];
+            if (index > 25) c = config.libStyles['CL'];
+            if (index > 50) c = config.libStyles['XL'];
+            if (index > 75) c = config.libStyles['XLT'];
+            if (index > 100) c = config.libStyles['CRL'];
+            if (index > 125) c = config.libStyles['LAL'];
+            return 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')';
+        };
+
+        $.each(authGeoData.features, function (x, y) {
+            authGeoData.features[x].properties['librariesheight'] = authGeoData.features[x].properties['libraries'] * 300;
+            authGeoData.features[x].properties['librariescolour'] = getColour(librariesSorted.indexOf(y.properties.name), '0.1');
+
+            authGeoData.features[x].properties['populationperlibraryheight'] = authGeoData.features[x].properties['populationperlibrary'] / 2;
+            authGeoData.features[x].properties['populationperlibrarycolour'] = getColour(populationPerLibrarySorted.indexOf(y.properties.name));
+
+            authGeoData.features[x].properties['areaperlibraryheight'] = authGeoData.features[x].properties['areaperlibrary'] / 1.5;
+            authGeoData.features[x].properties['areaperlibrarycolour'] = getColour(areaPerLibrarySorted.indexOf(y.properties.name));
         }.bind(this));
         return authGeoData;
     },
@@ -832,5 +912,13 @@
     hexToRgb: function (hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+    },
+    getRandomColour: function () {
+        var letters = '0123456789ABCDEF';
+        var colour = '#';
+        for (var i = 0; i < 6; i++) {
+            colour += letters[Math.floor(Math.random() * 16)];
+        }
+        return colour;
     }
 };

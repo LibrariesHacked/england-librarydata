@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Libraries Hacked">
     <title>england data</title>
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/bootswatch/materia/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/tether/dist/css/tether.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
@@ -21,30 +21,23 @@
     <meta name="twitter:image" content="https://england.librarydata.uk/images/dashboard.png">
 </head>
 <body class="grey">
-    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-        <div class="container">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="/"><span class="text-danger strong">england</span></a>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
-                    <li class="nav-item active"><a class="nav-link" href="/thedata">data <span class="sr-only">(current)</span></a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
     <div id="main" class="container">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a class="nav-link" href="/">dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/thedata">data <span class="sr-only">(current)</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="/compare">compare</a></li>
+            <li class="nav-item"><a class="nav-link" href="/3d">3D</a></li>
+        </ul>
+        <hr />
         <h3 class="text-gray-dark">Libraries</h3>
         <div class="container responsive">
-            <table id="tblLibraries" class="table table-bordered table-responsive table-sm dt-responsive no-wrap"></table>
+            <table id="tblLibraries" class="table table-bordered table-responsive dt-responsive no-wrap"></table>
         </div>
         <br />
         <h3 class="text-gray-dark">Authorities</h3>
         <div class="container responsive">
-            <table id="tblAuthorities" class="table table-bordered table-sm table-responsive dt-responsive no-wrap"></table>
+            <table id="tblAuthorities" class="table table-bordered table-responsive dt-responsive no-wrap"></table>
         </div>
         <footer>
             <hr />

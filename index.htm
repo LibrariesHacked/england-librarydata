@@ -9,7 +9,7 @@
     <title>england dashboard</title>
     <link href="bower_components/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="bower_components/tether/dist/css/tether.min.css" rel="stylesheet" />
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/bootswatch/materia/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="bower_components/jquery-shorten-js/dist/css/shorten.min.css" rel="stylesheet" />
     <link href="bower_components/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
@@ -22,29 +22,22 @@
     <meta name="twitter:image" content="https://england.librarydata.uk/images/dashboard.png">
 </head>
 <body class="grey">
-    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-        <div class="container">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand text-danger strong" href="/">england</a>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active"><a class="nav-link" href="/">dashboard <span class="sr-only">(current)</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/thedata">data <span class="sr-only">(current)</span></a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
     <div id="main" class="container main">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a class="nav-link active" href="/">dashboard <span class="sr-only">(current)</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
+            <li class="nav-item"><a class="nav-link" href="/thedata">data</a></li>
+            <li class="nav-item"><a class="nav-link" href="/compare">compare</a></li>
+            <li class="nav-item"><a class="nav-link" href="/3d">3D</a></li>
+        </ul>
+        <hr />
         <div class="row">
             <div class="col-lg-4 col-md-6">
                 <div id="divBetaAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>in progress.</strong> see <a class="alert-link" href="https://github.com/LibrariesHacked/england-librarydata/blob/master/about.md" title="about this project" target="_blank">about</a>
+                    <p><strong>in progress.</strong> see <a class="alert-link" href="https://github.com/LibrariesHacked/england-librarydata/blob/master/about.md" title="about this project" target="_blank">about</a></p>
                 </div>
                 <!-- Widget 1: Areas -->
                 <div class="card mb-3">
@@ -55,7 +48,7 @@
                     <div class="card-block" id="divAuthMap"></div>
                     <div class="card-block">
                         <select id="selAuthority" class="form-control">
-                            <option value="">England</option>
+                            <option value="">All England</option>
                         </select>
                     </div>
                     <div class="card-block">
@@ -71,7 +64,7 @@
                     </div>
                 </div>
                 <!-- Widget 2: Tweets -->
-                <div id="divTwitter" class="alert alert-info mb-3">
+                <div id="divTwitter" class="alert alert-success mb-3">
                     <div id="divTweet"></div>
                 </div>
                 <!-- Widget 3: Library details -->

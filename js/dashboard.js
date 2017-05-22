@@ -56,9 +56,9 @@
             if (tweets && tweets[index]) {
                 var tweet = tweets[index];
                 var tw = '<div class="row">' +
-                    '<div class="stats col-4"><small class="text-muted">tweets</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.tweets) + '</p></div>' +
-                    '<div class="stats col-4"><small class="text-muted">followers</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.followers) + '</p></div>' +
-                    '<div class="stats col-4"><small class="text-muted">following</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.following) + '</p></div>' +
+                    '<div class="stats col-4"><small>tweets</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.tweets) + '</p></div>' +
+                    '<div class="stats col-4"><small>followers</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.followers) + '</p></div>' +
+                    '<div class="stats col-4"><small>following</small><p class="lead">' + LibrariesFuncs.getNumFormat(tweet.following) + '</p></div>' +
                     '</div>' +
                     '<p><a title="' + tweet.name + ' on twitter - ' + tweet.description + '" href="https://twitter.com/' + tweet.account + '">' + tweet.name + '</a> tweeted ' + moment(tweet.latestDate, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').fromNow() + '</p>' +
                     '<p>' + $('<div/>').html(twttr.txt.autoLink(tweet.latest)).html() + '</p>';
@@ -109,8 +109,8 @@
 
             // Set up the links to email and website.
             $('#divLibraryLinks').append('<p>' +
-                (library.email ? '<a href="mailto:' + library.email + '" target= "_blank" class="btn btn-secondary" title="email ' + library.name + '"> <span class="fa fa-envelope"></span> email</a > ' : '') +
-                (library.url ? '<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-secondary" title="go to ' + library.name + ' website"><span class="fa fa-external-link"></span>&nbsp;website</a>' : '') + '</p>'
+                (library.email ? '<a href="mailto:' + library.email + '" target= "_blank" class="btn btn-link" title="email ' + library.name + '"> <span class="fa fa-envelope"></span> email</a > ' : '') +
+                (library.url ? '<a href="' + (library.url.indexOf('http') == -1 ? 'http://' + library.url : library.url) + '" target="_blank" class="btn btn-link" title="go to ' + library.name + ' website"><span class="fa fa-external-link"></span>&nbsp;website</a>' : '') + '</p>'
             );
 
             // Set up the library details such as closed/open year, type, and notes
@@ -321,9 +321,9 @@
             $('#divNews').empty();
             if (it) {
                 var li = '<div class="row">' +
-                    '<div class="col col-4"><small class="text-muted">stories&nbsp;</small><p class="lead" id="pCntStories">' + $.map(it.stories, function (x, i) { if (x.type == 'local') return 1; }).length + '</p></div>' +
-                    '<div class="col col-4"><small class="text-muted">changes&nbsp;</small><p class="lead" id="pCntChanges">' + $.map(it.stories, function (x, i) { if (x.type == 'changes') return 1; }).length + '</p></div>' +
-                    '<div class="col col-4"><small class="text-muted">viewing&nbsp;</small><p class="lead" id="pCntCurrent">1</p></div>' +
+                    '<div class="col col-4"><small>stories&nbsp;</small><p class="lead" id="pCntStories">' + $.map(it.stories, function (x, i) { if (x.type == 'local') return 1; }).length + '</p></div>' +
+                    '<div class="col col-4"><small>changes&nbsp;</small><p class="lead" id="pCntChanges">' + $.map(it.stories, function (x, i) { if (x.type == 'changes') return 1; }).length + '</p></div>' +
+                    '<div class="col col-4"><small>viewing&nbsp;</small><p class="lead" id="pCntCurrent">1</p></div>' +
                     '</div>' +
                     '<p><a class="alert-link" id="aPlnLink" href="http://www.publiclibrariesnews.com/' + it.stories[0].url + '" target="_blank">Public Libraries News</a> <span id="sp-news-date">' + moment(it.stories[0].date).fromNow() + '</span></p>' +
                     '<p id="pNewsStory">' + $('<div />').html(it.stories[0].text.replace(storiesOrdered[index] + ' – ', '')).text() + '</p>' +
@@ -504,14 +504,6 @@
             }
         }
     });
-    // Array: Get sum of values in an array
-    Array.prototype.sum = function () {
-        var total = 0;
-        for (var i = 0; i < this.length; i++) {
-            total += parseFloat(this[i]);
-        }
-        return total;
-    };
 
     /////////////////////////////////////////////////////////
     // Helper Function: getMiles

@@ -7,10 +7,6 @@
     background-color: #F2F4F8 !important;
 }
 
-nav {
-    border-bottom: 1px solid rgba(0, 0, 0, .125);
-}
-
     nav .container {
         min-width: 150px;
     }
@@ -313,4 +309,9 @@ table.dataTable  {
 
 .table-responsive {
     overflow-x: hidden;
+}
+
+#threed-map {
+    height: 600px;
+    width: 100%;
 }

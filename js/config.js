@@ -1,6 +1,6 @@
 ﻿var config = {
     mapcentre: {
-        x: -2.72,
+        x: -2.5,
         y: 52.55,
         zoom: 7
     },
@@ -10,14 +10,14 @@
     mapTilesStreets: 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGlicmFyaWVzaGFja2VkIiwiYSI6IlctaDdxSm8ifQ.bxf1OpyYLiriHsZN33TD2A',
     mapAttribution: '&copy; <a href="http://osm.org/copyright" target="blank" title="Open Street Map">OSM</a> contributors.  Contains: OS data &copy;, Royal Mail data &copy;, National Statistics data &copy;.  Crown copyright and database right 2016',
     libStyles: {
-        LAL: { type: 'authority', description: 'local authority library', cssClass: 'success', colour: '#5cb85c' },
-        CL: { type: 'commissioned', description: 'commissioned library', cssClass: 'info', colour: '#5bc0de' },
-        CRL: { type: 'community', description: 'community-run library', cssClass: 'primary', colour: '#0275d8' },
-        ICL: { type: 'independent', description: 'independent community library', cssClass: 'gray-dark', colour: '#292b2c' },
-        XLT: { type: 'temp closed', description: 'library temporarily closed', cssClass: 'warning', colour: '#f0ad4e' },
-        XLR: { type: 'replaced', description: 'library closed and replaced', cssClass: 'muted', colour: '#636c72' },
-        XL: { type: 'closed', description: 'closed library', cssClass: 'danger', colour: '#d9534f' },
-        X: { type: 'closed', description: 'closed library', cssClass: 'danger', colour: '#d9534f' }
+        LAL: { type: 'authority', description: 'local authority library', cssClass: 'success', colour: '#4CAF50', r: '76', g: '175', b: '80' },
+        CL: { type: 'commissioned', description: 'commissioned library', cssClass: 'info', colour: '#9C27B0', r: '156', g: '39', b: '176' },
+        CRL: { type: 'community', description: 'community-run library', cssClass: 'primary', colour: '#2196F3', r: '33', g: '150', b: '243' },
+        ICL: { type: 'independent', description: 'independent community library', cssClass: 'gray-dark', colour: '#292b2c', r: '41', g: '43', b: '44' },
+        XLT: { type: 'temp closed', description: 'library temporarily closed', cssClass: 'warning', colour: '#FF9800', r: '255', g: '152', b: '0' },
+        XLR: { type: 'replaced', description: 'library closed and replaced', cssClass: 'muted', colour: '#636c72', r: '99', g: '108', b: '114' },
+        XL: { type: 'closed', description: 'closed library', cssClass: 'danger', colour: '#E51C23', r: '229', g: '28', b: '35' },
+        X: { type: 'closed', description: 'closed library', cssClass: 'danger', colour: '#E51C23', r: '229', g: '28', b: '35' }
     },
     depStatStyles: {
         1: 'danger',
@@ -53,4 +53,13 @@
         6: '#29ABE0',
         7: '#29ABE0'
     }
+};
+
+// Array: Get sum of values in an array
+Array.prototype.sum = function () {
+    var total = 0;
+    for (var i = 0; i < this.length; i++) {
+        total += parseFloat(this[i]);
+    }
+    return total;
 };
