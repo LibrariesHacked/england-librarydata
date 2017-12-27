@@ -238,3 +238,5 @@ data/ons/Output_Area_December_2011_Full_Clipped_Boundaries_in_England_and_Wales.
 .vs/slnx.sqlite
 .vs/VSWorkspaceState.json
 data/libraries/libraries_catchments_geo.json
+
+node_modules
