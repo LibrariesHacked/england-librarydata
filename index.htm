@@ -8,10 +8,9 @@
     <meta name="author" content="Libraries Hacked">
     <title>england dashboard</title>
     <link href="node_modules/leaflet/dist/leaflet.css" rel="stylesheet" />
-    <link href="node_modules/tether/dist/css/tether.min.css" rel="stylesheet" />
-    <link href="node_modules/bootswatch/materia/bootstrap.min.css" rel="stylesheet" />
-    <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="node_modules/jquery-shorten-js/dist/css/shorten.min.css" rel="stylesheet" />
+    <link href="node_modules/bootswatch/dist/sandstone/bootstrap.min.css" rel="stylesheet" />
+    <link href="node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="node_modules/jquery-shorten/dist/css/shorten.min.css" rel="stylesheet" />
     <link href="node_modules/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
     <meta name="twitter:card" content="summary_large_image">
@@ -27,31 +26,23 @@
             <li class="nav-item"><a class="nav-link active" href="/">dashboard <span class="sr-only">(current)</span></a></li>
             <li class="nav-item"><a class="nav-link" href="/map">map</a></li>
             <li class="nav-item"><a class="nav-link" href="/thedata">data</a></li>
-            <li class="nav-item"><a class="nav-link" href="/compare">compare</a></li>
-            <li class="nav-item"><a class="nav-link" href="/3d">3D</a></li>
         </ul>
         <hr />
         <div class="row">
             <div class="col-lg-4 col-md-6">
-                <div id="divBetaAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <p><strong>in progress.</strong> see <a class="alert-link" href="https://github.com/LibrariesHacked/england-librarydata/blob/master/about.md" title="about this project" target="_blank">about</a></p>
-                </div>
                 <!-- Widget 1: Areas -->
                 <div class="card mb-3">
-                    <div class="card-block">
+                    <div class="card-body">
                         <h4 class="card-title text-muted"><span class="sel-auth-name"></span></h4>
                         <h6 class="card-subtitle text-muted">select the area you're interested in</h6>
                     </div>
-                    <div class="card-block" id="divAuthMap"></div>
-                    <div class="card-block">
+                    <div class="card-body" id="divAuthMap"></div>
+                    <div class="card-body">
                         <select id="selAuthority" class="form-control">
-                            <option value="">All England</option>
+                            <option value="">England</option>
                         </select>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div class="row" id="divAuthStats1">
                             <div id="divPopulation" class="stats col-4"><small class="text-muted">people&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="estimated population in mid-2015"></a></small><p class="lead text-gray-dark"></p></div>
                             <div id="divNumLibs" class="stats col-4"><small class="text-muted">libraries&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries open in july 2016, of all types"></a></small><p class="lead text-gray-dark"></p></div>
@@ -69,11 +60,11 @@
                 </div>
                 <!-- Widget 3: Library details -->
                 <div class="card mb-3">
-                    <div class="card-block">
+                    <div class="card-body">
                         <h4 class="card-title text-muted">library details</h4>
                         <h6 class="card-subtitle text-muted">select the library you're interested in</h6>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div class="form-group">
                             <select id="selLibraryDetailsLibrary" class="form-control">
                                 <option value="">select a library</option>
@@ -89,17 +80,17 @@
             <div class="col-lg-4 col-md-6">
                 <!-- Widget 4: Library types by authority -->
                 <div class="card mb-3">
-                    <div class="card-block">
+                    <div class="card-body">
                         <h4 class="card-title text-muted"><span class="sel-auth-name"></span> library counts</h4>
                         <h6 class="card-subtitle text-muted">types of library and how many</h6>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div class="row">
                             <div id="divTotalCount" class="col-6"><small class="text-muted">total&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries open in july 2016, with change since april 2010"></a></small><p class="strong"><span id="spLibTotal" class="lead text-gray-dark"></span> <span id="spLibChange"></span></p></div>
                             <div id="divStatutoryCount" class="col-6"><small class="text-muted">statutory&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the number of libraries that part of statutory provision in july 2016, with change since april 2010"></a></small><p class="strong"><span id="spStatTotal" class="lead text-gray-dark"></span> <span id="spStatChange"></span></p></div>
                         </div>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div>
                             <canvas id="divLibrariesDonutChart" height="250"></canvas>
                         </div>
@@ -111,18 +102,18 @@
                 </div>
                 <!-- Widget 5: Libraries distance stats -->
                 <div class="card mb-3">
-                    <div class="card-block">
+                    <div class="card-body">
                         <h4 class="card-title text-muted">distances in <span class="sel-auth-name" id="spDistanceTitle"></span></h4>
                         <h6 class="card-subtitle text-muted" id="hLibDistanceSubtitle">distance to the nearest statutory library</h6>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div class="row" id="divAuthDistanceStats">
                             <div id="divDistanceAverage" class="col-4"><small class="text-muted">average&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="average distance in miles for the population to travel"></a></small><p class="lead text-gray-dark"></p></div>
                             <div id="divDistanceLongest" class="col-4"><small class="text-muted">furthest&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="the furthest distance in miles"></a></small><p class="lead text-gray-dark"></p></div>
                             <div id="divDistancePopOverOne" class="col-4"><small class="text-muted">> 2 mi.&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="percentage of the population travelling at least 2 miles"></a></small><p class="lead text-gray-dark"></p></div>
                         </div>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div><canvas id="divLibrariesDistancesLineChart" height="220"></canvas></div>
                         <div class="div-loading">
                             <i class="fa fa-spinner fa-pulse fa-fw text-muted"></i>
@@ -138,11 +129,11 @@
                 </div>
                 <!-- Widget 7: Libraries area stats -->
                 <div class="card mb-3">
-                    <div class="card-block">
+                    <div class="card-body">
                         <h4 class="card-title text-muted">deprivation in <span class="sel-auth-name"></span></h4>
                         <h6 class="card-subtitle text-muted">area average deprivation.  lower (1-10) means more deprived.</h6>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div class="row" id="divAuthDepStats1">
                             <div id="divIMD" class="stats col-4"><small class="text-muted">multiple&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="a combination of deprivation measures to give an overall deprivation index"></a></small><p class="lead text-success"></p></div>
                             <div id="divEmployment" class="stats col-4"><small class="text-muted">work&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="employment deprivation for the area"></a></small><p class="lead text-success"></p></div>
@@ -154,7 +145,7 @@
                             <div id="divServices" class="stats col-4"><small class="text-muted">services&nbsp;<a href="#" class="fa fa-info" data-toggle="tooltip" data-animation="false" title="geographical access to services deprivation for the area"></a></small><p class="lead text-success"></p></div>
                         </div>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div id="divWrapperLibrariesStatsBarChart"><canvas id="divLibrariesStatsBarChart"></canvas></div>
                         <div class="div-loading">
                             <i class="fa fa-spinner fa-pulse fa-fw text-muted"></i>
@@ -164,11 +155,11 @@
                 </div>
                 <!-- Widget 8: Find My Library -->
                 <div class="card mb-3">
-                    <div class="card-block">
+                    <div class="card-body">
                         <h4 class="card-title text-muted">nearest<span id="spNearestLibName"></span></h4>
                         <h6 class="card-subtitle text-muted">select the library types and find your nearest library</h6>
                     </div>
-                    <div class="card-block">
+                    <div class="card-body">
                         <div class="form-group form-inline">
                             <label class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input chb-libtype" id="chbLAL" value="LAL" checked="checked">
@@ -231,7 +222,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-block" id="divFmlMap"></div>
+                    <div class="card-body" id="divFmlMap"></div>
                 </div>
             </div>
         </div>
@@ -242,7 +233,6 @@
     </div>
     <!-- Framework plugins -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="node_modules/tether/dist/js/tether.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
     <!-- Data and charting plugins -->
@@ -250,7 +240,7 @@
     <script src="node_modules/papaparse/papaparse.min.js"></script>
     <script src="node_modules/chart.js/dist/Chart.min.js"></script>
     <script src="node_modules/twitter-text/twitter-text.js"></script>
-    <script src="node_modules/jquery-shorten-js/dist/jquery-shorten.min.js"></script>
+    <script src="node_modules/jquery-shorten/dist/jquery-shorten.min.js"></script>
     <!-- Mapping plugins -->
     <script src="node_modules/leaflet/dist/leaflet.js"></script>
     <script src="node_modules/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.min.js"></script>
