@@ -5,22 +5,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Data dashboard for Libraries Taskforce English libraries dataset">
+    <meta name="description" content="Data dashboard for English libraries">
     <meta name="author" content="Libraries Hacked">
-    <title>england dashboard</title>
+    <title>Library Dashboard</title>
     <link href="node_modules/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="node_modules/bootswatch/dist/sandstone/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
     <link href="node_modules/jquery-shorten/dist/css/shorten.min.css" rel="stylesheet" />
     <link href="node_modules/drmonty-leaflet-awesome-markers/css/leaflet.awesome-markers.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@librarieshacked">
     <meta name="twitter:creator" content="@librarieshacked">
-    <meta name="twitter:title" content="england.librarydata dashboard">
-    <meta name="twitter:description"
-        content="locations of libraries, types, area deprivation and distances to libraries.">
+    <meta name="twitter:title" content="Library Dashboard">
+    <meta name="twitter:description" content="Information on UK public libraries">
     <meta name="twitter:image" content="https://england.librarydata.uk/images/dashboard.png">
 </head>
 
@@ -35,34 +32,36 @@
         <br />
         <div class="row">
             <div class="col-lg-4 col-md-6">
+                <div class="alert alert-light">
+                    <strong>Important!</strong> This data was collected in July 2016, and is out of date.
+                </div>
                 <!-- Widget 1: Areas -->
                 <div class="card mb-3">
                     <div class="card-body">
                         <h4 class="card-title text-muted"><span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">select the area you're interested in</h6>
+                        <h6 class="card-subtitle text-muted">Select the area you're interested in</h6>
                     </div>
-                    <div class="card-body" id="divAuthMap"></div>
                     <div class="card-body">
-                        <select id="selAuthority" class="form-control">
+                        <select id="sel-authority" class="form-control">
                             <option value="">England</option>
                         </select>
                     </div>
                     <div class="card-body">
-                        <div class="row" id="divAuthStats1">
-                            <div id="divPopulation" class="stats col-4"><small class="text-muted">people&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
-                                        title="estimated population in mid-2015"></a></small>
+                        <div class="row">
+                            <div id="div-population" class="stats col-4"><small class="text-muted">People&nbsp;<a
+                                        href="#" class="fas fa-info-circle" data-toggle="popover" data-animation="false"
+                                        title="Population" data-content="As estimated in mid-2015"></a></small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
-                            <div id="divNumLibs" class="stats col-4"><small class="text-muted">libraries&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
-                                        title="the number of libraries open in july 2016, of all types"></a></small>
+                            <div id="div-num-libs" class="stats col-4"><small class="text-muted">Libraries&nbsp;<a
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
+                                        title="The number of public libraries open in July 2016, of all types"></a></small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
-                            <div id="divLibsPerPopulation" class="stats col-4"><small class="text-muted">per
-                                    lib.&nbsp;<a href="#" class="fas fa-info" data-toggle="tooltip"
+                            <div id="div-libs-per-population" class="stats col-4"><small class="text-muted">Per
+                                    Lib.&nbsp;<a href="#" class="fas fa-info-circle" data-toggle="tooltip"
                                         data-animation="false"
-                                        title="the average number of people per library"></a></small>
+                                        title="The number of people per library"></a></small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
                         </div>
@@ -105,13 +104,13 @@
                     <div class="card-body">
                         <div class="row">
                             <div id="divTotalCount" class="col-6"><small class="text-muted">total&nbsp;<a href="#"
-                                        class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="the number of libraries open in july 2016, with change since april 2010"></a></small>
                                 <p class="strong"><span id="spLibTotal" class="lead text-gray-dark"></span> <span
                                         id="spLibChange"></span></p>
                             </div>
                             <div id="divStatutoryCount" class="col-6"><small class="text-muted">statutory&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="the number of libraries that part of statutory provision in july 2016, with change since april 2010"></a></small>
                                 <p class="strong"><span id="spStatTotal" class="lead text-gray-dark"></span> <span
                                         id="spStatChange"></span></p>
@@ -139,17 +138,17 @@
                     <div class="card-body">
                         <div class="row" id="divAuthDistanceStats">
                             <div id="divDistanceAverage" class="col-4"><small class="text-muted">average&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="average distance in miles for the population to travel"></a></small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
                             <div id="divDistanceLongest" class="col-4"><small class="text-muted">furthest&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="the furthest distance in miles"></a></small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
                             <div id="divDistancePopOverOne" class="col-4"><small class="text-muted">> 2 mi.&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="percentage of the population travelling at least 2 miles"></a></small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
@@ -179,34 +178,34 @@
                     <div class="card-body">
                         <div class="row" id="divAuthDepStats1">
                             <div id="divIMD" class="stats col-4"><small class="text-muted">multiple&nbsp;<a href="#"
-                                        class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="a combination of deprivation measures to give an overall deprivation index"></a></small>
                                 <p class="lead text-success"></p>
                             </div>
                             <div id="divEmployment" class="stats col-4"><small class="text-muted">work&nbsp;<a href="#"
-                                        class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="employment deprivation for the area"></a></small>
                                 <p class="lead text-success"></p>
                             </div>
                             <div id="divEducation" class="stats col-4"><small class="text-muted">education&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="children&apos;s education  deprivation for the area"></a></small>
                                 <p class="lead text-success"></p>
                             </div>
                         </div>
                         <div class="row">
                             <div id="divAdultSkills" class="stats col-4"><small class="text-muted">skills&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="adult skills and training deprivation for the area"></a></small>
                                 <p class="lead text-success"></p>
                             </div>
                             <div id="divHealth" class="stats col-4"><small class="text-muted">health&nbsp;<a href="#"
-                                        class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="health deprivation for the area"></a></small>
                                 <p class="lead text-success"></p>
                             </div>
                             <div id="divServices" class="stats col-4"><small class="text-muted">services&nbsp;<a
-                                        href="#" class="fas fa-info" data-toggle="tooltip" data-animation="false"
+                                        href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="geographical access to services deprivation for the area"></a></small>
                                 <p class="lead text-success"></p>
                             </div>
@@ -277,13 +276,13 @@
                                 <div class="tab-pane active" id="Walking" role="tabpanel">
                                     <div class="row">
                                         <div id="divWalkingDistance" class="col-6"><small
-                                                class="text-muted">distance&nbsp;<a href="#" class="fas fa-info"
+                                                class="text-muted">distance&nbsp;<a href="#" class="fas fa-info-circle"
                                                     data-toggle="tooltip" data-animation="false"
                                                     title="walking distance in miles to the library"></a></small>
                                             <p class="lead text-gray-dark"></p>
                                         </div>
                                         <div id="divWalkingTime" class="col-6"><small class="text-muted">time&nbsp;<a
-                                                    href="#" class="fas fa-info" data-toggle="tooltip"
+                                                    href="#" class="fas fa-info-circle" data-toggle="tooltip"
                                                     data-animation="false"
                                                     title="an estimated walking time"></a></small>
                                             <p class="lead strong text-gray-dark"></p>
@@ -294,13 +293,13 @@
                                 <div class="tab-pane fade" id="Cycling" role="tabpanel">
                                     <div class="row">
                                         <div id="divCyclingDistance" class="col-6"><small
-                                                class="text-muted">distance&nbsp;<a href="#" class="fas fa-info"
+                                                class="text-muted">distance&nbsp;<a href="#" class="fas fa-info-circle"
                                                     data-toggle="tooltip" data-animation="false"
                                                     title="cycling distance in miles to the library"></a></small>
                                             <p class="lead text-gray-dark"></p>
                                         </div>
                                         <div id="divCyclingTime" class="col-6"><small class="text-muted">time&nbsp;<a
-                                                    href="#" class="fas fa-info" data-toggle="tooltip"
+                                                    href="#" class="fas fa-info-circle" data-toggle="tooltip"
                                                     data-animation="false" title="an estimated cycle time"></a></small>
                                             <p class="lead strong text-gray-dark"></p>
                                         </div>
@@ -310,13 +309,13 @@
                                 <div class="tab-pane fade" id="Driving" role="tabpanel">
                                     <div class="row">
                                         <div id="divDrivingDistance" class="col-6"><small
-                                                class="text-muted">distance&nbsp;<a href="#" class="fas fa-info"
+                                                class="text-muted">distance&nbsp;<a href="#" class="fas fa-info-circle"
                                                     data-toggle="tooltip" data-animation="false"
                                                     title="driving distance in miles to the library"></a></small>
                                             <p class="lead text-gray-dark"></p>
                                         </div>
                                         <div id="divDrivingTime" class="col-6"><small class="text-muted">time&nbsp;<a
-                                                    href="#" class="fas fa-info" data-toggle="tooltip"
+                                                    href="#" class="fas fa-info-circle" data-toggle="tooltip"
                                                     data-animation="false"
                                                     title="an estimated driving time"></a></small>
                                             <p class="lead text-gray-dark"></p>
@@ -340,6 +339,7 @@
     </div>
     <!-- Framework plugins -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
     <!-- Data and charting plugins -->

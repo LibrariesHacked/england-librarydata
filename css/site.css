@@ -3,6 +3,10 @@
     min-height: 100%;
 }
 
+.alert{
+    border: 1px solid #E5E5E5;
+}
+
 .grey {
     background-color: #F2F4F8 !important;
 }

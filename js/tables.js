@@ -15,55 +15,55 @@
                 data: LibrariesFuncs.getAuthoritiesDataTable(),
                 columns: [
                     { title: "Name" },
-                    { title: "Libraries&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of open libraries in july 2016'></a>" },
+                    { title: "Libraries&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='number of open libraries in july 2016'></a>" },
                     {
-                        title: "People&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        title: "People&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Adults&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population aged over 16'></a>",
+                        title: "Adults&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population aged over 16'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Over 60&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population aged over 60'></a>",
+                        title: "Over 60&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population aged over 60'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Children&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population aged under 16'></a>",
+                        title: "Children&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population aged under 16'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Working Age&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population aged between 16 and 67'></a>",
+                        title: "Working Age&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population aged between 16 and 67'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Area&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the land area of the local authority'></a>",
+                        title: "Area&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the land area of the local authority'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data)) + ' ha';
                             return data;
                         }
                     },
-                    { title: "Authority&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of local authority libraries open libraries in july 2016'></a>" },
-                    { title: "Commissioned&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of commissioned libraries open libraries in july 2016'></a>" },
-                    { title: "Community&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of community-run libraries open libraries in july 2016'></a>" },
-                    { title: "Independent&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of independent libraries open libraries in july 2016'></a>" },
-                    { title: "Closed&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of closed libraries between april 2010 and july 2016'></a>" },
-                    { title: "New&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='number of new libraries open between april 2010 and july 2016'></a>" }
+                    { title: "Authority&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='number of local authority libraries open libraries in july 2016'></a>" },
+                    { title: "Commissioned&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='number of commissioned libraries open libraries in july 2016'></a>" },
+                    { title: "Community&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='number of community-run libraries open libraries in july 2016'></a>" },
+                    { title: "Independent&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='number of independent libraries open libraries in july 2016'></a>" },
+                    { title: "Closed&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='number of closed libraries between april 2010 and july 2016'></a>" },
+                    { title: "New&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='number of new libraries open between april 2010 and july 2016'></a>" }
                 ],
                 initComplete: function (settings, json) {
                     updateTooltips();
@@ -90,7 +90,7 @@
                     },
                     { title: "Postcode" },
                     {
-                        title: "Type&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the type of library.  hover over the code to see the full description.'></a>",
+                        title: "Type&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the type of library.  hover over the code to see the full description.'></a>",
                         render: function (data, type, row) {
                             return '<abbr class="initialism" title="' + config.libStyles[data].description + '">' + data + '</abbr>';
                         }
@@ -98,63 +98,63 @@
                     { title: "Statutory 2010" },
                     { title: "Statutory 2016" },
                     {
-                        title: "People&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        title: "People&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Adults&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        title: "Adults&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Children&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
+                        title: "Children&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title='the resident population of the local authority'></a>",
                         render: function (data, type, row) {
                             if (type == 'display') return LibrariesFuncs.getNumFormat(parseInt(data));
                             return data;
                         }
                     },
                     {
-                        title: "Multiple&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title=''></a>",
+                        title: "Multiple&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title=''></a>",
                         render: function (data, type, row) {
                             var m = parseFloat(data).toFixed(0);
                             return '<span class="text-' + (m > 3 ? 'muted' : 'danger') + '">' + m + '</span>';
                         }
                     },
                     {
-                        title: "Work&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title=''></a>",
+                        title: "Work&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title=''></a>",
                         render: function (data, type, row) {
                             var m = parseFloat(data).toFixed(0);
                             return '<span class="text-' + (m > 3 ? 'muted' : 'danger') + '">' + m + '</span>';
                         }
                     },
                     {
-                        title: "Education&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title=''></a>",
+                        title: "Education&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title=''></a>",
                         render: function (data, type, row) {
                             var m = parseFloat(data).toFixed(0);
                             return '<span class="text-' + (m > 3 ? 'muted' : 'danger') + '">' + m + '</span>';
                         }
                     },
                     {
-                        title: "Adult Skills&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title=''></a>",
+                        title: "Adult Skills&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title=''></a>",
                         render: function (data, type, row) {
                             var m = parseFloat(data).toFixed(0);
                             return '<span class="text-' + (m > 3 ? 'muted' : 'danger') + '">' + m + '</span>';
                         }
                     },
                     {
-                        title: "Services&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title=''></a>",
+                        title: "Services&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title=''></a>",
                         render: function (data, type, row) {
                             var m = parseFloat(data).toFixed(0);
                             return '<span class="text-' + (m > 3 ? 'muted' : 'danger') + '">' + m + '</span>';
                         }
                     },
                     {
-                        title: "Health&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title=''></a>",
+                        title: "Health&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title=''></a>",
                         render: function (data, type, row) {
                             var m = parseFloat(data).toFixed(0);
                             return '<span class="text-' + (m > 3 ? 'muted' : 'danger') + '">' + m + '</span>';
@@ -167,7 +167,7 @@
                         }
                     },
                     {
-                        title: "Notes&nbsp;<a href='#' class='fa fa-info' data-toggle='tooltip' data-animation='false' title=''></a>",
+                        title: "Notes&nbsp;<a href='#' class='fa fa-info-circle' data-toggle='tooltip' data-animation='false' title=''></a>",
                         render: function (data, type, row) {
                             return '<span class="text-muted">' + data + '</span>';
                         }
