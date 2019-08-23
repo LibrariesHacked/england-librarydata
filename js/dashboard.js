@@ -69,7 +69,7 @@
         };
 
         var skipTwitterToAuthority = function (authority) {
-            $('#divTwitter').hide();
+            $('#div-twitter').hide();
             $.each(tweets, function (i, t) {
                 if (t.name.indexOf(authority) != -1) {
                     $('#divTweet').empty();
@@ -86,15 +86,15 @@
 
         // Populate the select library control
         var updateLibraryDetailsSelect = function (authority) {
-            $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails, #selLibraryDetailsLibrary').empty();
-            $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", '').text('select a library'));
-            $.each(LibrariesFuncs.getLibrariesListSorted(authority), function (y, z) { $('#selLibraryDetailsLibrary').append($("<option></option>").attr("value", z.id).text(z.name)) });
+            $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails, #sel-library-details-library').empty();
+            $('#sel-library-details-library').append($("<option></option>").attr("value", '').text('select a library'));
+            $.each(LibrariesFuncs.getLibrariesListSorted(authority), function (y, z) { $('#sel-library-details-library').append($("<option></option>").attr("value", z.id).text(z.name)) });
         };
 
         // Event: On selecting a library, display that library's details.
-        $('#selLibraryDetailsLibrary').change(function () {
+        $('#sel-library-details-library').change(function () {
             $('#divLibraryLinks, #divLibraryDetails, #divLibraryStatutoryDetails, #divLibraryDeprivationDetails').empty();
-            var lib = $('#selLibraryDetailsLibrary').find(":selected").val()
+            var lib = $('#sel-library-details-library').find(":selected").val()
 
             if (lib == '') {
                 var auth = $('#selAuthority').find(":selected");

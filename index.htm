@@ -35,11 +35,12 @@
                 <div class="alert alert-light">
                     <strong>Important!</strong> This data was collected in July 2016, and is out of date.
                 </div>
+
                 <!-- Widget 1: Areas -->
                 <div class="card mb-3">
                     <div class="card-body">
                         <h4 class="card-title text-muted"><span class="sel-auth-name"></span></h4>
-                        <h6 class="card-subtitle text-muted">Select the area you're interested in</h6>
+                        <h6 class="card-subtitle text-muted">Select the area you're interested in.</h6>
                     </div>
                     <div class="card-body">
                         <select id="sel-authority" class="form-control">
@@ -48,9 +49,10 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div id="div-population" class="stats col-4"><small class="text-muted">People&nbsp;<a
-                                        href="#" class="fas fa-info-circle" data-toggle="popover" data-animation="false"
-                                        title="Population" data-content="As estimated in mid-2015"></a></small>
+                            <div id="div-population" class="stats col-4">
+                                <small class="text-muted">People&nbsp;
+                                    <a href="#" class="fas fa-info-circle" data-toggle="popover" data-animation="false" title="Population" data-content="As estimated in mid-2015"></a>
+                                </small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
                             <div id="div-num-libs" class="stats col-4"><small class="text-muted">Libraries&nbsp;<a
@@ -71,19 +73,21 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Widget 2: Tweets -->
-                <div id="divTwitter" class="alert alert-success mb-3">
+                <div id="div-twitter" class="alert alert-success mb-3">
                     <div id="divTweet"></div>
                 </div>
+    
                 <!-- Widget 3: Library details -->
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h4 class="card-title text-muted">library details</h4>
-                        <h6 class="card-subtitle text-muted">select the library you're interested in</h6>
+                        <h4 class="card-title text-muted">Library details</h4>
+                        <h6 class="card-subtitle text-muted">Select the library you're interested in.</h6>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
-                            <select id="selLibraryDetailsLibrary" class="form-control">
+                            <select id="sel-library-details-library" class="form-control">
                                 <option value="">select a library</option>
                             </select>
                         </div>
@@ -147,7 +151,7 @@
                                         title="the furthest distance in miles"></a></small>
                                 <p class="lead text-gray-dark"></p>
                             </div>
-                            <div id="divDistancePopOverOne" class="col-4"><small class="text-muted">> 2 mi.&nbsp;<a
+                            <div id="divDistancePopOverOne" class="col-4"><small class="text-muted">&gt; 2 mi.&nbsp;<a
                                         href="#" class="fas fa-info-circle" data-toggle="tooltip" data-animation="false"
                                         title="percentage of the population travelling at least 2 miles"></a></small>
                                 <p class="lead text-gray-dark"></p>

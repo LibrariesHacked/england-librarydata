@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +11,8 @@
     <link href="node_modules/bootswatch/dist/sandstone/bootstrap.min.css" rel="stylesheet" />
     <link href="node_modules/leaflet/dist/leaflet.css" rel="stylesheet" />
     <link href="node_modules/sidebar-v2/css/leaflet-sidebar.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link href="node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet" />
     <link href="node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet">
@@ -18,23 +20,32 @@
     <meta name="twitter:site" content="@librarieshacked">
     <meta name="twitter:creator" content="@librarieshacked">
     <meta name="twitter:title" content="england.librarydata map">
-    <meta name="twitter:description" content="locations of libraries, types, area deprivation and distances to libraries.">
+    <meta name="twitter:description"
+        content="locations of libraries, types, area deprivation and distances to libraries.">
     <meta name="twitter:image" content="https://england.librarydata.uk/images/dashboard.png">
 </head>
+
 <body>
     <div id="mapContainer" class="container-fluid">
         <div id="sidebar" class="sidebar collapsed">
             <div class="sidebar-tabs">
                 <ul role="tablist">
-                    <li><a href="#home" role="tab" title="Libraries map information"><i class="fas fa-info-circle-circle"></i></a></li>
-                    <li class="disabled" id="liAuthority" title="Selected authority details"><a href="#authority" role="tab"><i class="fas fa-list"></i></a></li>
-                    <li class="disabled" id="liLibrary"><a href="#library" role="tab" title="Selected library details"><i class="fas fa-book"></i></a></li>
-                    <li class="disabled" id="liOA"><a href="#oa" role="tab" title="Selected output area details"><i class="fas fa-map-o"></i></a></li>
-                    <li class="disabled" id="liNews"><a href="#news" role="tab" title="Library news stories"><i class="fas fa-newspaper-o"></i></a></li>
+                    <li><a href="#home" role="tab" title="Libraries map information"><i
+                                class="fas fa-info-circle-circle"></i></a></li>
+                    <li class="disabled" id="liAuthority" title="Selected authority details"><a href="#authority"
+                            role="tab"><i class="fas fa-list"></i></a></li>
+                    <li class="disabled" id="liLibrary"><a href="#library" role="tab"
+                            title="Selected library details"><i class="fas fa-book"></i></a></li>
+                    <li class="disabled" id="liOA"><a href="#oa" role="tab" title="Selected output area details"><i
+                                class="fas fa-map-o"></i></a></li>
+                    <li class="disabled" id="liNews"><a href="#news" role="tab" title="Library news stories"><i
+                                class="fas fa-newspaper-o"></i></a></li>
                 </ul>
                 <ul role="tablist">
-                    <li><a href="#reset" role="tab" id="liReset"><i class="fas fa-undo" title="Reset map view"></i></a></li>
-                    <li><a href="/" role="tab" id="liHome"><i class="fas fa-home" title="Return to home page"></i></a></li>
+                    <li><a href="#reset" role="tab" id="liReset"><i class="fas fa-undo" title="Reset map view"></i></a>
+                    </li>
+                    <li><a href="/" role="tab" id="liHome"><i class="fas fa-home" title="Return to home page"></i></a>
+                    </li>
                 </ul>
             </div>
             <div class="sidebar-content">
@@ -43,7 +54,8 @@
                         map <span class="sidebar-close"><i class="fas fa-caret-right"></i></span>
                     </h1>
                     <div id="sidebar-maincontent">
-                        <p>shading of the map regions represents concentration of different aspects of the data.  select an option below to customise the map.</p>
+                        <p>shading of the map regions represents concentration of different aspects of the data. select
+                            an option below to customise the map.</p>
                         <select id="sel-maptype" class="form-control">
                             <option value="1" selected>number of libraries</option>
                             <option value="2">libraries per population</option>
@@ -54,27 +66,35 @@
                             <option value="7">public libraries news - changes</option>
                         </select>
                         <hr />
-                        <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open source project available on <a href="https://github.com/librarieshacked/public-libraries-news" target="_blank">GitHub</a>.</p>
+                        <p>a <a href="https://www.librarieshacked.org" target="_blank">{ libraries: hacked }</a> open
+                            source project available on <a
+                                href="https://github.com/librarieshacked/public-libraries-news"
+                                target="_blank">GitHub</a>.</p>
                     </div>
                 </div>
                 <div class="sidebar-pane" id="authority">
-                    <h1 class="sidebar-header"><span class="sidebar-title">library service</span><span class="sidebar-close"><i class="fas fa-caret-right"></i></span></h1>
+                    <h1 class="sidebar-header"><span class="sidebar-title">library service</span><span
+                            class="sidebar-close"><i class="fas fa-caret-right"></i></span></h1>
                     <div id="sidebar-authoritycontent"></div>
                 </div>
                 <div class="sidebar-pane" id="library">
-                    <h1 class="sidebar-header"><span class="sidebar-title">library</span><span class="sidebar-close"><i class="fas fa-caret-right"></i></span></h1>
+                    <h1 class="sidebar-header"><span class="sidebar-title">library</span><span class="sidebar-close"><i
+                                class="fas fa-caret-right"></i></span></h1>
                     <div id="sidebar-librarycontent"></div>
                 </div>
                 <div class="sidebar-pane" id="oa">
-                    <h1 class="sidebar-header"><span class="sidebar-title">output area</span><span class="sidebar-close"><i class="fas fa-caret-right"></i></span></h1>
+                    <h1 class="sidebar-header"><span class="sidebar-title">output area</span><span
+                            class="sidebar-close"><i class="fas fa-caret-right"></i></span></h1>
                     <div id="sidebar-oacontent"></div>
                 </div>
                 <div class="sidebar-pane" id="news">
-                    <h1 class="sidebar-header">news and changes<span class="sidebar-close"><i class="fas fa-caret-right"></i></span></h1>
+                    <h1 class="sidebar-header">news and changes<span class="sidebar-close"><i
+                                class="fas fa-caret-right"></i></span></h1>
                     <div id="sidebar-newscontent"></div>
                 </div>
                 <div class="sidebar-pane" id="location">
-                    <h1 class="sidebar-header">your location <span class="sidebar-close"><i class="fas fa-caret-right"></i></span></h1>
+                    <h1 class="sidebar-header">your location <span class="sidebar-close"><i
+                                class="fas fa-caret-right"></i></span></h1>
                     <div id="sidebar-locationcontent"></div>
                 </div>
             </div>
@@ -93,4 +113,5 @@
     <script src="js/map.js"></script>
     <script src="js/config.js"></script>
 </body>
+
 </html>

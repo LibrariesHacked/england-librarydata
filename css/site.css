@@ -25,7 +25,7 @@
     font-weight: 700;
 }
 
-small, .lead {
+.lead {
     font-weight: 700;
 }
 
@@ -38,7 +38,7 @@ small, .lead {
     display: none;
 }
 
-#divNewsStories, #divTwitter {
+#divNewsStories, #div-twitter {
     display: none;
 }
 
@@ -102,7 +102,7 @@ small, .lead {
     display: none;
 }
 
-#divNewsStories .card-footer, #divTwitter .card-footer {
+#divNewsStories .card-footer, #div-twitter .card-footer {
     display: none;
 }
 
