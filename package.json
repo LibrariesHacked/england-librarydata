@@ -28,7 +28,7 @@
     "datatables.net-responsive-bs4": "^2.2.3",
     "devbridge-autocomplete": "^1.4.10",
     "drmonty-leaflet-awesome-markers": "^2.0.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-shorten": "^0.3.2",
     "leaflet": "^1.5.1",
     "leaflet-geometryutil": "^0.9.1",
