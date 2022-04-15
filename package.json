@@ -33,7 +33,7 @@
     "leaflet": "^1.5.1",
     "leaflet-geometryutil": "^0.9.1",
     "leaflet.locatecontrol": "^0.67.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "papaparse": "^5.2.0",
     "popper.js": "^1.14.7",
     "sidebar-v2": "^0.4.0",
