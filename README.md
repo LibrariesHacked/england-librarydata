@@ -1,6 +1,6 @@
-# England.  LibraryData.
+# England
 
-Project to display English libraries data in a data dashboard. Currently published at [https://england.librarydata.uk](https://england.librarydata.uk).
+Project to display English libraries data in a data dashboard.
 
 ## What is it?
 
